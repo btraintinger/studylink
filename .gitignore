@@ -35,3 +35,6 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+
+# Editor-based Rest Client
+.idea/httpRequests
