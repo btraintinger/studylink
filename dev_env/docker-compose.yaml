@@ -19,7 +19,7 @@ services:
     build: ../backend
     container_name: backend-api
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=schema"
     depends_on:
       - postgres
     volumes:
