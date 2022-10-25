@@ -1,12 +1,12 @@
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-    referentialIntegrity = "prisma"
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-    provider = "prisma-client-js"
-     previewFeatures = ["referentialIntegrity"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 model class_has_subject {
@@ -25,17 +25,18 @@ model department {
   department_name String         @db.VarChar(50)
   school_class    school_class[]
   user            user[]
+  admin           admin[]
 }
 
 model school_class {
-  id                                  Int                 @id @unique()
-  class_name                          String?             @db.VarChar(50)
-  grade                               Int
-  department_id                       Int
-  department_departmentToschool_class department          @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  class_has_subject                   class_has_subject[]
-  tutor                               tutor[]
-  user                                user[]
+  id                Int                 @id @unique()
+  class_name        String?             @db.VarChar(50)
+  grade             Int
+  department_id     Int
+  department        department          @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  class_has_subject class_has_subject[]
+  tutor             tutor[]
+  user              user[]
 
   @@index([department_id])
 }
@@ -63,35 +64,56 @@ model student {
 }
 
 model tutor {
-  id               Int            @id @unique()
-  user_id          Int            @unique()
-  class_id         Int?
-  subject_id       Int
-  description      String?        @db.VarChar(1000)
-  teacher          String?        @db.VarChar(50)
-  raiting          Int?
-  school_class     school_class?  @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user             user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  school_subject   school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int            @id @unique()
+  user_id        Int            @unique()
+  class_id       Int
+  subject_id     Int
+  description    String?        @db.VarChar(1000)
+  teacher        String?        @db.VarChar(50)
+  raiting        Int?
+  school_class   school_class   @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user           user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([class_id])
   @@index([subject_id])
+  @@index([user_id])
+}
+
+model admin {
+  id            Int        @id @unique()
+  user_id       Int        @unique()
+  department_id Int
+  user          user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  department    department @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id])
+  @@index([department_id])
+}
+
+model account {
+  id       Int    @id @unique()
+  email    String @unique() @db.VarChar(50)
+  password String @db.VarChar(50)
+  user     user[]
 }
 
 model user {
-  id                          Int          @id @default(autoincrement())
-  forname                     String       @db.VarChar(50)
-  surname                     String       @db.VarChar(50)
-  email                       String       @unique() @db.VarChar(50)
-  password                    String       @db.VarChar(50)
-  class_id                    Int
-  register_date               DateTime     @default(now()) @db.Date
-  admin_level                 Int
-  department_id               Int
-  school_class                school_class @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  department                  department   @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  student                     student?
-  tutor                       tutor?
+  id            Int          @id @default(autoincrement())
+  forname       String       @db.VarChar(50)
+  surname       String       @db.VarChar(50)
+  email         String       @unique() @db.VarChar(50)
+  password      String       @db.VarChar(50)
+  class_id      Int
+  register_date DateTime     @default(now()) @db.Date
+  department_id Int
+  school_class  school_class @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  department    department   @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student       student?
+  tutor         tutor?
+  admin         admin?
+  account       account?     @relation(fields: [accountId], references: [id])
+  accountId     Int?
 
   @@index([class_id])
   @@index([department_id])
