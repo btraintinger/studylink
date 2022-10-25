@@ -6,9 +6,93 @@ datasource db {
 
 generator client {
     provider = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+     previewFeatures = ["referentialIntegrity"]
 }
 
-model User {
-    id Int @id @default(autoincrement())
+model class_has_subject {
+  class_id       Int
+  subject_id     Int
+  school_class   school_class   @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([class_id, subject_id])
+  @@index([class_id])
+  @@index([subject_id])
+}
+
+model department {
+  id              Int            @id @unique()
+  department_name String         @db.VarChar(50)
+  school_class    school_class[]
+  user            user[]
+}
+
+model school_class {
+  id                                  Int                 @id @unique()
+  class_name                          String?             @db.VarChar(50)
+  grade                               Int
+  department_id                       Int
+  department_departmentToschool_class department          @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  class_has_subject                   class_has_subject[]
+  tutor                               tutor[]
+  user                                user[]
+
+  @@index([department_id])
+}
+
+model school_subject {
+  id                    Int                 @id @unique()
+  subject_name          String              @unique() @db.VarChar(50)
+  extended_subject_name String              @unique() @db.VarChar(100)
+  class_has_subject     class_has_subject[]
+  student               student[]
+  tutor                 tutor[]
+}
+
+model student {
+  id                   Int            @id @unique()
+  user_id              Int            @unique()
+  subject_id           Int
+  description_of_Topic String?        @db.VarChar(1000)
+  teacher              String?        @db.VarChar(50)
+  school_subject       school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_studentTouser   user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([subject_id])
+  @@index([user_id])
+}
+
+model tutor {
+  id               Int            @id @unique()
+  user_id          Int            @unique()
+  class_id         Int?
+  subject_id       Int
+  description      String?        @db.VarChar(1000)
+  teacher          String?        @db.VarChar(50)
+  raiting          Int?
+  school_class     school_class?  @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user             user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject   school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([class_id])
+  @@index([subject_id])
+}
+
+model user {
+  id                          Int          @id @default(autoincrement())
+  forname                     String       @db.VarChar(50)
+  surname                     String       @db.VarChar(50)
+  email                       String       @unique() @db.VarChar(50)
+  password                    String       @db.VarChar(50)
+  class_id                    Int
+  register_date               DateTime     @default(now()) @db.Date
+  admin_level                 Int
+  department_id               Int
+  school_class                school_class @relation(fields: [class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  department                  department   @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student                     student?
+  tutor                       tutor?
+
+  @@index([class_id])
+  @@index([department_id])
 }
