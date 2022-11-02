@@ -10,6 +10,10 @@ const NAVBAR_LIST = [
   { text: "First Post", href: "/blog/first-post" },
   { text: "Create account", href: "/create-account"},
   { text: "Switch Demo", href: "/blog/switch-demo"},
+<<<<<<< HEAD
+  { text: "new account demo", href: "/create-new-account"},
+=======
+>>>>>>> 047914dbbbf0bf12f38fd5e37e58f9e8114330f5
 ];
 type Props = {
   name:string
