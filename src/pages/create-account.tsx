@@ -5,7 +5,7 @@ export default function CreateAccount() {
     return (
     <Layout home = {false}>
         <Head>
-            <title>First Post</title>
+            <title>Create an account</title>
         </Head>
         <h1>Create an account</h1>
         <div>
