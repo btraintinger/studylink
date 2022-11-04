@@ -3,7 +3,8 @@ import Image from 'next/image';
 import styles from './layout.module.css';
 import utilStyles from '../styles/utils.module.css';
 import Link from 'next/link';
-import NavBar from './navbar';
+import NavBar from './navbar-depr';
+import ResponsiveAppBar from './resp-app-bar';
 
 const name = 'Studylink';
 export const siteTitle = 'Studylink';
@@ -16,6 +17,7 @@ type Props = {
 export default function Layout({ children, home }: Props) {
   return (
     <div className={styles.container}>
+
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -23,17 +25,16 @@ export default function Layout({ children, home }: Props) {
           content="{name}Website"
         />
       </Head>
+      
 
+      <header>
 
-      <header className={styles.header}>
-
-        <NavBar name = {name} home = {home}/>
+        <ResponsiveAppBar/>
 
       </header>
 
 
       <main>{children}</main>
-
 
       {!home && (
         <div className={styles.backToHome}>

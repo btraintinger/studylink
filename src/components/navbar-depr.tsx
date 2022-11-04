@@ -9,7 +9,9 @@ const NAVBAR_LIST = [
   { text: "Home", href: "/" },
   { text: "First Post", href: "/blog/first-post" },
   { text: "Create account", href: "/create-account"},
-  { text: "Switch Demo", href: "/blog/switch-demo"},
+  { text: "Switch MUI Demo", href: "/blog/switch-demo"},
+  { text: "Account MUI demo", href: "/blog/sign-up-demo"},
+
 ];
 type Props = {
   name:string

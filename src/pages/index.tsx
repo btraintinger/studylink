@@ -2,6 +2,10 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 export default function Home() {
   return (
@@ -14,6 +18,16 @@ export default function Home() {
       <section className={utilStyles.headingMd}>
         <p>Studylink ist eine Nachhilfeplatform</p>
         <p>
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
+          Studylink ist eine Nachhilfeplatform
           Studylink ist eine Nachhilfeplatform
           Studylink ist eine Nachhilfeplatform
           Studylink ist eine Nachhilfeplatform
