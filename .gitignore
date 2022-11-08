@@ -1,5 +1,5 @@
-# local files env
-/prisma/.env
+# local files
+notes.local.md
 
 /.idea
 /.vscode/*
