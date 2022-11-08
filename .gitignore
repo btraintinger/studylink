@@ -1,3 +1,6 @@
+# local files env
+/prisma/.env
+
 /.idea
 /.vscode/*
 !.vscode/settings.json
