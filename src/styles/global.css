@@ -13,12 +13,11 @@ p{
 }
 
 a {
-  color: #ff9100;
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: wavy underline overline lime;
+  text-decoration: underline overline rgb(255, 255, 255);
 }
 
 img {

@@ -1,11 +1,10 @@
 .container {
-  padding: 0 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: rgb(225, 209, 179);
+  min-height: 500%;
  }
   
   .header {
@@ -16,4 +15,8 @@
   
   .backToHome {
     margin: 3rem 0 0;
+  }
+
+  .main {
+    padding-top: 5rem;
   }

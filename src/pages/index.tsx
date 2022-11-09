@@ -6,6 +6,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import OfferCard from '../components/cards/offer-card';
 
 export default function Home() {
   return (
@@ -17,49 +18,14 @@ export default function Home() {
 
       <section className={utilStyles.headingMd}>
         <p>Studylink ist eine Nachhilfeplatform</p>
+        <div>
+          <OfferCard />
+        </div>
         <p>
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-
-
-          Studylink ist eine NachhilfeplatformStudylink ist eine NachhilfeplatformStudylink ist eine Nachhilfeplatform
-
-          Studylink ist eine NachhilfeplatformStudylink ist eine Nachhilfeplatform
-
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-          Studylink ist eine Nachhilfeplatform
-        </p>
-        <p>
-          <Link href= "/blog/first-post">
+          <Link href="/blog/first-post">
             <a> See this post</a>
-          </Link>       
-          </p>
+          </Link>
+        </p>
       </section>
     </Layout>
   );

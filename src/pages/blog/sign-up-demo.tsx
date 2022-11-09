@@ -9,10 +9,10 @@ import styles from "../../components/layout.module.css"
 export default function SignUpDemo() {
     return (
         <div className={styles.container}>
-            <Layout home = {false}>
-                <SignUp/>
+            <Layout home={false}>
+                <SignUp />
             </Layout>
         </div>
     )
 
-  }
+}
