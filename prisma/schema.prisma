@@ -1,28 +1,134 @@
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-    referentialIntegrity = "prisma"
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-    provider = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+model class_has_subject {
+  school_class_id Int
+  subject_id      Int
+  school_class    school_class   @relation(fields: [school_class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject  school_subject @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([school_class_id, subject_id])
+  @@index([school_class_id])
+  @@index([subject_id])
+}
+
+model School {
+  id          Int          @id @default(autoincrement())
+  name        String
+  departments Department[]
+  admins      Admin[]
+}
+
+model Department {
+  id              Int            @id @unique()
+  department_name String         @db.VarChar(50)
+  school_class    school_class[]
+  School          School         @relation(fields: [school_id], references: [id])
+  school_id       Int
+
+  @@index([school_id])
+}
+
+model school_class {
+  id                Int                 @id @unique()
+  class_name        String              @db.VarChar(50)
+  grade             Int
+  department_id     Int
+  department        Department          @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  class_has_subject class_has_subject[]
+  tutor_request     tutor_request[]
+  tutor_offering    tutor_offering[]
+  student           Student[]
+
+  @@index([department_id])
+}
+
+model school_subject {
+  id                    Int                 @id @unique()
+  subject_name          String              @unique() @db.VarChar(50)
+  extended_subject_name String              @unique() @db.VarChar(100)
+  class_has_subject     class_has_subject[]
+  tutor                 tutor_offering[]
+  tutor_request         tutor_request[]
+}
+
+model tutor_request {
+  id                Int            @id @unique()
+  school_class_id   Int
+  school_class      school_class   @relation(fields: [school_class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id        Int            @unique()
+  student           Student        @relation(fields: [student_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject_id Int
+  school_subject    school_subject @relation(fields: [school_subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([school_class_id])
+  @@index([school_subject_id])
+  @@index([student_id])
+}
+
+model tutor_offering {
+  id                Int            @id @unique()
+  school_class_id   Int
+  school_class      school_class   @relation(fields: [school_class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  student_id        Int            @unique()
+  student           Student        @relation(fields: [student_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_subject_id Int
+  school_subject    school_subject @relation(fields: [school_subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  description String? @db.VarChar(1000)
+  teacher     String? @db.VarChar(50)
+  rating      Int?
+
+  @@index([school_class_id])
+  @@index([school_subject_id])
+  @@index([student_id])
+}
+
+model Admin {
+  id        Int     @id @unique()
+  user_id   String  @unique()
+  user      User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school_id Int?    @unique()
+  School    School? @relation(fields: [school_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id])
+  @@index([school_id])
+}
+
+model Student {
+  id              Int              @id @unique()
+  school_class_id Int
+  school_class    school_class     @relation(fields: [school_class_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_id         String           @unique()
+  user            User             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tutor_request   tutor_request[]
+  tutor_offering  tutor_offering[]
+
+  @@index([school_class_id])
+  @@index([user_id])
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -42,10 +148,12 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String
-  role          String
+  role          Role
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Student       Student?
+  Admin         Admin?
 }
 
 model VerificationToken {
@@ -54,4 +162,9 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Role {
+  ADMIN
+  STUDENT
 }
