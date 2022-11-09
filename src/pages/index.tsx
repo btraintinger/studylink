@@ -1,3 +1,6 @@
+
+import type { NextPage } from 'next';
+
 import Head from 'next/head';
 import Link from 'next/link';
 import Layout, { siteTitle } from '../components/layout';
@@ -8,8 +11,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import OfferCard from '../components/cards/offer-card';
 
-export default function Home() {
-  return (
+const Home: NextPage = () => (
     <Layout home={true}>
       <Head>
         <title>{siteTitle}</title>
@@ -28,5 +30,6 @@ export default function Home() {
         </p>
       </section>
     </Layout>
-  );
-}
+);
+
+export default Home;

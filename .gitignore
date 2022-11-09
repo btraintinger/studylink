@@ -1,3 +1,7 @@
+# local files
+notes.local.md
+.env
+
 /.idea
 /.vscode/*
 !.vscode/settings.json
