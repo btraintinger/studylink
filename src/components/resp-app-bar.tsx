@@ -47,7 +47,7 @@ function ResponsiveAppBar({ appName }: Props) {
 	};
 
 	return (
-		<AppBar position="fixed">
+        <AppBar position="fixed">
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
 					<Groups3TwoToneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -69,7 +69,7 @@ function ResponsiveAppBar({ appName }: Props) {
 						{appName}
 					</Typography>
 
-					{/* Menu for small devices*/}
+					{/* Menu for small devices */}
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
 							size="large"
@@ -100,7 +100,7 @@ function ResponsiveAppBar({ appName }: Props) {
 							}}
 						>
 							{PAGES.map((page) => (
-								<Link key={page.href} href={page.href}>
+								<Link key={page.href} href={page.href} legacyBehavior>
 									<MenuItem onClick={handleCloseNavMenu}>
 										< Typography textAlign="center" >{page.text}</Typography>
 									</MenuItem>
@@ -129,10 +129,10 @@ function ResponsiveAppBar({ appName }: Props) {
 					</Typography>
 
 
-					{/* for md to larger screens*/}
+					{/* for md to larger screens */}
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{PAGES.map((page) => (
-							<Link key={page.href} href={page.href}>
+							<Link key={page.href} href={page.href} legacyBehavior>
 								<Button
 									onClick={handleCloseNavMenu}
 									sx={{ my: 2, color: 'white', display: 'block' }}
@@ -175,6 +175,6 @@ function ResponsiveAppBar({ appName }: Props) {
 				</Toolbar>
 			</Container >
 		</AppBar >
-	);
+    );
 }
 export default ResponsiveAppBar;

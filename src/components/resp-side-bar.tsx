@@ -101,12 +101,12 @@ export default function ClippedDrawer() {
                             {UPPER_PAGES.map((page) => (
                                 <ListItem key={page.text} disablePadding>
                                     <ListItemButton>
-                                        <Link href={page.href}>
+                                        <Link href={page.href} legacyBehavior>
                                             <ListItemIcon>
                                                 {page.icon}
                                             </ListItemIcon>
                                         </Link>
-                                        <Link href={page.href}>
+                                        <Link href={page.href} legacyBehavior>
                                             <ListItemText primary={page.text} />
                                         </Link>
                                     </ListItemButton>
@@ -118,12 +118,12 @@ export default function ClippedDrawer() {
                             {LOWER_PAGES.map((page) => (
                                 <ListItem key={page.text} disablePadding>
                                     <ListItemButton>
-                                        <Link href={page.href}>
+                                        <Link href={page.href} legacyBehavior>
                                             <ListItemIcon>
                                                 {page.icon}
                                             </ListItemIcon>
                                         </Link>
-                                        <Link href={page.href}>
+                                        <Link href={page.href} legacyBehavior>
                                             <ListItemText primary={page.text} />
                                         </Link>
                                     </ListItemButton>

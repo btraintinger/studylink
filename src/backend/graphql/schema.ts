@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import { resolvers } from './resolvers';
+import ExampleResolver from './resolvers/example';
 
-export async function createSchema() {
-  const schema = await buildSchema({ resolvers });
+export default async function createSchema() {
+  const schema = await buildSchema({ resolvers: [ExampleResolver] });
   return schema;
 }

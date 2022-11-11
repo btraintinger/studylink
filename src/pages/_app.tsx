@@ -1,36 +1,41 @@
-
-import '../styles/global.css'
-import { ThemeProvider } from "@mui/material";
-import { theme } from "../utils/theme";
-import createEmotionCache from "../utils/createEmotionCache";
-import { CacheProvider } from "@emotion/react";
-import { SessionProvider } from 'next-auth/react';
+import Head from 'next/head';
 import type { AppProps } from 'next/app';
+import { ThemeProvider } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import { SessionProvider } from 'next-auth/react';
+import createEmotionCache from '../utils/createEmotionCache';
+import { theme } from '../utils/theme';
 
 const clientSideEmotionCache = createEmotionCache();
 
-type Props = {
-  Component: React.FC
-  session: any
-  pageProps: any
-  emotionCache: any
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+  session: any;
 }
 
-function App({
-  Component,
-  emotionCache = clientSideEmotionCache,
-  session,
-  pageProps,
- }: Props) {
+export default function MyApp(props: MyAppProps) {
+  const {
+    Component,
+    session,
+    emotionCache = clientSideEmotionCache,
+    pageProps,
+  } = props;
   return (
-  <SessionProvider session={session}>
-      <CacheProvider value={emotionCache}>
-       <ThemeProvider theme={theme}>
-         <Component {...pageProps} />
-       </ThemeProvider>
-     </CacheProvider>
-   </SessionProvider>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
+
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
-
-export default App;

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { bcrypt } from 'bcrypt';
-import prisma from '../../../utils/prismadb';
+import prisma from '../../../backend/utils/prismadb';
 
 export default async function handler(
   _req: NextApiRequest,
@@ -28,6 +28,7 @@ export default async function handler(
       name: _req.body.name,
       email: _req.body.email,
       password: hashedPassword,
+      role: 'STUDENT',
     },
   });
 

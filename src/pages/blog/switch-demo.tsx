@@ -1,5 +1,5 @@
-import styles from "../../components/layout.module.css"
 import Switch from "@mui/material/Switch";
+import styles from "../../components/layout.module.css"
 import Layout from '../../components/layout';
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
