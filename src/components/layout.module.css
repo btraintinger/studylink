@@ -5,18 +5,18 @@
   align-items: center;
   background-color: rgb(225, 209, 179);
   min-height: 500%;
- }
-  
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .backToHome {
-    margin: 3rem 0 0;
-  }
+}
 
-  .main {
-    padding-top: 5rem;
-  }
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.backToHome {
+  margin: 3rem 0 0;
+}
+
+.main {
+  padding-top: 5rem;
+}

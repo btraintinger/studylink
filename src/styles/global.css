@@ -1,14 +1,12 @@
-
-
 * {
   margin: 0;
   padding: 0;
-  font-family: "Roboto";
+  font-family: 'Roboto';
   box-sizing: border-box;
   font-size: 18px;
 }
 
-p{
+p {
   padding-top: 50px;
 }
 
@@ -26,7 +24,7 @@ img {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap');
-*{
+* {
   margin: 0;
   padding: 0;
   outline: none;
@@ -34,13 +32,13 @@ img {
   font-family: 'Work Sans', sans-serif;
 }
 
-header{
+header {
   position: sticky;
   z-index: 30;
   top: 0;
 }
 
-nav{
+nav {
   margin-top: -25px;
   display: flex;
   padding: 16px;
@@ -48,19 +46,19 @@ nav{
   align-items: center;
   background-color: #f1f1f1;
 }
-.nav__menu-bar{
+.nav__menu-bar {
   display: flex;
   flex-direction: column;
   row-gap: px;
   cursor: pointer;
 }
-.nav__menu-bar div{
+.nav__menu-bar div {
   width: 40px;
   height: 4px;
   background-color: black;
   border-radius: 2px;
 }
-.nav__menu-list{
+.nav__menu-list {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -73,30 +71,30 @@ nav{
   min-height: calc(100vh - 60px);
   background-color: #f1f1f1;
 }
-.nav__menu-list.active{
+.nav__menu-list.active {
   right: 0;
 }
-.nav__link{
-  font-size: 18px; 
+.nav__link {
+  font-size: 18px;
   position: relative;
   transition: all 0.2s;
 }
 
-.nav__link:hover{
- font-weight: bold;
+.nav__link:hover {
+  font-weight: bold;
 }
 
-.center{
+.center {
   min-height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 @media screen and (min-width: 768px) {
-  .nav__menu-bar{
+  .nav__menu-bar {
     display: none;
   }
-  .nav__menu-list{
+  .nav__menu-list {
     position: unset;
     flex-direction: row;
     min-height: fit-content;
@@ -104,7 +102,7 @@ nav{
     column-gap: 24px;
     align-items: center;
   }
-  .nav__link::before{
+  .nav__link::before {
     content: '';
     position: absolute;
     width: 0%;
@@ -114,8 +112,8 @@ nav{
     background-color: black;
     transition: all 0.2s;
   }
-  
-  .nav__link:hover:before{
-   width: 100%;
+
+  .nav__link:hover:before {
+    width: 100%;
   }
 }

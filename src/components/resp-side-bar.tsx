@@ -30,109 +30,112 @@ const drawerWidth = 240;
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const UPPER_PAGES = [
-    { text: "Home", href: "/", icon: <MailIcon /> },
-    { text: "Create account", href: "/create-account", icon: <MailIcon /> },
-    { text: "Switch MUI Demo", href: "/blog/switch-demo", icon: <MailIcon /> },
-    { text: "Account MUI demo", href: "/blog/sign-up-demo", icon: <MailIcon /> },
+  { text: 'Home', href: '/', icon: <MailIcon /> },
+  { text: 'Create account', href: '/create-account', icon: <MailIcon /> },
+  { text: 'Switch MUI Demo', href: '/blog/switch-demo', icon: <MailIcon /> },
+  { text: 'Account MUI demo', href: '/blog/sign-up-demo', icon: <MailIcon /> },
 ];
 const LOWER_PAGES = [
-    { text: "About", href: "/", icon: <MailIcon /> },
-    { text: "First Post", href: "/blog/first-post", icon: <MailIcon /> },
+  { text: 'About', href: '/', icon: <MailIcon /> },
+  { text: 'First Post', href: '/blog/first-post', icon: <MailIcon /> },
 ];
 
-
 export default function ClippedDrawer() {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [open, setOpen] = React.useState(false);
 
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [open, setOpen] = React.useState(false);
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
+  interface AppBarProps extends MuiAppBarProps {
+    open?: boolean;
+  }
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
-    interface AppBarProps extends MuiAppBarProps {
-        open?: boolean;
-    }
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-
-    return (
-        <Container>
-            <Box sx={{ display: 'flex' }}>
-                <CssBaseline />
-                <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Groups3TwoToneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                        <Typography variant="h6" noWrap component="div">
-                            <Link href="/">
-                                STUDYLINK
-                            </Link>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    sx={{
-                        width: drawerWidth,
-                        display: { xs: 'none', md: 'flex' },
-                        flexShrink: 0,
-                        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-                    }}
-                >
-                    <Toolbar />
-                    <Box sx={{ overflow: 'auto', }}>
-                        <List>
-                            {UPPER_PAGES.map((page) => (
-                                <ListItem key={page.text} disablePadding>
-                                    <ListItemButton>
-                                        <Link href={page.href} legacyBehavior>
-                                            <ListItemIcon>
-                                                {page.icon}
-                                            </ListItemIcon>
-                                        </Link>
-                                        <Link href={page.href} legacyBehavior>
-                                            <ListItemText primary={page.text} />
-                                        </Link>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                        </List>
-                        <Divider />
-                        <List>
-                            {LOWER_PAGES.map((page) => (
-                                <ListItem key={page.text} disablePadding>
-                                    <ListItemButton>
-                                        <Link href={page.href} legacyBehavior>
-                                            <ListItemIcon>
-                                                {page.icon}
-                                            </ListItemIcon>
-                                        </Link>
-                                        <Link href={page.href} legacyBehavior>
-                                            <ListItemText primary={page.text} />
-                                        </Link>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Box>
-                </Drawer>
-            </Box>
-        </Container >
-    );
+  return (
+    <Container>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Groups3TwoToneIcon
+              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+            />
+            <Typography variant="h6" noWrap component="div">
+              <Link href="/">STUDYLINK</Link>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: drawerWidth,
+            display: { xs: 'none', md: 'flex' },
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: 'auto' }}>
+            <List>
+              {UPPER_PAGES.map((page) => (
+                <ListItem key={page.text} disablePadding>
+                  <ListItemButton>
+                    <Link href={page.href} legacyBehavior>
+                      <ListItemIcon>{page.icon}</ListItemIcon>
+                    </Link>
+                    <Link href={page.href} legacyBehavior>
+                      <ListItemText primary={page.text} />
+                    </Link>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+            <List>
+              {LOWER_PAGES.map((page) => (
+                <ListItem key={page.text} disablePadding>
+                  <ListItemButton>
+                    <Link href={page.href} legacyBehavior>
+                      <ListItemIcon>{page.icon}</ListItemIcon>
+                    </Link>
+                    <Link href={page.href} legacyBehavior>
+                      <ListItemText primary={page.text} />
+                    </Link>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      </Box>
+    </Container>
+  );
 }
