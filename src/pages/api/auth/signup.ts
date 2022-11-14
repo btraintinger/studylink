@@ -10,7 +10,7 @@ export default async function handler(
     return res.status(400).send({ error: 'Data not formatted properly' });
   }
 
-  const user = prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       email: _req.body.email,
     },

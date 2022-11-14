@@ -33,6 +33,13 @@ export const authOptions = {
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token, user }) {
+      session.user.role = user.role; // Add role value to user object so it is passed along with session
+      session.user.id = user.id; // Add id value to user object so it is passed along with session
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);

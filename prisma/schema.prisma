@@ -148,7 +148,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String
-  role          Role
+  role          String
   image         String?
   accounts      Account[]
   sessions      Session[]
@@ -162,9 +162,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-enum Role {
-  ADMIN
-  STUDENT
 }
