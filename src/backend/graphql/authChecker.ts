@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { AuthChecker } from 'type-graphql';
 import { Context } from './context';
 
@@ -8,7 +7,7 @@ export const customAuthChecker: AuthChecker<Context> = async (
 ) => {
   if (context.userId === null) return false;
 
-  const user = await prisma.user.findUnique({
+  const user = await context.prisma.user.findUnique({
     where: { id: context.userId },
   });
 
