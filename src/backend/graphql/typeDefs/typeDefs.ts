@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Field, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID, InputType } from 'type-graphql';
 
 @ObjectType()
 export class User {
@@ -23,6 +23,16 @@ export class Admin {
   id!: string;
 }
 
+@InputType()
+export class AdminInput {
+
+  @Field()
+  user_id!: string;
+  
+  @Field()
+  school_id?: number;
+}
+
 @ObjectType()
 export class Student {
   @Field((type) => ID)
@@ -38,10 +48,10 @@ export class School {
   name!: string;
 
   @Field((type) => [Department])
-  departments!: Department[];
+  departments?: Department[];
 
   @Field((type) => [Admin])
-  admins?: Admin[];
+  admins!: Admin[];
 }
 
 @ObjectType()
@@ -124,3 +134,5 @@ export class Match {
   @Field()
   tutorRequest!: TutorRequest;
 }
+
+
