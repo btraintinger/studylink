@@ -1,14 +1,23 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
+import prisma from '../utils/prismadb';
 
 export interface Context {
   prisma: PrismaClient;
-  userId: string | null;
+  user: User | null;
 }
 
-export const context = ({ req }) => {
+export const context = async ({ req }) => {
+  let user: User | null = null;
+
+  if (req.session) {
+    user = await prisma.user.findUnique({
+      where: { id: req.session.userId },
+    });
+  }
+
   const context: Context = {
     prisma: prisma,
-    userId: req.session.userId,
+    user: user,
   };
   return context;
 };

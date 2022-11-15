@@ -5,14 +5,8 @@ import { Arg, Authorized, Ctx, Query, Mutation, Resolver } from 'type-graphql';
 @Resolver()
 export class StudylinkResolver {
   @Query((returns) => User)
-  async recipes(@Ctx() ctx: Context) {
-    if (!ctx.userId) return null;
-
-    const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.userId },
-    });
-
-    return user;
+  async getUser(@Ctx() ctx: Context) {
+    return ctx.user;
   }
 
   @Authorized('ADMIN')
@@ -26,10 +20,10 @@ export class StudylinkResolver {
   @Authorized('USER')
   @Query((returns) => [TutorOffering])
   async getTutorOfferings(@Ctx() ctx: Context) {
-    if (!ctx.userId) return null;
+    if (!ctx.user) return null;
 
     const student = await ctx.prisma.student.findUnique({
-      where: { user_id: ctx.userId },
+      where: { user_id: ctx.user.id },
       include: {
         tutor_offering: {
           include: { school_class: true, school_subject: true, student: true },

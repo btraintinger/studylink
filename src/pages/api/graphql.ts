@@ -12,6 +12,7 @@ export const config: PageConfig = {
 const apolloServer = new ApolloServer({
   schema: await createSchema(),
   context: context,
+  introspection: process.env.NODE_ENV !== 'production',
 });
 
 const startServer = apolloServer.start();
