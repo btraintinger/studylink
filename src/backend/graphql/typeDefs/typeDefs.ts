@@ -66,6 +66,13 @@ export class Department {
   SchoolClasses?: SchoolClass[];
 }
 
+@InputType()
+export class DepartmentInput {
+
+  @Field()
+  name!: string;
+}
+
 @ObjectType()
 export class SchoolClass {
   @Field((type) => ID)
@@ -73,6 +80,22 @@ export class SchoolClass {
 
   @Field()
   name!: string;
+
+  @Field()
+  grade!: number;
+
+  @Field((type) => [SchoolSubject])
+  subjects!: SchoolSubject[];
+}
+
+@InputType()
+export class SchoolClassInput {
+
+  @Field()
+  classname!: string;
+
+  @Field()
+  grade!: number;
 
   @Field((type) => [SchoolSubject])
   subjects!: SchoolSubject[];
@@ -111,6 +134,25 @@ export class TutorOffering {
   description!: string;
 }
 
+@InputType()
+export class TutorOfferingInput {
+
+  @Field()
+  student!: Student;
+
+  @Field()
+  SchoolClass!: SchoolClass;
+
+  @Field()
+  SchoolSubject!: SchoolSubject;
+
+  @Field()
+  teacher!: string;
+
+  @Field()
+  description!: string;
+}
+
 @ObjectType()
 export class TutorRequest {
   @Field((type) => ID)
@@ -124,6 +166,22 @@ export class TutorRequest {
 
   @Field()
   SchoolSubject!: SchoolSubject;
+}
+
+@InputType()
+export class TutorRequestInput {
+
+  @Field()
+  student!: Student;
+
+  @Field()
+  SchoolClass!: SchoolClass;
+
+  @Field()
+  SchoolSubject!: SchoolSubject;
+
+  @Field()
+  teacher?: string;
 }
 
 @ObjectType()

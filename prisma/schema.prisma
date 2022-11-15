@@ -68,6 +68,7 @@ model tutor_request {
   student           Student        @relation(fields: [student_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   school_subject_id Int
   school_subject    school_subject @relation(fields: [school_subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teacher     String? @db.VarChar(50)
 
   @@index([school_class_id])
   @@index([school_subject_id])
@@ -85,7 +86,6 @@ model tutor_offering {
 
   description String? @db.VarChar(1000)
   teacher     String? @db.VarChar(50)
-  rating      Int?
 
   @@index([school_class_id])
   @@index([school_subject_id])
@@ -111,6 +111,8 @@ model Student {
   user            User             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tutor_request   tutor_request[]
   tutor_offering  tutor_offering[]
+  rating      Int?
+
 
   @@index([school_class_id])
   @@index([user_id])
