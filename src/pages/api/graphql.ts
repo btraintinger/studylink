@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import { ApolloServer } from 'apollo-server-micro';
 import createSchema from '../../backend/graphql/schema';
+import { context } from '../../backend/graphql/context';
 
 export const config: PageConfig = {
   api: {
@@ -10,6 +11,8 @@ export const config: PageConfig = {
 
 const apolloServer = new ApolloServer({
   schema: await createSchema(),
+  context: context,
+  introspection: process.env.NODE_ENV !== 'production',
 });
 
 const startServer = apolloServer.start();
