@@ -66,7 +66,7 @@ export default function ClippedDrawer() {
 
   return (
     <Container>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', border: 1, bgcolor: 'red'}}>
         <CssBaseline />
         <AppBar
           position="fixed"
@@ -86,7 +86,7 @@ export default function ClippedDrawer() {
               sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
             />
             <Typography variant="h6" noWrap component="div">
-              <Link href="/">STUDYLINK</Link>
+              <Link href="/">STUDYLINKI</Link>
             </Typography>
           </Toolbar>
         </AppBar>

@@ -1,10 +1,12 @@
-import Head from 'next/head';
-import Link from 'next/link';
 import * as React from 'react';
 import styles from './layout.module.css';
-import ResponsiveAppBar from './resp-app-bar';
-import OfferCard from './cards/offer-card';
-import ClippedDrawer from './resp-side-bar';
+import ClippedDrawer from './drawer';
+import Main from './main';
+import { Footer } from '../components/footer';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material';
+
+
 
 const appName = 'Studylink';
 export const siteTitle = 'Studylink';
@@ -14,25 +16,31 @@ type Props = {
   home: boolean;
 };
 
+const ContainerBox = styled(Box)`
+  display: flex;
+  overflow: hidden;
+  height: inherit;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const ItemBox = styled(Box)`
+  display: flex;
+  flex: 1;
+  flex-direction: 'row';
+  overflow: hidden;
+  height: inherit;
+`;
+
+
 export default function Layout({ children, home }: Props) {
   return (
-    <div className={styles.container}>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="description" content="{name}Website" />
-      </Head>
-
-      <header>
-        <ClippedDrawer />
-      </header>
-
-      <main className={styles.main}>{children}</main>
-
-      {!home && (
-        <div className={styles.backToHome}>
-          <Link href="/">← Back to homepage</Link>
-        </div>
-      )}
-    </div>
+    <ContainerBox>
+      <ItemBox>
+        <ClippedDrawer/>
+        <Main> {children} </Main>
+      </ItemBox>
+    </ContainerBox>
+    
   );
 }

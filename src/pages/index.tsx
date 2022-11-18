@@ -1,8 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Layout, { siteTitle } from '../components/layout';
-import utilStyles from '../styles/utils.module.css';
-import OfferCard from '../components/cards/offer-card';
+import Layout, { siteTitle } from '../components/layout'
 
 export default function Home() {
   return (
@@ -11,10 +9,10 @@ export default function Home() {
         <title>{siteTitle}</title>
       </Head>
 
-      <section className={utilStyles.headingMd}>
+      <section>
         <p>Studylink ist eine Nachhilfeplatform</p>
         <div>
-          <OfferCard />
+          jodel
         </div>
         <p>
           <Link href="/blog/first-post">See this post</Link>
