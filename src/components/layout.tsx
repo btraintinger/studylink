@@ -6,7 +6,8 @@ import { Footer } from '../components/footer';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material';
 
-
+import {AppContextProvider} from '../context/app-context';
+import { useState } from 'react';
 
 const appName = 'Studylink';
 export const siteTitle = 'Studylink';
@@ -33,13 +34,20 @@ const ItemBox = styled(Box)`
 `;
 
 
-export default function Layout({ children, home }: Props) {
+export default function Layout({ 
+children, home }: Props) {
+
+  const [nameState, setNameState] = useState("default");
+  const value = {nameState, setNameState};
+
   return (
-    <Box>
-     <ClippedDrawer/>
-     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-      {children}
-     </Box>
-    </Box>
+    <AppContextProvider>
+      <Box>
+        <ClippedDrawer/>
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          {children}
+        </Box>
+      </Box>
+    </AppContextProvider>
   );
 }

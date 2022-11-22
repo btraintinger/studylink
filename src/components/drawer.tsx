@@ -11,20 +11,15 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
 import Container from '@mui/material/Container';
 import NextLink from 'next/link';
 
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import { link } from 'fs';
+import { useAppContext } from '../context/app-context';
 
 const drawerWidth = 240;
 
@@ -48,7 +43,6 @@ export default function ClippedDrawer() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [open, setOpen] = React.useState(false);
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -59,11 +53,13 @@ export default function ClippedDrawer() {
   };
 
   interface AppBarProps extends MuiAppBarProps {
-    open?: boolean;
+    isDrawerOpen?: boolean;
   }
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setDrawerOpen(!isDrawerOpen);
   };
+
+  const {isDrawerOpen, setDrawerOpen} = useAppContext();
 
   return (
     <Container>
@@ -79,15 +75,15 @@ export default function ClippedDrawer() {
               aria-label="open drawer"
               onClick={handleDrawerOpen}
               edge="start"
-              sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+              sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
             >
               <MenuIcon />
-            </IconButton>
-            <Groups3TwoToneIcon
+              <Groups3TwoToneIcon
               sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
             />
+            </IconButton>
             <Typography variant="h6" noWrap component="div">
-              STUDYLINKI
+              Drawer is {isDrawerOpen}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -95,7 +91,8 @@ export default function ClippedDrawer() {
           variant="permanent"
           sx={{
             width: drawerWidth,
-            display: { xs: 'none', md: 'flex' },
+            display: { xs: 'none', md: 'flex'},
+            ...(!isDrawerOpen && { display: 'none' }),
             flexShrink: 0,
             [`& .MuiDrawer-paper`]: {
               width: drawerWidth,
