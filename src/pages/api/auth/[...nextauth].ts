@@ -1,12 +1,18 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { bcrypt } from 'bcrypt';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { signin, signup } from '../../../backend/auth';
 import prisma from '../../../backend/utils/prismadb';
+import { SessionStrategy } from 'next-auth';
 
 export const authOptions = {
+  session: {
+    strategy: 'jwt' as SessionStrategy,
+  },
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      id: 'signin',
 
       credentials: {
         email: { label: 'Email', type: 'text' },
@@ -14,31 +20,34 @@ export const authOptions = {
       },
 
       async authorize(credentials, req) {
-        if (credentials === undefined) return null;
+        try {
+          return await signin(credentials);
+        } catch (error: any) {
+          throw new Error(error.message);
+        }
+      },
+    }),
+    CredentialsProvider({
+      id: 'signup',
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+        name: { label: 'Name', type: 'text' },
+        role: { label: 'Role', type: 'text' },
+      },
 
-        if (user === null) return null;
-
-        const isValid = await bcrypt.compare(
-          user.password,
-          credentials.password
-        );
-
-        if (isValid) return { id: user.id, name: user.name, email: user.email };
-
-        return null;
+      async authorize(credentials, req) {
+        try {
+          return await signup(credentials);
+        } catch (error: any) {
+          throw new Error(error.message);
+        }
       },
     }),
   ],
-  callbacks: {
-    async session({ session, token, user }) {
-      session.user.role = user.role; // Add role value to user object so it is passed along with session
-      session.user.id = user.id; // Add id value to user object so it is passed along with session
-      return session;
-    },
+  pages: {
+    signIn: '/auth/signin',
   },
 };
 

@@ -33,8 +33,6 @@ export default function MyApp(props: MyAppProps) {
         <SessionProvider session={session}>
           <Component {...pageProps} />
         </SessionProvider>
-
-        <Component {...pageProps} />
       </ThemeProvider>
     </CacheProvider>
   );
