@@ -35,12 +35,11 @@ const ItemBox = styled(Box)`
 
 export default function Layout({ children, home }: Props) {
   return (
-    <ContainerBox>
-      <ItemBox>
-        <ClippedDrawer/>
-        <Main> {children} </Main>
-      </ItemBox>
-    </ContainerBox>
-    
+    <Box>
+     <ClippedDrawer/>
+     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      {children}
+     </Box>
+    </Box>
   );
 }

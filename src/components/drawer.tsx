@@ -15,7 +15,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
 import Container from '@mui/material/Container';
-import Link from 'next/link';
+import NextLink from 'next/link';
 
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
 import Tooltip from '@mui/material/Tooltip';
@@ -24,6 +24,7 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import { link } from 'fs';
 
 const drawerWidth = 240;
 
@@ -86,7 +87,7 @@ export default function ClippedDrawer() {
               sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
             />
             <Typography variant="h6" noWrap component="div">
-              <Link href="/">STUDYLINKI</Link>
+              STUDYLINKI
             </Typography>
           </Toolbar>
         </AppBar>
@@ -106,14 +107,10 @@ export default function ClippedDrawer() {
           <Box sx={{ overflow: 'auto' }}>
             <List>
               {UPPER_PAGES.map((page) => (
-                <ListItem key={page.text} disablePadding>
+                <ListItem key={page.text} component={NextLink} href = {page.href} disablePadding passHref>
                   <ListItemButton>
-                    <Link href={page.href} legacyBehavior>
                       <ListItemIcon>{page.icon}</ListItemIcon>
-                    </Link>
-                    <Link href={page.href} legacyBehavior>
                       <ListItemText primary={page.text} />
-                    </Link>
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -121,15 +118,11 @@ export default function ClippedDrawer() {
             <Divider />
             <List>
               {LOWER_PAGES.map((page) => (
-                <ListItem key={page.text} disablePadding>
-                  <ListItemButton>
-                    <Link href={page.href} legacyBehavior>
-                      <ListItemIcon>{page.icon}</ListItemIcon>
-                    </Link>
-                    <Link href={page.href} legacyBehavior>
-                      <ListItemText primary={page.text} />
-                    </Link>
-                  </ListItemButton>
+                <ListItem key={page.text} component={NextLink} href = {page.href} disablePadding passHref>
+                    <ListItemButton>
+                        <ListItemIcon>{page.icon}</ListItemIcon>
+                        <ListItemText primary={page.text} />
+                    </ListItemButton>
                 </ListItem>
               ))}
             </List>
