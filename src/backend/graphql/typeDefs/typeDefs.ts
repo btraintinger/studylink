@@ -25,18 +25,29 @@ export class Admin {
 
 @InputType()
 export class AdminInput {
+  @Field()
+  userId!: string;
 
   @Field()
-  user_id!: string;
-  
-  @Field()
-  school_id?: number;
+  schoolId?: number;
 }
 
 @ObjectType()
 export class Student {
   @Field((type) => ID)
-  id!: string;
+  id!: number;
+}
+
+@InputType()
+export class StudentInput {
+  @Field()
+  id!: number;
+
+  @Field()
+  userId!: string;
+
+  @Field()
+  schoolClassId!: number;
 }
 
 @ObjectType()
@@ -54,6 +65,12 @@ export class School {
   admins!: Admin[];
 }
 
+@InputType()
+export class SchoolInput {
+  @Field()
+  name!: string;
+}
+
 @ObjectType()
 export class Department {
   @Field((type) => ID)
@@ -68,7 +85,6 @@ export class Department {
 
 @InputType()
 export class DepartmentInput {
-
   @Field()
   name!: string;
 }
@@ -90,7 +106,6 @@ export class SchoolClass {
 
 @InputType()
 export class SchoolClassInput {
-
   @Field()
   classname!: string;
 
@@ -136,15 +151,14 @@ export class TutorOffering {
 
 @InputType()
 export class TutorOfferingInput {
+  @Field()
+  studentId!: number;
 
   @Field()
-  student!: Student;
+  schoolClassId!: number;
 
   @Field()
-  SchoolClass!: SchoolClass;
-
-  @Field()
-  SchoolSubject!: SchoolSubject;
+  schoolSubjectId!: number;
 
   @Field()
   teacher!: string;
@@ -170,18 +184,20 @@ export class TutorRequest {
 
 @InputType()
 export class TutorRequestInput {
+  @Field()
+  studentId!: number;
 
   @Field()
-  student!: Student;
+  schoolClassId!: number;
 
   @Field()
-  SchoolClass!: SchoolClass;
-
-  @Field()
-  SchoolSubject!: SchoolSubject;
+  schoolSubjectId!: number;
 
   @Field()
   teacher?: string;
+
+  @Field()
+  description?: string;
 }
 
 @ObjectType()
@@ -192,5 +208,3 @@ export class Match {
   @Field()
   tutorRequest!: TutorRequest;
 }
-
-
