@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Field, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID, InputType } from 'type-graphql';
 
 @ObjectType()
 export class User {
@@ -23,10 +23,31 @@ export class Admin {
   id!: string;
 }
 
+@InputType()
+export class AdminInput {
+  @Field()
+  userId!: string;
+
+  @Field()
+  schoolId?: number;
+}
+
 @ObjectType()
 export class Student {
   @Field((type) => ID)
-  id!: string;
+  id!: number;
+}
+
+@InputType()
+export class StudentInput {
+  @Field()
+  id!: number;
+
+  @Field()
+  userId!: string;
+
+  @Field()
+  schoolClassId!: number;
 }
 
 @ObjectType()
@@ -38,10 +59,16 @@ export class School {
   name!: string;
 
   @Field((type) => [Department])
-  departments!: Department[];
+  departments?: Department[];
 
   @Field((type) => [Admin])
-  admins?: Admin[];
+  admins!: Admin[];
+}
+
+@InputType()
+export class SchoolInput {
+  @Field()
+  name!: string;
 }
 
 @ObjectType()
@@ -56,6 +83,12 @@ export class Department {
   SchoolClasses?: SchoolClass[];
 }
 
+@InputType()
+export class DepartmentInput {
+  @Field()
+  name!: string;
+}
+
 @ObjectType()
 export class SchoolClass {
   @Field((type) => ID)
@@ -63,6 +96,21 @@ export class SchoolClass {
 
   @Field()
   name!: string;
+
+  @Field()
+  grade!: number;
+
+  @Field((type) => [SchoolSubject])
+  subjects!: SchoolSubject[];
+}
+
+@InputType()
+export class SchoolClassInput {
+  @Field()
+  classname!: string;
+
+  @Field()
+  grade!: number;
 
   @Field((type) => [SchoolSubject])
   subjects!: SchoolSubject[];
@@ -101,6 +149,24 @@ export class TutorOffering {
   description!: string;
 }
 
+@InputType()
+export class TutorOfferingInput {
+  @Field()
+  studentId!: number;
+
+  @Field()
+  schoolClassId!: number;
+
+  @Field()
+  schoolSubjectId!: number;
+
+  @Field()
+  teacher!: string;
+
+  @Field()
+  description!: string;
+}
+
 @ObjectType()
 export class TutorRequest {
   @Field((type) => ID)
@@ -114,6 +180,24 @@ export class TutorRequest {
 
   @Field()
   SchoolSubject!: SchoolSubject;
+}
+
+@InputType()
+export class TutorRequestInput {
+  @Field()
+  studentId!: number;
+
+  @Field()
+  schoolClassId!: number;
+
+  @Field()
+  schoolSubjectId!: number;
+
+  @Field()
+  teacher?: string;
+
+  @Field()
+  description?: string;
 }
 
 @ObjectType()
