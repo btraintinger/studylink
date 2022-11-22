@@ -5,7 +5,7 @@ import { Field, ObjectType, ID, InputType } from 'type-graphql';
 @ObjectType()
 export class User {
   @Field((type) => ID)
-  id!: string;
+  id!: number;
 
   @Field()
   name!: string;
@@ -44,7 +44,7 @@ export class StudentInput {
   id!: number;
 
   @Field()
-  userId!: string;
+  userId!: number;
 
   @Field()
   schoolClassId!: number;

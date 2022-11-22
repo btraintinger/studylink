@@ -2,10 +2,17 @@ import { createTheme } from '@mui/material/styles';
 import { dark } from '@mui/material/styles/createPalette';
 import { Roboto } from '@next/font/google';
 import Typography from '@mui/material/Typography';
-import { yellow, red, blue, purple, pink, green, lightBlue } from '@mui/material/colors';
+import {
+  yellow,
+  red,
+  blue,
+  purple,
+  pink,
+  green,
+  lightBlue,
+} from '@mui/material/colors';
 
-
-export const themeDark = createTheme ({
+export const themeDark = createTheme({
   breakpoints: {
     values: {
       xs: 0,
@@ -48,38 +55,37 @@ export const themeDark = createTheme ({
       main: green[500],
       dark: green[700],
     },
-    action: { //for links
+    action: {
+      //for links
       active: lightBlue[200],
       hover: lightBlue[100],
       focus: lightBlue[600],
       selected: lightBlue[300],
     },
     text: {
-      primary: "#ffffff",
+      primary: '#ffffff',
     },
     background: {
-      default: "#1c394f"
-    }
-
+      default: '#1c394f',
+    },
   },
   shape: {
     borderRadius: 15,
   },
   components: {
- 
     MuiAppBar: {
-        styleOverrides: {
-            root: {
-                backgroundColor: '#451196',
-            }
-          },
+      styleOverrides: {
+        root: {
+          backgroundColor: '#451196',
+        },
+      },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: "#1a0f3b",
+          backgroundColor: '#1a0f3b',
         },
-        },
-  },
+      },
+    },
   },
 });

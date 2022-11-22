@@ -8,6 +8,6 @@ const StyledMain = styled('main')({
   alignContent: 'center',
 });
 
-export default function Main( {children}:PropsWithChildren<unknown>) {
+export default function Main({ children }: PropsWithChildren<unknown>) {
   return <StyledMain>{children}</StyledMain>;
 }

@@ -67,7 +67,7 @@ export default function ClippedDrawer() {
 
   return (
     <Container>
-      <Box sx={{ display: 'flex', border: 1, bgcolor: 'red'}}>
+      <Box sx={{ display: 'flex', border: 1, bgcolor: 'red' }}>
         <CssBaseline />
         <AppBar
           position="fixed"
@@ -107,10 +107,16 @@ export default function ClippedDrawer() {
           <Box sx={{ overflow: 'auto' }}>
             <List>
               {UPPER_PAGES.map((page) => (
-                <ListItem key={page.text} component={NextLink} href = {page.href} disablePadding passHref>
+                <ListItem
+                  key={page.text}
+                  component={NextLink}
+                  href={page.href}
+                  disablePadding
+                  passHref
+                >
                   <ListItemButton>
-                      <ListItemIcon>{page.icon}</ListItemIcon>
-                      <ListItemText primary={page.text} />
+                    <ListItemIcon>{page.icon}</ListItemIcon>
+                    <ListItemText primary={page.text} />
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -118,11 +124,17 @@ export default function ClippedDrawer() {
             <Divider />
             <List>
               {LOWER_PAGES.map((page) => (
-                <ListItem key={page.text} component={NextLink} href = {page.href} disablePadding passHref>
-                    <ListItemButton>
-                        <ListItemIcon>{page.icon}</ListItemIcon>
-                        <ListItemText primary={page.text} />
-                    </ListItemButton>
+                <ListItem
+                  key={page.text}
+                  component={NextLink}
+                  href={page.href}
+                  disablePadding
+                  passHref
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{page.icon}</ListItemIcon>
+                    <ListItemText primary={page.text} />
+                  </ListItemButton>
                 </ListItem>
               ))}
             </List>

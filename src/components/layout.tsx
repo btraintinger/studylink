@@ -6,8 +6,6 @@ import { Footer } from '../components/footer';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material';
 
-
-
 const appName = 'Studylink';
 export const siteTitle = 'Studylink';
 
@@ -32,14 +30,13 @@ const ItemBox = styled(Box)`
   height: inherit;
 `;
 
-
 export default function Layout({ children, home }: Props) {
   return (
     <Box>
-     <ClippedDrawer/>
-     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-      {children}
-     </Box>
+      <ClippedDrawer />
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {children}
+      </Box>
     </Box>
   );
 }

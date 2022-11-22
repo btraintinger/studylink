@@ -1,15 +1,12 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { signin, signup } from '../../../backend/auth';
-import prisma from '../../../backend/utils/prismadb';
 import { SessionStrategy } from 'next-auth';
 
 export const authOptions = {
   session: {
     strategy: 'jwt' as SessionStrategy,
   },
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       id: 'signin',

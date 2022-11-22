@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Layout, { siteTitle } from '../components/layout'
+import Layout, { siteTitle } from '../components/layout';
 
 export default function Home() {
   return (
@@ -11,9 +11,7 @@ export default function Home() {
 
       <section>
         <p>Studylink ist eine Nachhilfeplatform</p>
-        <div>
-          jodel
-        </div>
+        <div>jodel</div>
         <p>
           <Link href="/blog/first-post">See this post</Link>
         </p>

@@ -17,7 +17,7 @@ export const Footer = ({ children }: PropsWithChildren<unknown>) => {
         textAlign: 'center',
       }}
     >
-      { children }
+      {children}
     </Box>
   );
 };

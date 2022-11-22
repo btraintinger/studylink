@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
+import prisma from '../utils/prismadb';
 
 export async function signin(credentials) {
   if (credentials === undefined) throw new Error('Invalid credentials');

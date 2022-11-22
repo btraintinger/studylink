@@ -11,17 +11,7 @@ import {
   StudentInput,
 } from './../typeDefs/typeDefs';
 import type { Context } from '../context';
-import {
-  Arg,
-  Authorized,
-  Ctx,
-  Query,
-  Mutation,
-  Resolver,
-  ArgsType,
-  Field,
-} from 'type-graphql';
-import { GraphQLError } from 'graphql';
+import { Arg, Authorized, Ctx, Query, Mutation, Resolver } from 'type-graphql';
 
 @Resolver()
 export class StudylinkResolver {
@@ -33,7 +23,7 @@ export class StudylinkResolver {
 
   @Authorized('ADMIN')
   @Query((returns) => User)
-  async getUserById(@Arg('id') id: string) {
+  async getUserById(@Arg('id') id: number) {
     return await prisma.user.findUnique({
       where: { id: id },
     });
@@ -68,7 +58,7 @@ export class StudylinkResolver {
           include: {
             schoolClass: {
               include: {
-                class_has_subject: {
+                classHasSubject: {
                   include: {
                     schoolSubject: true,
                   },
