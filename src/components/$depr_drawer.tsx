@@ -62,31 +62,7 @@ export default function ClippedDrawer() {
   const {isDrawerOpen, setDrawerOpen} = useAppContext();
 
   return (
-    <Container>
-      <Box sx={{ display: 'flex', border: 1, bgcolor: 'red'}}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
-            >
-              <MenuIcon />
-              <Groups3TwoToneIcon
-              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
-            />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Drawer is {isDrawerOpen}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+    <Box>
         <Drawer
           variant="permanent"
           sx={{
@@ -125,7 +101,6 @@ export default function ClippedDrawer() {
             </List>
           </Box>
         </Drawer>
-      </Box>
-    </Container>
+    </Box>
   );
 }

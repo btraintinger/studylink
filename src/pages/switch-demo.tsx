@@ -1,12 +1,11 @@
 import Switch from '@mui/material/Switch';
-import styles from '../../components/layout.module.css';
-import Layout from '../../components/layout';
+import Layout from '../components/layout';
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function SwitchDemo() {
   return (
-    <div className={styles.container}>
+    <div>
       <Layout home={false}>
         <div>
           <span>With default Theme:</span>
