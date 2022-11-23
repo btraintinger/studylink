@@ -6,7 +6,6 @@ import { useAppContext } from "../context/app-context";
 import * as ROUTES from '../constants/routes';
 
 
-
 export default function NavBar(){
 
     const handleDrawerOpen = () => {

@@ -21,7 +21,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import { useAppContext } from '../context/app-context';
 import { useContext } from 'react';
 import { UPPER_PAGES } from '../constants/menu-items-list';
-import Link from 'next/link';
+import ThemedLink from '../components/link';
+import Link from 'next/link'
 
 
 const drawerWidth = 240;
