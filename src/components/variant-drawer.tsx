@@ -22,8 +22,7 @@ import { useAppContext } from '../context/app-context';
 import { useContext } from 'react';
 import { UPPER_PAGES } from '../constants/menu-items-list';
 import ThemedLink from '../components/link';
-import Link from 'next/link'
-
+import Link from 'next/link';
 
 const drawerWidth = 240;
 
@@ -61,26 +60,26 @@ interface AppBarProps extends MuiAppBarProps {
   isDraweropen?: boolean;
 }
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
 export default function MiniDrawer() {
   const theme = useTheme();
-  const {isDrawerOpen, setDrawerOpen} = useAppContext();
+  const { isDrawerOpen, setDrawerOpen } = useAppContext();
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -91,62 +90,78 @@ export default function MiniDrawer() {
   };
 
   return (
-      <Drawer variant="permanent" open={isDrawerOpen}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {UPPER_PAGES.map(({text, route, icon}, id) => (
-            <ListItem key={id} disablePadding sx={{ display: 'block' }} component={Link} href = {route}>
-              <ListItemButton
+    <Drawer variant="permanent" open={isDrawerOpen}>
+      <DrawerHeader>
+        <IconButton onClick={handleDrawerClose}>
+          {theme.direction === 'rtl' ? (
+            <ChevronRightIcon />
+          ) : (
+            <ChevronLeftIcon />
+          )}
+        </IconButton>
+      </DrawerHeader>
+      <Divider />
+      <List>
+        {UPPER_PAGES.map(({ text, route, icon }, id) => (
+          <ListItem
+            key={id}
+            disablePadding
+            sx={{ display: 'block' }}
+            component={Link}
+            href={route}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: isDrawerOpen ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: isDrawerOpen ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: isDrawerOpen ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: isDrawerOpen ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: isDrawerOpen ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
+                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText
+                primary={text}
+                sx={{ opacity: isDrawerOpen ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: isDrawerOpen ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: isDrawerOpen ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: isDrawerOpen ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: isDrawerOpen ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: isDrawerOpen ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText
+                primary={text}
+                sx={{ opacity: isDrawerOpen ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
   );
 }

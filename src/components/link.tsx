@@ -1,11 +1,11 @@
-import { forwardRef } from 'react'
-import NextLink, { LinkProps as NextLinkProps } from 'next/link'
-import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material'
+import { forwardRef } from 'react';
+import NextLink, { LinkProps as NextLinkProps } from 'next/link';
+import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 
 // `LinkProps` is the combination of the MUI `LinkProps` and the Next `LinkProps`
 // We wanna use the `href` prop from `next/link` so we omit it from MUI's.
 export type LinkProps = Omit<MuiLinkProps, 'href'> &
-  Omit<NextLinkProps, 'as' | 'passHref' | 'children'>
+  Omit<NextLinkProps, 'as' | 'passHref' | 'children'>;
 
 /**
  * A convenience component that wraps the MUI `Link` component that provides
@@ -15,7 +15,7 @@ export type LinkProps = Omit<MuiLinkProps, 'href'> &
  */
 const ThemedLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   { href, prefetch, replace, scroll, shallow, locale, ...muiProps },
-  ref,
+  ref
 ) {
   return (
     <NextLink
@@ -28,7 +28,7 @@ const ThemedLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     >
       <MuiLink ref={ref} {...muiProps} />
     </NextLink>
-  )
-})
+  );
+});
 
-export default ThemedLink
+export default ThemedLink;
