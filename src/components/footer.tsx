@@ -11,10 +11,11 @@ export const Footer = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <Box
       sx={{
-        background: theme.palette.primary.dark,
-        color: theme.palette.secondary.light,
+        background: '#1a0f3b',
+        color: theme.palette.primary.light,
         padding: theme.spacing(2),
         textAlign: 'center',
+        minWidth: '100vw',
       }}
     >
       {children}

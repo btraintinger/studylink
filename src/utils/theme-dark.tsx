@@ -26,44 +26,17 @@ export const themeDark = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      light: green[300],
-      main: green[500],
-      dark: green[700],
+      light: blue[300],
+      main: blue[500],
+      dark: blue[700],
     },
     secondary: {
       light: green[300],
       main: green[500],
       dark: green[700],
     },
-    error: {
-      light: red[300],
-      main: red[500],
-      dark: red[700],
-    },
-    warning: {
-      light: yellow[300],
-      main: yellow[500],
-      dark: yellow[700],
-    },
-    info: {
-      light: lightBlue[300],
-      main: lightBlue[500],
-      dark: lightBlue[700],
-    },
-    success: {
-      light: green[300],
-      main: green[500],
-      dark: green[700],
-    },
-    action: {
-      //for links
-      active: lightBlue[200],
-      hover: lightBlue[100],
-      focus: lightBlue[600],
-      selected: lightBlue[300],
-    },
     text: {
-      primary: '#ffffff',
+      primary: lightBlue[100],
     },
     background: {
       default: '#1c394f',
