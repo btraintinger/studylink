@@ -4,6 +4,8 @@ import { ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { SessionProvider } from 'next-auth/react';
+import { ApolloProvider } from '@apollo/client';
+import client from '../utils/apolloClient';
 import createEmotionCache from '../utils/createEmotionCache';
 import { themeDark } from '../utils/theme-dark';
 
@@ -30,10 +32,11 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={themeDark}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline enableColorScheme />
-
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <ApolloProvider client={client}>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </ApolloProvider>
       </ThemeProvider>
     </CacheProvider>
   );

@@ -105,7 +105,7 @@ model tutorOffering {
 
 model Admin {
   id       Int     @id @unique() @default(autoincrement())
-  userId   Int     @unique() @map("user_id")
+  userId   String  @unique() @map("user_id")
   user     User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolId Int?    @unique() @map("school_id")
   School   School? @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -119,7 +119,7 @@ model Student {
   id            Int             @id @unique() @default(autoincrement())
   schoolClassId Int             @map("school_class_id")
   schoolClass   schoolClass     @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userId        Int             @unique() @map("user_id")
+  userId        String          @unique() @map("user_id")
   user          User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tutorRequest  tutorRequest[]
   tutorOffering tutorOffering[]
@@ -131,7 +131,7 @@ model Student {
 }
 
 model User {
-  id            Int       @id @unique @default(autoincrement())
+  id            String    @id @unique @default(cuid())
   name          String?
   email         String    @unique
   emailVerified DateTime? @map("email_verified")

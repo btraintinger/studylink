@@ -44,7 +44,7 @@ export class StudentInput {
   id!: number;
 
   @Field()
-  userId!: number;
+  userId!: string;
 
   @Field()
   schoolClassId!: number;

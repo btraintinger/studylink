@@ -23,8 +23,8 @@ export class StudylinkResolver {
 
   @Authorized('ADMIN')
   @Query((returns) => User)
-  async getUserById(@Arg('id') id: number) {
-    return await prisma.user.findUnique({
+  async getUserById(@Ctx() ctx: Context, @Arg('id') id: string) {
+    return await ctx.prisma.user.findUnique({
       where: { id: id },
     });
   }
@@ -77,9 +77,10 @@ export class StudylinkResolver {
 
   @Mutation((returns) => TutorRequest)
   async createTutorRequest(
+    @Ctx() ctx: Context,
     @Arg('tutorRequestInput') tutorRequestInput: TutorRequestInput
   ) {
-    return await prisma.tutorRequest.create({
+    return await ctx.prisma.tutorRequest.create({
       data: {
         studentId: tutorRequestInput.studentId,
         schoolClassId: tutorRequestInput.schoolClassId,
@@ -93,9 +94,10 @@ export class StudylinkResolver {
   //createTutorOffering
   @Mutation((returns) => TutorOffering)
   async createTutorOffering(
+    @Ctx() ctx: Context,
     @Arg('tutorOfferingInput') tutorOfferingInput: TutorOfferingInput
   ) {
-    return await prisma.tutorOffering.create({
+    return await ctx.prisma.tutorOffering.create({
       data: {
         studentId: tutorOfferingInput.studentId,
         schoolClassId: tutorOfferingInput.schoolClassId,
@@ -107,8 +109,11 @@ export class StudylinkResolver {
   }
   //createSchool
   @Mutation((returns) => School)
-  async createSchool(@Arg('schoolInput') SchoolInput: SchoolInput) {
-    return await prisma.school.create({
+  async createSchool(
+    @Ctx() ctx: Context,
+    @Arg('schoolInput') SchoolInput: SchoolInput
+  ) {
+    return await ctx.prisma.school.create({
       data: {
         name: SchoolInput.name,
       },
@@ -116,8 +121,11 @@ export class StudylinkResolver {
   }
   //createStudent
   @Mutation((returns) => Student)
-  async createStudent(@Arg('studentInput') StudentInput: StudentInput) {
-    return await prisma.student.create({
+  async createStudent(
+    @Ctx() ctx: Context,
+    @Arg('studentInput') StudentInput: StudentInput
+  ) {
+    return await ctx.prisma.student.create({
       data: {
         userId: StudentInput.userId,
         schoolClassId: StudentInput.schoolClassId,
@@ -126,15 +134,18 @@ export class StudylinkResolver {
   }
   //deleteTutorRequest
   @Mutation((returns) => TutorRequest)
-  async deleteTutorRequest(@Arg('id') id: number) {
-    return await prisma.tutorRequest.delete({
+  async deleteTutorRequest(@Ctx() ctx: Context, @Arg('id') id: number) {
+    return await ctx.prisma.tutorRequest.delete({
       where: { id: id },
     });
   }
 
   @Mutation((returns) => Student)
-  async updateStudent(@Arg('student') StudentInput: StudentInput) {
-    return await prisma.student.update({
+  async updateStudent(
+    @Ctx() ctx: Context,
+    @Arg('student') StudentInput: StudentInput
+  ) {
+    return await ctx.prisma.student.update({
       where: { id: StudentInput.id },
       data: {
         userId: StudentInput.userId,
