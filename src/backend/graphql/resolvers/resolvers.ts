@@ -29,7 +29,7 @@ export class StudylinkResolver {
     });
   }
 
-  @Authorized('USER')
+  @Authorized('STUDENT')
   @Query((returns) => [TutorOffering])
   async getTutorOfferings(@Ctx() ctx: Context) {
     if (!ctx.user) return null;
@@ -46,7 +46,7 @@ export class StudylinkResolver {
     return student?.tutorOffering;
   }
 
-  @Authorized('USER')
+  @Authorized('STUDENT')
   @Query((returns) => [TutorRequest])
   async getTutorRequests(@Ctx() ctx: Context) {
     if (!ctx.user) return null;
@@ -119,38 +119,41 @@ export class StudylinkResolver {
       },
     });
   }
-  //createStudent
+
+  @Authorized('STUDENT')
   @Mutation((returns) => Student)
-  async createStudent(
+  async student(
     @Ctx() ctx: Context,
     @Arg('studentInput') StudentInput: StudentInput
   ) {
+    if (!ctx.user) return null;
+
+    const student = await ctx.prisma.student.findUnique({
+      where: { userId: ctx.user.id },
+    });
+
+    if (student) {
+      return await ctx.prisma.student.update({
+        where: { userId: ctx.user.id },
+        data: {
+          schoolClassId: StudentInput.schoolClassId,
+        },
+      });
+    }
+
     return await ctx.prisma.student.create({
       data: {
-        userId: StudentInput.userId,
+        userId: ctx.user.id,
         schoolClassId: StudentInput.schoolClassId,
       },
     });
   }
+
   //deleteTutorRequest
   @Mutation((returns) => TutorRequest)
   async deleteTutorRequest(@Ctx() ctx: Context, @Arg('id') id: number) {
     return await ctx.prisma.tutorRequest.delete({
       where: { id: id },
-    });
-  }
-
-  @Mutation((returns) => Student)
-  async updateStudent(
-    @Ctx() ctx: Context,
-    @Arg('student') StudentInput: StudentInput
-  ) {
-    return await ctx.prisma.student.update({
-      where: { id: StudentInput.id },
-      data: {
-        userId: StudentInput.userId,
-        schoolClassId: StudentInput.schoolClassId,
-      },
     });
   }
 }

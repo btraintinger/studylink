@@ -14,11 +14,9 @@ export default function Error() {
       }}
     >
       <Typography variant="h1">404</Typography>
-      <Typography variant="h6">
-        The page you’re looking for doesn’t exist.
-      </Typography>
-      <Button variant="contained">
-        <Link href="/">Back Home</Link>
+      <Typography variant="h6">Die gesuchte Seite existiert nicht.</Typography>
+      <Button component={Link} href="/" variant="contained" passHref>
+        Zurück auf die Startseite
       </Button>
     </Box>
   );

@@ -30,7 +30,10 @@
     "bcrypt": "^5.1.0",
     "class-validator": "^0.13.2",
     "classnames": "^2.3.2",
+    "cuid": "^2.1.8",
+    "deepmerge": "^4.2.2",
     "graphql": "^16.6.0",
+    "lodash": "^4.17.21",
     "next": "^13.0.2",
     "next-auth": "^4.16.3",
     "react": "^18.2.0",
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/lodash": "^4.14.191",
     "@types/node": "18.11.4",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",

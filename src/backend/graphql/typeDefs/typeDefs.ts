@@ -41,12 +41,6 @@ export class Student {
 @InputType()
 export class StudentInput {
   @Field()
-  id!: number;
-
-  @Field()
-  userId!: string;
-
-  @Field()
   schoolClassId!: number;
 }
 
