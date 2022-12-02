@@ -5,7 +5,6 @@ import { PropsWithChildren } from 'react';
 
 const StyledMain = styled('main')({
   flexGrow: 1,
-  p: 3,
   minHeight: '100vh',
 });
 
@@ -23,9 +22,7 @@ export default function Main({ children }: PropsWithChildren<unknown>) {
   return (
     <StyledMain>
       <DrawerHeader />
-      <Box paddingLeft={6} padding={4}>
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </StyledMain>
   );
 }

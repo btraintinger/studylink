@@ -15,6 +15,5 @@ export default function Component() {
       );
     }
   }
-
   return <Link href="/api/auth/signin">Sign in</Link>;
 }

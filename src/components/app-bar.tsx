@@ -4,6 +4,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
 import { useAppContext } from '../context/app-context';
 import * as ROUTES from '../constants/routes';
+import { useTheme } from '@emotion/react';
+import { red } from '@mui/material/colors';
 
 export default function NavBar() {
   const handleDrawerOpen = () => {
@@ -11,7 +13,7 @@ export default function NavBar() {
   };
 
   const { isDrawerOpen, setDrawerOpen } = useAppContext();
-
+  const theme = useTheme();
   return (
     <AppBar
       position="fixed"
@@ -30,10 +32,8 @@ export default function NavBar() {
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
         </IconButton>
-        <Link href={ROUTES.HOME}>
-          <Typography variant="h6" noWrap>
-            STUDYLINK
-          </Typography>
+        <Link style={{ textDecoration: 'none', color: 'primary' }} href="/">
+          <Typography>STUDYLINK</Typography>
         </Link>
       </Toolbar>
     </AppBar>
