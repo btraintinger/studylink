@@ -31,11 +31,11 @@ model School {
 }
 
 model Department {
-  id             Int           @id @unique() @default(autoincrement())
-  departmentName String        @map("department_name") @db.VarChar(50)
-  schoolClass    schoolClass[]
-  school         School        @relation(fields: [schoolId], references: [id])
-  schoolId       Int           @map("school_id")
+  id          Int           @id @unique() @default(autoincrement())
+  name        String        @db.VarChar(50)
+  schoolClass schoolClass[]
+  school      School        @relation(fields: [schoolId], references: [id])
+  schoolId    Int           @map("school_id")
 
   @@index([schoolId])
   @@map("department")
@@ -43,7 +43,7 @@ model Department {
 
 model schoolClass {
   id              Int               @id @unique() @default(autoincrement())
-  className       String            @map("class_name") @db.VarChar(50)
+  name            String            @db.VarChar(50)
   grade           Int
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -57,12 +57,12 @@ model schoolClass {
 }
 
 model schoolSubject {
-  id                  Int               @id @unique() @default(autoincrement())
-  subjectName         String            @unique() @map("subject_name") @db.VarChar(50)
-  extendedSubjectName String            @unique() @map("extended_subject_name") @db.VarChar(100)
-  classHasSubject     ClassHasSubject[]
-  tutor               tutorOffering[]
-  tutorRequest        tutorRequest[]
+  id              Int               @id @unique() @default(autoincrement())
+  name            String            @unique() @map("subject_name") @db.VarChar(50)
+  extendedName    String            @unique() @map("extended_subject_name") @db.VarChar(100)
+  classHasSubject ClassHasSubject[]
+  tutor           tutorOffering[]
+  tutorRequest    tutorRequest[]
 
   @@map("school_subject")
 }
@@ -117,13 +117,12 @@ model Admin {
 
 model Student {
   id            Int             @id @unique() @default(autoincrement())
-  schoolClassId Int             @map("school_class_id")
-  schoolClass   schoolClass     @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClassId Int?            @map("school_class_id")
+  schoolClass   schoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId        String          @unique() @map("user_id")
   user          User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   tutorRequest  tutorRequest[]
   tutorOffering tutorOffering[]
-  rating        Int?
 
   @@index([schoolClassId])
   @@index([userId])

@@ -13,8 +13,10 @@ export default function Error() {
         backgroundColor: 'background.default',
       }}
     >
-      <Typography variant="h1">404</Typography>
-      <Typography variant="h6">Die gesuchte Seite existiert nicht.</Typography>
+      <Typography variant="h1">401</Typography>
+      <Typography variant="h6">
+        Melden Sie sich an um diese Seite sehen zu können
+      </Typography>
       <Button component={Link} href="/" variant="contained" passHref>
         Zurück auf die Startseite
       </Button>
