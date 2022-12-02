@@ -2,79 +2,20 @@
 import {
   TutorOffering,
   Student,
-  User,
   TutorRequest,
-  TutorRequestInput,
-  TutorOfferingInput,
   School,
+} from '../typeDefs/objectTypeDefs';
+import type { Context } from '../context';
+import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
+import {
+  TutorOfferingInput,
+  TutorRequestInput,
   SchoolInput,
   StudentInput,
-} from './../typeDefs/typeDefs';
-import type { Context } from '../context';
-import { Arg, Authorized, Ctx, Query, Mutation, Resolver } from 'type-graphql';
+} from '../typeDefs/inputTypeDefs';
 
 @Resolver()
-export class StudylinkResolver {
-  @Authorized('ADMIN', 'STUDENT')
-  @Query((returns) => User)
-  async getUser(@Ctx() ctx: Context) {
-    return ctx.user;
-  }
-
-  @Authorized('ADMIN')
-  @Query((returns) => User)
-  async getUserById(@Ctx() ctx: Context, @Arg('id') id: string) {
-    return await ctx.prisma.user.findUnique({
-      where: { id: id },
-    });
-  }
-
-  @Authorized('STUDENT')
-  @Query((returns) => [TutorOffering])
-  async getTutorOfferings(@Ctx() ctx: Context) {
-    if (!ctx.user) return null;
-
-    const student = await ctx.prisma.student.findUnique({
-      where: { userId: ctx.user.id },
-      include: {
-        tutorOffering: {
-          include: { schoolClass: true, schoolSubject: true, student: true },
-        },
-      },
-    });
-
-    return student?.tutorOffering;
-  }
-
-  @Authorized('STUDENT')
-  @Query((returns) => [TutorRequest])
-  async getTutorRequests(@Ctx() ctx: Context) {
-    if (!ctx.user) return null;
-
-    const student = await ctx.prisma.student.findUnique({
-      where: { userId: ctx.user.id },
-      include: {
-        tutorRequest: {
-          include: {
-            schoolClass: {
-              include: {
-                classHasSubject: {
-                  include: {
-                    schoolSubject: true,
-                  },
-                },
-              },
-            },
-            schoolSubject: true,
-            student: true,
-          },
-        },
-      },
-    });
-
-    return student?.tutorRequest;
-  }
-
+export class MutationResolver {
   @Mutation((returns) => TutorRequest)
   async createTutorRequest(
     @Ctx() ctx: Context,

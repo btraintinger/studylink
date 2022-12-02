@@ -1,11 +1,12 @@
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import { StudylinkResolver } from './resolvers/resolvers';
+import { QueryResolver } from './resolvers/queryResolver';
 import { customAuthChecker } from './authChecker';
+import { MutationResolver } from './resolvers/mutationResolver';
 
 export default async function createSchema() {
   const schema = await buildSchema({
-    resolvers: [StudylinkResolver],
+    resolvers: [QueryResolver, MutationResolver],
     authChecker: customAuthChecker,
   });
   return schema;
