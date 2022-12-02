@@ -1,18 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  TutorOffering,
-  Student,
-  TutorRequest,
-  School,
-} from '../typeDefs/objectTypeDefs';
 import type { Context } from '../context';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
-import {
-  TutorOfferingInput,
-  TutorRequestInput,
-  SchoolInput,
-  StudentInput,
-} from '../typeDefs/inputTypeDefs';
+import { TutorRequest, TutorRequestInput } from '../typeDefs/tutorRequest';
+import { TutorOffering, TutorOfferingInput } from '../typeDefs/tutorOffer';
+import { School, SchoolInput } from '../typeDefs/school';
+import { Student, StudentInput } from '../typeDefs/student';
 
 @Resolver()
 export class MutationResolver {

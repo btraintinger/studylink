@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Student, User } from '../typeDefs/objectTypeDefs';
 import type { Context } from '../context';
 import { Authorized, Ctx, Query, Resolver } from 'type-graphql';
+import { User } from '../typeDefs/user';
+import { Student } from '../typeDefs/student';
 
 @Resolver()
 export class QueryResolver {
