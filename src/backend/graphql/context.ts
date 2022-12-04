@@ -1,16 +1,21 @@
 import { authOptions } from './../../pages/api/auth/[...nextauth]';
-import { PrismaClient, User } from '@prisma/client';
+import { Admin, PrismaClient, Student, User } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import prisma from '../utils/prismadb';
 
+interface ContextUser extends User {
+  admin: Admin | null;
+  student: Student | null;
+}
+
 export interface Context {
   prisma: PrismaClient;
-  user: User | null;
+  user: ContextUser | null;
 }
 
 export const context = async (req: NextApiRequest, res: NextApiResponse) => {
-  let user: User | null = null;
+  let user: ContextUser | null = null;
 
   const session = await unstable_getServerSession(req, res, authOptions);
   const sessionUser = session?.user as User;
@@ -19,6 +24,10 @@ export const context = async (req: NextApiRequest, res: NextApiResponse) => {
     user = await prisma.user.findUnique({
       where: {
         id: sessionUser.id,
+      },
+      include: {
+        student: true,
+        admin: true,
       },
     });
   }
