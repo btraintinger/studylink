@@ -1,6 +1,8 @@
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../components/loadingPage';
-import NotSignInHome from '../components/notSignedInHome';
+import NotSignInHome from '../components/home/notSignedInHome';
+import AdminHome from '../components/home/adminHome';
+import StudentHome from '../components/home/studentHome';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -12,13 +14,13 @@ export default function Home() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   if (status === 'authenticated' && session?.user?.role === 'STUDENT') {
-    return <h1>Authenticated</h1>;
+    return <StudentHome />;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   if (status === 'authenticated' && session?.user?.role === 'ADMIN') {
-    return <h1>Authenticated</h1>;
+    return <AdminHome />;
   }
 
   return <LoadingPage />;

@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
-import { Footer } from './footer';
+import { Footer } from '../page/footer';
 
 export default function NotSignedInHome() {
   return (

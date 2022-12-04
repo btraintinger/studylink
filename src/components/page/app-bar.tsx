@@ -2,8 +2,8 @@ import { AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
-import { useAppContext } from '../context/app-context';
-import * as ROUTES from '../constants/routes';
+import { useAppContext } from '../../context/app-context';
+import * as ROUTES from '../../constants/routes';
 
 export default function NavBar() {
   const handleDrawerOpen = () => {

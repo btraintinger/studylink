@@ -18,10 +18,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { useAppContext } from '../context/app-context';
+import { useAppContext } from '../../context/app-context';
 import { useContext } from 'react';
-import { UPPER_PAGES } from '../constants/menu-items-list';
-import ThemedLink from '../components/link';
+import { UPPER_PAGES } from '../../constants/menu-items-list';
+import ThemedLink from '../utils/link';
 import Link from 'next/link';
 
 const drawerWidth = 240;
