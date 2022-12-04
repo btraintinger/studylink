@@ -44,4 +44,29 @@ export class QueryResolver {
       },
     });
   }
+
+  @Authorized('ADMIN')
+  async getAdmin(@Ctx() ctx: Context) {
+    if (!ctx.user) return null;
+
+    return await ctx.prisma.admin.findUnique({
+      where: { userId: ctx.user.id },
+      include: {
+        school: {
+          include: {
+            departments: {
+              include: {
+                schoolClasses: {
+                  include: {
+                    classHasSubject: { include: { schoolSubject: true } },
+                  },
+                },
+              },
+            },
+            admins: true,
+          },
+        },
+      },
+    });
+  }
 }

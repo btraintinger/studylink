@@ -11,8 +11,8 @@ generator client {
 model ClassHasSubject {
   schoolClassId Int           @map("school_class_id")
   subjectId     Int           @map("subject_id")
-  schoolClass   schoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  schoolSubject schoolSubject @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClass   SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolSubject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([schoolClassId, subjectId])
   @@index([schoolClassId])
@@ -30,50 +30,50 @@ model School {
 }
 
 model Department {
-  id          Int           @id @unique() @default(autoincrement())
-  name        String        @db.VarChar(50)
-  schoolClass schoolClass[]
-  school      School        @relation(fields: [schoolId], references: [id])
-  schoolId    Int           @map("school_id")
+  id            Int           @id @unique() @default(autoincrement())
+  name          String        @db.VarChar(50)
+  schoolClasses SchoolClass[]
+  school        School        @relation(fields: [schoolId], references: [id])
+  schoolId      Int           @map("school_id")
 
   @@index([schoolId])
   @@map("department")
 }
 
-model schoolClass {
+model SchoolClass {
   id              Int               @id @unique() @default(autoincrement())
   name            String            @db.VarChar(50)
   grade           Int
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
-  tutorRequest    tutorRequest[]
-  tutorOffering   tutorOffering[]
+  tutorRequest    TutorRequest[]
+  tutorOffering   TutorOffering[]
   student         Student[]
 
   @@index([departmentId])
   @@map("school_class")
 }
 
-model schoolSubject {
+model SchoolSubject {
   id              Int               @id @unique() @default(autoincrement())
   name            String            @unique() @map("subject_name") @db.VarChar(50)
   extendedName    String            @unique() @map("extended_subject_name") @db.VarChar(100)
   classHasSubject ClassHasSubject[]
-  tutor           tutorOffering[]
-  tutorRequest    tutorRequest[]
+  tutor           TutorOffering[]
+  tutorRequest    TutorRequest[]
 
   @@map("school_subject")
 }
 
-model tutorRequest {
+model TutorRequest {
   id              Int           @id @unique() @default(autoincrement())
   schoolClassId   Int           @map("school_class_id")
-  schoolClass     schoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClass     SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   studentId       Int           @unique() @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
-  schoolSubject   schoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   description String? @db.VarChar(1000)
   teacher     String? @db.VarChar(50)
@@ -84,14 +84,14 @@ model tutorRequest {
   @@map("tutor_request")
 }
 
-model tutorOffering {
+model TutorOffering {
   id              Int           @id @unique() @default(autoincrement())
   schoolClassId   Int           @map("school_class_id")
-  schoolClass     schoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClass     SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   studentId       Int           @unique() @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
-  schoolSubject   schoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   description String? @db.VarChar(1000)
   teacher     String? @db.VarChar(50)
@@ -107,7 +107,7 @@ model Admin {
   userId   String  @unique() @map("user_id")
   user     User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolId Int?    @unique() @map("school_id")
-  School   School? @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([userId])
   @@index([schoolId])
@@ -117,11 +117,11 @@ model Admin {
 model Student {
   id            Int             @id @unique() @default(autoincrement())
   schoolClassId Int?            @map("school_class_id")
-  schoolClass   schoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClass   SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId        String          @unique() @map("user_id")
   user          User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tutorRequest  tutorRequest[]
-  tutorOffering tutorOffering[]
+  tutorRequest  TutorRequest[]
+  tutorOffering TutorOffering[]
 
   @@index([schoolClassId])
   @@index([userId])
