@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, ObjectType, InputType, ID, Int } from 'type-graphql';
-import { SchoolClass } from './schoolClass';
+import { SchoolClass } from '../schoolClass/schoolClass.type';
+import { School } from '../school/school.type';
 
 @ObjectType()
 export class Department {
@@ -13,8 +14,8 @@ export class Department {
   @Field((type) => [SchoolClass])
   schoolClasses?: SchoolClass[];
 
-  @Field((type) => Int)
-  schoolId!: number;
+  @Field()
+  school!: School;
 }
 
 @InputType()

@@ -11,17 +11,17 @@ export default function Home() {
     return <NotSignInHome />;
   }
 
+  if (status === 'loading') return <LoadingPage />;
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  if (status === 'authenticated' && session?.user?.role === 'STUDENT') {
+  const userRole = session?.user?.role;
+
+  if (userRole === 'STUDENT') {
     return <StudentHome />;
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (status === 'authenticated' && session?.user?.role === 'ADMIN') {
+  if (userRole === 'ADMIN') {
     return <AdminHome />;
   }
-
-  return <LoadingPage />;
 }

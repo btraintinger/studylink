@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, ObjectType, InputType, ID, Int } from 'type-graphql';
-import { SchoolClass } from './schoolClass';
-import { TutorOffering } from './tutorOffer';
-import { TutorRequest } from './tutorRequest';
-import { User } from './user';
+import { SchoolClass } from '../schoolClass/schoolClass.type';
+import { TutorOffering } from '../tutorOffering/tutorOffering.type';
+import { TutorRequest } from '../tutorRequest/tutorRequest.type';
+import { User } from '../user/user.type';
 
 @ObjectType()
 export class Student {
@@ -14,7 +14,7 @@ export class Student {
   tutorOfferings?: TutorOffering[];
 
   @Field((type) => [TutorRequest])
-  tutorRequest?: TutorRequest[];
+  tutorRequests?: TutorRequest[];
 
   @Field()
   schoolClass?: SchoolClass;

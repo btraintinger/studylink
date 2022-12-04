@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 
 const QUERY = gql`
   query GetUser {
-    getUser {
+    getCurrentUser {
       id
       email
       name
