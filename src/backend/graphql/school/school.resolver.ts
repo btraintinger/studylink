@@ -15,15 +15,21 @@ import { School, SchoolInput } from './school.type';
 
 @Resolver((of) => School)
 export class SchoolResolver {
-  @Mutation((returns) => School)
-  async createSchool(
-    @Ctx() ctx: Context,
-    @Arg('schoolInput') SchoolInput: SchoolInput
-  ) {
-    return await ctx.prisma.school.create({
-      data: {
-        name: SchoolInput.name,
-      },
-    });
+  @FieldResolver()
+  async user(@Root() school: School, @Ctx() ctx: Context) {
+    return ctx.prisma.school
+      .findUnique({
+        where: { id: school.id },
+      })
+      .admins();
+  }
+
+  @FieldResolver()
+  async departments(@Root() school: School, @Ctx() ctx: Context) {
+    return ctx.prisma.school
+      .findUnique({
+        where: { id: school.id },
+      })
+      .departments();
   }
 }

@@ -27,6 +27,9 @@ export class TutorRequest {
 
 @InputType()
 export class TutorRequestInput {
+  @Field((type) => ID)
+  id!: number;
+
   @Field()
   studentId!: number;
 
