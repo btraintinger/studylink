@@ -89,4 +89,14 @@ export class StudentResolver {
       },
     });
   }
+
+  @Authorized('STUDENT')
+  @Mutation((returns) => Student)
+  async deleteStudent(@Ctx() ctx: Context) {
+    if (!ctx.user) return null;
+
+    return await ctx.prisma.student.delete({
+      where: { userId: ctx.user.id },
+    });
+  }
 }

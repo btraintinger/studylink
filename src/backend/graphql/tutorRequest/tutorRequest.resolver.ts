@@ -15,24 +15,6 @@ import type { Context } from '../context';
 
 @Resolver((of) => TutorRequest)
 export class TutorRequestResolver {
-  @FieldResolver()
-  async schoolClass(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
-    return await ctx.prisma.tutorRequest
-      .findUnique({
-        where: { id: tutorRequest.id },
-      })
-      .schoolClass();
-  }
-
-  @FieldResolver()
-  async schoolSubject(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
-    return await ctx.prisma.tutorRequest
-      .findUnique({
-        where: { id: tutorRequest.id },
-      })
-      .schoolSubject();
-  }
-
   @Authorized('STUDENT', 'ADMIN')
   @Mutation((returns) => TutorRequest)
   async tutorRequest(
@@ -69,5 +51,28 @@ export class TutorRequestResolver {
     }
 
     return tutorRequest;
+  }
+
+  @Authorized('STUDENT', 'ADMIN')
+  @Mutation((returns) => TutorRequest)
+  async deleteTutorRequest(@Ctx() ctx: Context, @Arg('id') id: string) {
+    const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+      where: {},
+    });
+
+    if (!tutorRequest) throw new Error('Tutor Request not found');
+
+    if (
+      ctx.user?.role === 'STUDENT' &&
+      tutorRequest.studentId !== ctx.user?.student?.id
+    ) {
+      throw new Error('Unauthorized');
+    }
+
+    const deletedTutorRequest = await ctx.prisma.tutorRequest.delete({
+      where: { id: tutorRequest.id },
+    });
+
+    return deletedTutorRequest;
   }
 }
