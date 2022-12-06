@@ -22,6 +22,8 @@ model ClassHasSubject {
 
 model School {
   id          Int          @id @unique @default(autoincrement())
+  handle      String       @unique
+  domain      String
   name        String
   departments Department[]
   admins      Admin[]

@@ -16,7 +16,7 @@ export class SchoolClass {
   grade!: number;
 
   @Field((type) => [SchoolSubject])
-  subjects?: SchoolSubject[];
+  schoolSubjects?: SchoolSubject[];
 
   @Field((type) => Int)
   departmentId!: number;
@@ -24,9 +24,15 @@ export class SchoolClass {
 
 @InputType()
 export class SchoolClassInput {
+  @Field((type) => ID)
+  id!: number;
+
   @Field()
-  className!: string;
+  name!: string;
 
   @Field()
   grade!: number;
+
+  @Field((type) => Int)
+  departmentId!: number;
 }

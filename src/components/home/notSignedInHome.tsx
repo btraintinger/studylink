@@ -1,11 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
+import AppBar from '../page/app-bar';
 import { Footer } from '../page/footer';
 
 export default function NotSignedInHome() {
   return (
     <>
-      <Typography variant="h1">Studylink</Typography>
+      <AppBar />
       <Box
         sx={{
           display: 'flex',

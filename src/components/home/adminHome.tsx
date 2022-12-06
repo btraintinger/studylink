@@ -1,7 +1,5 @@
+import School from '../../pages/admin/school';
+
 export default function AdminHome() {
-  return (
-    <div>
-      <p>df</p>
-    </div>
-  );
+  return <School />;
 }

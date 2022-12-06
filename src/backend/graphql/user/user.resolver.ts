@@ -14,10 +14,13 @@ import type { Context } from '../context';
 
 @Resolver((of) => User)
 export class UserResolver {
-  @FieldResolver()
-  async user(@Root() user: User, @Ctx() ctx: Context) {
-    return ctx.prisma.user.findUnique({
-      where: { id: user.id },
+  @Authorized('ADMIN', 'STUDENT')
+  @Query((returns) => User)
+  async getCurrentUser(@Ctx() ctx: Context) {
+    if (!ctx.user) throw new Error('Not logged in');
+
+    return await ctx.prisma.user.findUnique({
+      where: { id: ctx.user.id },
     });
   }
 }

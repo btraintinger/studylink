@@ -14,12 +14,18 @@ export class Department {
   @Field((type) => [SchoolClass])
   schoolClasses?: SchoolClass[];
 
-  @Field()
-  school!: School;
+  @Field((type) => Int)
+  schoolId!: number;
 }
 
 @InputType()
 export class DepartmentInput {
+  @Field((type) => ID)
+  id!: number;
+
   @Field()
   name!: string;
+
+  @Field((type) => Int)
+  schoolId!: number;
 }

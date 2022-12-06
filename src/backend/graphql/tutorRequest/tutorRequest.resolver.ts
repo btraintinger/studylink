@@ -15,6 +15,24 @@ import type { Context } from '../context';
 
 @Resolver((of) => TutorRequest)
 export class TutorRequestResolver {
+  @FieldResolver()
+  async schoolClass(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
+    return await ctx.prisma.tutorRequest
+      .findUnique({
+        where: { id: tutorRequest.id },
+      })
+      .schoolClass();
+  }
+
+  @FieldResolver()
+  async schoolSubject(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
+    return await ctx.prisma.tutorRequest
+      .findUnique({
+        where: { id: tutorRequest.id },
+      })
+      .schoolSubject();
+  }
+
   @Authorized('STUDENT', 'ADMIN')
   @Mutation((returns) => TutorRequest)
   async tutorRequest(

@@ -11,6 +11,12 @@ export class School {
   @Field()
   name!: string;
 
+  @Field()
+  handle!: string;
+
+  @Field()
+  domain!: string;
+
   @Field((type) => [Department])
   departments?: Department[];
 
@@ -20,6 +26,15 @@ export class School {
 
 @InputType()
 export class SchoolInput {
+  @Field((type) => ID)
+  id!: number;
+
   @Field()
   name!: string;
+
+  @Field()
+  handle!: string;
+
+  @Field()
+  domain!: string;
 }

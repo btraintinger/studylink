@@ -17,7 +17,7 @@ import { Admin } from './admin.type.';
 export class AdminResolver {
   @FieldResolver()
   async user(@Root() admin: Admin, @Ctx() ctx: Context) {
-    return ctx.prisma.admin
+    return await ctx.prisma.admin
       .findUnique({
         where: { id: admin.id },
       })
@@ -29,7 +29,7 @@ export class AdminResolver {
   async getAdminOfCurrentUser(@Ctx() ctx: Context) {
     if (ctx.user === null) return null;
 
-    return ctx.prisma.admin.findUnique({
+    return await ctx.prisma.admin.findUnique({
       where: {
         userId: ctx.user.id,
       },
@@ -41,7 +41,7 @@ export class AdminResolver {
   async getAdministeredSchool(@Ctx() ctx: Context) {
     if (ctx.user === null) return null;
 
-    return ctx.prisma.admin
+    return await ctx.prisma.admin
       .findUnique({
         where: {
           userId: ctx.user.id,
