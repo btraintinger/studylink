@@ -12,7 +12,7 @@ import {
   Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { School, SchoolInput } from './school.type';
+import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
 
 @Resolver((of) => School)
 export class SchoolResolver {
@@ -50,45 +50,62 @@ export class SchoolResolver {
 
   @Authorized('ADMIN')
   @Mutation((returns) => School)
-  async school(@Arg('school') schoolInput: SchoolInput, @Ctx() ctx: Context) {
+  async createSchool(
+    @Arg('schoolCreationInput') schoolCreationInput: SchoolCreationInput,
+    @Ctx() ctx: Context
+  ) {
     if (!ctx.user) throw new Error('Not logged in');
 
-    if (ctx.user.admin?.schoolId !== schoolInput.id)
+    const school = await ctx.prisma.school.create({
+      data: {
+        name: schoolCreationInput.name,
+        handle: schoolCreationInput.handle,
+        domain: schoolCreationInput.domain,
+        admins: {
+          connect: {
+            id: ctx.user.admin?.id,
+          },
+        },
+      },
+    });
+
+    if (!school) throw new Error('School creation failed');
+    return school;
+  }
+
+  @Authorized('ADMIN')
+  @Mutation((returns) => School)
+  async updateSchool(
+    @Arg('schoolUpdateInput') schoolUpdateInput: SchoolUpdateInput,
+    @Ctx() ctx: Context
+  ) {
+    if (!ctx.user) throw new Error('Not logged in');
+
+    if (ctx.user.admin?.schoolId !== schoolUpdateInput.id)
       throw new Error('Not authorized');
 
     let school = await ctx.prisma.school.findUnique({
       where: {
-        id: schoolInput.id,
+        id: schoolUpdateInput.id,
       },
     });
 
     if (school) {
       school = await ctx.prisma.school.update({
         where: {
-          id: schoolInput.id,
+          id: schoolUpdateInput.id,
         },
         data: {
-          name: schoolInput.name,
-          domain: schoolInput.domain,
+          name: schoolUpdateInput.name,
+          handle: schoolUpdateInput.handle,
+          domain: schoolUpdateInput.domain,
         },
       });
     } else {
-      school = await ctx.prisma.school.create({
-        data: {
-          id: schoolInput.id,
-          name: schoolInput.name,
-          handle: schoolInput.handle,
-          domain: schoolInput.domain,
-          admins: {
-            connect: {
-              id: ctx.user.admin?.id,
-            },
-          },
-        },
-      });
+      throw new Error('School does not exist');
     }
 
-    if (!school) throw new Error('School creation / update failed');
+    if (!school) throw new Error('School update failed');
     return school;
   }
 }

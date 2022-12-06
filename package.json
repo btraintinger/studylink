@@ -32,6 +32,7 @@
     "classnames": "^2.3.2",
     "cuid": "^2.1.8",
     "deepmerge": "^4.2.2",
+    "formik": "^2.2.9",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
     "next": "^13.0.2",
@@ -41,6 +42,7 @@
     "react-hook-form": "^7.39.4",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^2.0.0-beta.1",
+    "yup": "^0.32.11",
     "zod": "^3.19.1"
   },
   "devDependencies": {

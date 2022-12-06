@@ -4,12 +4,12 @@ import { useQuery, gql } from '@apollo/client';
 import { Button } from '@mui/material';
 
 const QUERY = gql`
-  query GetUser {
+  query GetCurrentUser {
     getCurrentUser {
-      id
       email
-      name
+      id
       role
+      name
     }
   }
 `;

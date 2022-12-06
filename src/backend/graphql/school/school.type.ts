@@ -25,7 +25,19 @@ export class School {
 }
 
 @InputType()
-export class SchoolInput {
+export class SchoolCreationInput {
+  @Field()
+  name!: string;
+
+  @Field()
+  handle!: string;
+
+  @Field()
+  domain!: string;
+}
+
+@InputType()
+export class SchoolUpdateInput {
   @Field((type) => ID)
   id!: number;
 
