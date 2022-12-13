@@ -60,8 +60,10 @@ export class SchoolResolver {
   @Authorized('ADMIN')
   @Query((returns) => School)
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isSchoolExistent(ctx, id))) throw new Error('School does not exist');
-    if (!(await isSchoolRelatedToUSer(ctx, id))) throw new Error('Not authorized');
+    if (!(await isSchoolExistent(ctx, id)))
+      throw new Error('School does not exist');
+    if (!(await isSchoolRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
 
     const school = await ctx.prisma.school.findUnique({
       where: {
