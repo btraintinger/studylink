@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import LoadingPage from '../components/loadingPage';
+import LoadingPage from '../components/utils/loadingPage';
 import NotSignInHome from '../components/home/notSignedInHome';
 import AdminHome from '../components/home/adminHome';
 import StudentHome from '../components/home/studentHome';

@@ -36,6 +36,9 @@ export async function signup(credentials) {
     where: {
       email: credentials.email,
     },
+    select: {
+      id: true,
+    },
   });
 
   if (user !== null) throw new Error('User existiert bereits');

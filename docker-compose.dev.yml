@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: studylink
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    restart: alway
+
+  app:
+    image: node:latest
+    container_name: app
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+    restart: always
+    command: npm run dev
+
+volumes:
+  mysql_data:

@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
-import LoadingPage from '../../../components/loadingPage';
+import LoadingPage from '../../../components/utils/loadingPage';
 import { signOut } from 'next-auth/react';
 
 const SCHOOL_QUERY = gql`
