@@ -23,7 +23,7 @@ import { useContext } from 'react';
 import { UPPER_PAGES } from '../constants/menu-items-list';
 import ThemedLink from './link';
 import Link from 'next/link';
-import { red } from '@mui/material/colors';
+import { red, green } from '@mui/material/colors';
 
 const drawerWidth = 240;
 
@@ -96,9 +96,9 @@ export default function MiniDrawer() {
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? (
-              <ChevronRightIcon />
+              <ChevronRightIcon sx={{ color: '#ffffff' }} />
             ) : (
-              <ChevronLeftIcon />
+              <ChevronLeftIcon sx={{ color: '#ffffff' }} />
             )}
           </IconButton>
         </DrawerHeader>
@@ -106,7 +106,7 @@ export default function MiniDrawer() {
         <List>
           {UPPER_PAGES.map(({ text, route, icon }, id) => (
             <Link
-              style={{ textDecoration: 'none', color: red[200] }}
+              style={{ textDecoration: 'none', color: '#D8E9A8' }}
               key={id}
               href={route}
               passHref
@@ -124,13 +124,14 @@ export default function MiniDrawer() {
                       minWidth: 0,
                       mr: isDrawerOpen ? 3 : 'auto',
                       justifyContent: 'center',
+                      color: '#ffffff',
                     }}
                   >
                     {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                   </ListItemIcon>
                   <ListItemText
                     primary={text}
-                    sx={{ opacity: isDrawerOpen ? 1 : 0 }}
+                    sx={{ opacity: isDrawerOpen ? 1 : 0, color: '#ffffff' }}
                   />
                 </ListItemButton>
               </ListItem>

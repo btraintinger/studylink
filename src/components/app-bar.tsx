@@ -27,13 +27,18 @@ export default function NavBar() {
           edge="start"
           sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
         >
-          <MenuIcon />
           <Groups3TwoToneIcon
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              mr: 1,
+              color: '#D8E9A8',
+            }}
           />
         </IconButton>
         <Link style={{ textDecoration: 'none', color: 'primary' }} href="/">
-          <Typography>STUDYLINK</Typography>
+          <Typography variant="h5" color="#D8E9A8">
+            STUDYLINK
+          </Typography>
         </Link>
       </Toolbar>
     </AppBar>

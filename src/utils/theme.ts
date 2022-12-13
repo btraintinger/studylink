@@ -10,6 +10,8 @@ import {
   pink,
   green,
   lightBlue,
+  black,
+  lightGreen,
 } from '@mui/material/colors';
 import { withTheme } from '@emotion/react';
 
@@ -22,15 +24,14 @@ export const roboto = Roboto({
 
 export const theme = createTheme({
   palette: {
-    primary: yellow,
-
-    secondary: blue,
+    primary: lightGreen,
+    secondary: lightBlue,
     text: {
-      primary: '#FFFF',
+      primary: '#000000',
     },
 
     background: {
-      default: '#3d3736',
+      default: '#ffffff',
     },
   },
   shape: {
@@ -40,14 +41,15 @@ export const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#5fcf70',
+          backgroundColor: '#1E5128',
+          //#D8E9A8
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#0e5719',
+          backgroundColor: '#4E9F3D',
         },
       },
     },
