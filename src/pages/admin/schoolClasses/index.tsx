@@ -1,10 +1,10 @@
 import Layout from '../../../components/page/layout';
 import { Typography } from '@mui/material';
 
-export default function Matches() {
+export default function SchoolClasses() {
   return (
     <Layout>
-      <Typography>Matches</Typography>
+      <Typography>School Classes</Typography>
     </Layout>
   );
 }

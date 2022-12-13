@@ -20,9 +20,13 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { useAppContext } from '../../context/app-context';
 import { useContext } from 'react';
-import { UPPER_PAGES } from '../../constants/menu-items-list';
-import ThemedLink from '../utils/link';
+import {
+  ADMIN_LINKS,
+  STUDENT_LINKS,
+  COMMON_LINKS,
+} from '../../constants/menu-items-list';
 import Link from 'next/link';
+import { IMenuItem } from '../types';
 
 const drawerWidth = 240;
 
@@ -56,10 +60,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-interface AppBarProps extends MuiAppBarProps {
-  isDraweropen?: boolean;
-}
-
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -77,7 +77,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer() {
+export default function MiniDrawer(role: string) {
   const theme = useTheme();
   const { isDrawerOpen, setDrawerOpen } = useAppContext();
 
@@ -102,7 +102,7 @@ export default function MiniDrawer() {
       </DrawerHeader>
       <Divider />
       <List>
-        {UPPER_PAGES.map(({ text, route, icon }, id) => (
+        {ADMIN_LINKS.map(({ text, route, icon }, id) => (
           <ListItem
             key={id}
             disablePadding
@@ -136,8 +136,14 @@ export default function MiniDrawer() {
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+        {COMMON_LINKS.map(({ text, route, icon }, id) => (
+          <ListItem
+            key={id}
+            disablePadding
+            sx={{ display: 'block' }}
+            component={Link}
+            href={route}
+          >
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -152,7 +158,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
