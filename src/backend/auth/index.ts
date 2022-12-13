@@ -1,3 +1,4 @@
+import { Admin, Student } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
 import prisma from '../utils/prismadb';
@@ -50,5 +51,32 @@ export async function signup(credentials) {
       role: credentials.role,
     },
   });
+
+  if (newUser === null) throw new Error('User konnte nicht erstellt werden');
+
+  let reference: Student | Admin | null = null;
+  if (credentials.role === 'STUDENT') {
+    reference = await prisma.student.create({
+      data: {
+        userId: newUser.id,
+      },
+    });
+  } else if (credentials.role === 'ADMIN') {
+    reference = await prisma.admin.create({
+      data: {
+        userId: newUser.id,
+      },
+    });
+  }
+
+  if (reference === null) {
+    await prisma.user.delete({
+      where: {
+        id: newUser.id,
+      },
+    });
+    throw new Error('User konnte nicht erstellt werden');
+  }
+
   return newUser;
 }

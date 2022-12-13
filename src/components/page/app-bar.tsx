@@ -1,11 +1,9 @@
-import { AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
-import { useAppContext } from '../context/app-context';
-import * as ROUTES from '../constants/routes';
-import { useTheme } from '@emotion/react';
-import { red } from '@mui/material/colors';
+import { useAppContext } from '../../context/app-context';
+import * as ROUTES from '../../constants/routes';
 
 export default function NavBar() {
   const handleDrawerOpen = () => {
@@ -13,7 +11,7 @@ export default function NavBar() {
   };
 
   const { isDrawerOpen, setDrawerOpen } = useAppContext();
-  const theme = useTheme();
+
   return (
     <AppBar
       position="fixed"
@@ -27,16 +25,13 @@ export default function NavBar() {
           edge="start"
           sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
         >
+          <MenuIcon />
           <Groups3TwoToneIcon
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              mr: 1,
-              color: '#D8E9A8',
-            }}
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
         </IconButton>
-        <Link style={{ textDecoration: 'none', color: 'primary' }} href="/">
-          <Typography variant="h5" color="#D8E9A8">
+        <Link href={ROUTES.HOME}>
+          <Typography variant="h6" noWrap>
             STUDYLINK
           </Typography>
         </Link>

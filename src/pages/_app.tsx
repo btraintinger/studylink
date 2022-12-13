@@ -4,6 +4,8 @@ import { ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { SessionProvider } from 'next-auth/react';
+import { ApolloProvider } from '@apollo/client';
+import { useApollo } from '../utils/apolloClient';
 import createEmotionCache from '../utils/createEmotionCache';
 import { theme } from '../utils/theme';
 
@@ -21,6 +23,8 @@ export default function MyApp(props: MyAppProps) {
     emotionCache = clientSideEmotionCache,
     pageProps,
   } = props;
+  const apolloClient = useApollo(pageProps);
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -30,10 +34,11 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline enableColorScheme />
-
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <ApolloProvider client={apolloClient}>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </ApolloProvider>
       </ThemeProvider>
     </CacheProvider>
   );

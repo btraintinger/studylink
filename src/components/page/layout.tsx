@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styles from './layout.module.css';
-import Main from './main';
-import { Footer } from '../components/footer';
+import Main from '../main';
+import { Footer } from './footer';
 import Box from '@mui/material/Box';
 import { styled, Grid } from '@mui/material';
 import NavBar from './app-bar';
 
-import { AppContextProvider } from '../context/app-context';
+import { AppContextProvider } from '../../context/app-context';
 import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import MiniDrawer from './variant-drawer';

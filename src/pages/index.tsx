@@ -1,15 +1,27 @@
-import Head from 'next/head';
-import Layout from '../components/layout';
-import Typography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
+import { useSession } from 'next-auth/react';
+import LoadingPage from '../components/loadingPage';
+import NotSignInHome from '../components/home/notSignedInHome';
+import AdminHome from '../components/home/adminHome';
+import StudentHome from '../components/home/studentHome';
 
 export default function Home() {
-  return (
-    <Layout home>
-      <Head>
-        <title> Studylink </title>
-      </Head>
-      <Typography variant="h2">Index.tsx</Typography>
-    </Layout>
-  );
+  const { data: session, status } = useSession();
+
+  if (status === 'unauthenticated') {
+    return <NotSignInHome />;
+  }
+
+  if (status === 'loading') return <LoadingPage />;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const userRole = session?.user?.role;
+
+  if (userRole === 'STUDENT') {
+    return <StudentHome />;
+  }
+
+  if (userRole === 'ADMIN') {
+    return <AdminHome />;
+  }
 }
