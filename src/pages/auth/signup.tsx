@@ -45,6 +45,7 @@ export default function LoginPage() {
     handleSubmit,
   } = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
+    mode: 'onTouched',
   });
 
   useEffect(() => {
