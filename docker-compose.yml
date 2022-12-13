@@ -14,7 +14,7 @@ services:
     restart: always
 
   studylink:
-    build: ./docker/app
+    build: ./docker/app/prod
     container_name: studylink
     ports:
       - 3000:3000
@@ -32,7 +32,7 @@ services:
     command: npm run dev
 
   webserver:
-    image: nginx:latest
+    image: nginx:1.22
     ports:
       - 80:80
       - 443:443
