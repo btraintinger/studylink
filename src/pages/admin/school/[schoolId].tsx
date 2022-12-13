@@ -103,7 +103,7 @@ export default function School() {
   }, [isSubmitSuccessful]);
 
   return (
-    <Layout home>
+    <Layout>
       <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
         <TextField
           sx={{ mb: 2 }}

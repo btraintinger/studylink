@@ -2,17 +2,7 @@ import { createTheme } from '@mui/material/styles';
 import { dark } from '@mui/material/styles/createPalette';
 import { Roboto } from '@next/font/google';
 import Typography from '@mui/material/Typography';
-import {
-  yellow,
-  red,
-  blue,
-  purple,
-  pink,
-  green,
-  lightBlue,
-  black,
-  lightGreen,
-} from '@mui/material/colors';
+import { lightBlue, lightGreen } from '@mui/material/colors';
 import { withTheme } from '@emotion/react';
 
 export const roboto = Roboto({
@@ -50,6 +40,68 @@ export const theme = createTheme({
       styleOverrides: {
         paper: {
           backgroundColor: '#4E9F3D',
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
+  },
+});
+
+export const darkTheme = createTheme({
+  palette: {
+    primary: lightGreen,
+    secondary: lightBlue,
+    text: {
+      primary: '#ffffff',
+    },
+
+    background: {
+      default: '#000000',
+    },
+  },
+  shape: {
+    borderRadius: 15,
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1E5128',
+          //#D8E9A8
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#4E9F3D',
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
         },
       },
     },

@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import LoadingPage from '../../../components/utils/loadingPage';
+import Layout from '../../../components/page/layout';
 import { signOut } from 'next-auth/react';
 
 const SCHOOL_QUERY = gql`
@@ -63,7 +64,7 @@ export default function School() {
     );
 
   return (
-    <>
+    <Layout>
       <Typography>{data.getAdministeredSchool.name}</Typography>
       <Button
         component={Link}
@@ -77,6 +78,6 @@ export default function School() {
         Schule bearbeiten
       </Button>
       <Button onClick={() => signOut()}>Sign out</Button>
-    </>
+    </Layout>
   );
 }

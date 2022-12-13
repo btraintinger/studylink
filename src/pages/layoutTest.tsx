@@ -4,7 +4,7 @@ import Layout from '../components/page/layout';
 export default function FirstPost() {
   return (
     <div>
-      <Layout home={false}>
+      <Layout>
         <Head>
           <title>First Post</title>
         </Head>
