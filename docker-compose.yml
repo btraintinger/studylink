@@ -1,53 +1,107 @@
 version: '3'
 
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql
-    ports:
-      - 3306:3306
+  db:
+    image: mariadb:latest
+    container_name: db
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    expose:
+      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: studylink
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
+    networks:
+      - backend
 
-  studylink:
-    build: ./docker/app/prod
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/prod/Dockerfile
     container_name: studylink
-    ports:
-      - 3000:3000
     volumes:
       - .:/app
-    working_dir: /app
+    expose:
+      - 3000
     depends_on:
-      - mysql
-    restart: always
+      db_migration:
+        condition: service_completed_successfully
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
-      - JWT_SECRET=${JWT_SECRET}
-      - NODE_ENV=production
-    command: npm run dev
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+      NEXTAUTH_URL: ${DOMAIN}
+      DOMAIN: ${DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: development
+    restart: always
+    networks:
+      - backend
+      - frontend
 
-  webserver:
-    image: nginx:1.22
+  db_migration:
+    build:
+      context: .
+      dockerfile: ./docker/app/prod/Dockerfile
+    container_name: db_migration
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+    command: npx prisma db push
+    networks:
+      - backend
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN=${DOMAIN}
+    container_name: nginx
     ports:
       - 80:80
       - 443:443
     restart: always
+    depends_on:
+      - app
+      - certbot
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - certbot_var:/var/lib/letsencrypt/:ro
+      - certbot_var:/etc/letsencrypt/:ro
+      - nginx_logs:/var/log/nginx/:rw
+    networks:
+      - frontend
 
   certbot:
     image: certbot/certbot:latest
+    container_name: certbot
     volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
-    command: certonly --webroot -w /var/www/certbot/ -d ${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --rsa-key-size 4096 --force-renewal
+      - certbot_var:/var/lib/letsencrypt/:rw
+      - certbot_var:/etc/letsencrypt/:rw
+    command: cerbot certonly --webroot -w /var/www/certbot/ -d ${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --rsa-key-size 4096 --force-renewal
+    networks:
+      - frontend
+
+  cert_renewer:
+    build: ./docker/cert_renewer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - frontend
 
 volumes:
-  mysql_data:
+  db_data:
+  certbot_var:
+  certbot_etc:
+  nginx_logs:
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

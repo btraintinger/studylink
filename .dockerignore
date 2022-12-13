@@ -1,3 +1,5 @@
-node_modules/
-.next/
+.git
+node_modules
+.next
 .next-env.d.ts
+.env

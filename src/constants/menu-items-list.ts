@@ -1,7 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
 
-import { IMenuItem } from '../types';
+import { IMenuItem } from '../types/iMenuItem';
 
 const HOME = '/';
 const SIGN_IN = '/auth/signin';

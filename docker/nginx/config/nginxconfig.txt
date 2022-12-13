@@ -1,0 +1,1 @@
+https://www.digitalocean.com/community/tools/nginx?domains.0.server.wwwSubdomain=true&domains.0.https.letsEncryptEmail=info%40example.com&domains.0.php.php=false&domains.0.reverseProxy.reverseProxy=true&domains.0.routing.root=false

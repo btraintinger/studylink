@@ -1,16 +1,18 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
-COPY ../../../package.json ./
-COPY ../../../package-lock.json ./
+COPY ./package.json ./
+COPY ./package-lock.json ./
 
-RUN npm ci --only=production
+RUN npm install
 
 COPY . .
+
+RUN npx prisma generate
 
 EXPOSE 3000
 
 RUN npm run build
 
-CMD ["npx","prisma","db", "push","&&","npm", "run", "start"]
+CMD ["npm", "run", "start"]
