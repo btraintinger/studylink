@@ -1,4 +1,8 @@
-import { Department, DepartmentInput } from './department.type';
+import {
+  Department,
+  DepartmentCreateInput,
+  DepartmentUpdateInput,
+} from './department.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
@@ -13,6 +17,37 @@ import {
 } from 'type-graphql';
 import type { Context } from '../context';
 
+async function isDepartmentRelatedToUSer(
+  ctx: Context,
+  departmentId: number
+): Promise<boolean> {
+  const department = await ctx.prisma.department.findUnique({
+    where: {
+      id: departmentId,
+    },
+    select: {
+      schoolId: true,
+    },
+  });
+  return ctx.user?.admin?.schoolId === department?.schoolId;
+}
+
+async function isDepartmentExistent(
+  ctx: Context,
+  departmentId: number
+): Promise<boolean> {
+  const department = await ctx.prisma.department.findUnique({
+    where: {
+      id: departmentId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return department ? true : false;
+}
+
 @Resolver((of) => Department)
 export class DepartmentResolver {
   @FieldResolver()
@@ -26,6 +61,9 @@ export class DepartmentResolver {
 
   @Query((returns) => Department)
   async getDepartmentById(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isDepartmentRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
+
     const department = await ctx.prisma.department.findUnique({
       where: {
         id: id,
@@ -33,48 +71,55 @@ export class DepartmentResolver {
     });
 
     if (!department) throw new Error('Department not found');
-    if (department.schoolId !== ctx.user?.admin?.schoolId)
+    return department;
+  }
+
+  @Authorized('ADMIN')
+  @Mutation((returns) => Department)
+  async createDepartment(
+    @Arg('departmentInput') input: DepartmentCreateInput,
+    @Ctx() ctx: Context
+  ) {
+    if (!(await isDepartmentRelatedToUSer(ctx, input.id)))
       throw new Error('Not authorized');
+
+    if (await isDepartmentExistent(ctx, input.id))
+      throw new Error('Department already exists');
+
+    const department = await ctx.prisma.department.create({
+      data: {
+        name: input.name,
+        schoolId: input.schoolId,
+      },
+    });
+
+    if (!department) throw new Error('Department could not be created');
 
     return department;
   }
 
   @Authorized('ADMIN')
   @Mutation((returns) => Department)
-  async department(
-    @Arg('department') departmentInput: DepartmentInput,
+  async updateDepartment(
+    @Arg('departmentInput') input: DepartmentUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!ctx.user) throw new Error('Not logged in');
-
-    if (ctx.user.admin?.schoolId !== departmentInput.schoolId)
+    if (!(await isDepartmentRelatedToUSer(ctx, input.id)))
       throw new Error('Not authorized');
 
-    let department = await ctx.prisma.department.findUnique({
+    if (!(await isDepartmentExistent(ctx, input.id)))
+      throw new Error('Department already exists');
+
+    const department = await ctx.prisma.department.update({
       where: {
-        id: departmentInput.id,
+        id: input.id,
+      },
+      data: {
+        name: input.name,
       },
     });
 
-    if (!department) {
-      department = await ctx.prisma.department.create({
-        data: {
-          id: departmentInput.id,
-          name: departmentInput.name,
-          schoolId: departmentInput.schoolId,
-        },
-      });
-    } else {
-      department = await ctx.prisma.department.update({
-        where: {
-          id: departmentInput.id,
-        },
-        data: {
-          name: departmentInput.name,
-        },
-      });
-    }
-
+    if (!department) throw new Error('Department could not be updated');
     return department;
   }
 }

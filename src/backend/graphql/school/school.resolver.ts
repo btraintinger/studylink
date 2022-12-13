@@ -14,6 +14,29 @@ import {
 import type { Context } from '../context';
 import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
 
+async function isSchoolRelatedToUSer(
+  ctx: Context,
+  schoolId: number
+): Promise<boolean> {
+  return ctx.user?.admin?.schoolId === schoolId;
+}
+
+async function isSchoolExistent(
+  ctx: Context,
+  schoolId: number
+): Promise<boolean> {
+  const school = await ctx.prisma.school.findUnique({
+    where: {
+      id: schoolId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return school ? true : false;
+}
+
 @Resolver((of) => School)
 export class SchoolResolver {
   @FieldResolver()
@@ -37,15 +60,17 @@ export class SchoolResolver {
   @Authorized('ADMIN')
   @Query((returns) => School)
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!ctx.user) throw new Error('Not logged in');
+    if (!(await isSchoolRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
 
-    if (ctx.user.admin?.schoolId !== id) throw new Error('Not authorized');
-
-    return await ctx.prisma.school.findUnique({
+    const school = await ctx.prisma.school.findUnique({
       where: {
         id: id,
       },
     });
+
+    if (!school) throw new Error('School not found');
+    return school;
   }
 
   @Authorized('ADMIN')
@@ -54,8 +79,6 @@ export class SchoolResolver {
     @Arg('schoolCreationInput') schoolCreationInput: SchoolCreationInput,
     @Ctx() ctx: Context
   ) {
-    if (!ctx.user) throw new Error('Not logged in');
-
     const school = await ctx.prisma.school.create({
       data: {
         name: schoolCreationInput.name,
@@ -63,7 +86,7 @@ export class SchoolResolver {
         domain: schoolCreationInput.domain,
         admins: {
           connect: {
-            id: ctx.user.admin?.id,
+            id: ctx.user?.admin?.id,
           },
         },
       },
@@ -79,33 +102,40 @@ export class SchoolResolver {
     @Arg('schoolUpdateInput') schoolUpdateInput: SchoolUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!ctx.user) throw new Error('Not logged in');
-
-    if (ctx.user.admin?.schoolId !== schoolUpdateInput.id)
+    if (!(await isSchoolRelatedToUSer(ctx, schoolUpdateInput.id)))
       throw new Error('Not authorized');
 
-    let school = await ctx.prisma.school.findUnique({
+    if (!(await isSchoolExistent(ctx, schoolUpdateInput.id)))
+      throw new Error('School does not exist');
+
+    const school = await ctx.prisma.school.update({
       where: {
         id: schoolUpdateInput.id,
       },
+      data: {
+        name: schoolUpdateInput.name,
+        domain: schoolUpdateInput.domain,
+      },
     });
 
-    if (school) {
-      school = await ctx.prisma.school.update({
-        where: {
-          id: schoolUpdateInput.id,
-        },
-        data: {
-          name: schoolUpdateInput.name,
-          handle: schoolUpdateInput.handle,
-          domain: schoolUpdateInput.domain,
-        },
-      });
-    } else {
-      throw new Error('School does not exist');
-    }
-
     if (!school) throw new Error('School update failed');
+    return school;
+  }
+
+  @Mutation((returns) => School)
+  async deleteSchool(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isSchoolRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
+
+    if (!(await isSchoolExistent(ctx, id)))
+      throw new Error('School does not exist');
+
+    const school = await ctx.prisma.school.delete({
+      where: {
+        id: id,
+      },
+    });
+
     return school;
   }
 }

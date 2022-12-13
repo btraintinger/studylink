@@ -45,8 +45,5 @@ export class SchoolUpdateInput {
   name!: string;
 
   @Field()
-  handle!: string;
-
-  @Field()
   domain!: string;
 }

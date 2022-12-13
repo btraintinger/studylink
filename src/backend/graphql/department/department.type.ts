@@ -19,7 +19,7 @@ export class Department {
 }
 
 @InputType()
-export class DepartmentInput {
+export class DepartmentCreateInput {
   @Field((type) => ID)
   id!: number;
 
@@ -28,4 +28,13 @@ export class DepartmentInput {
 
   @Field((type) => Int)
   schoolId!: number;
+}
+
+@InputType()
+export class DepartmentUpdateInput {
+  @Field((type) => ID)
+  id!: number;
+
+  @Field()
+  name!: string;
 }
