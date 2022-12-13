@@ -1,4 +1,10 @@
-import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Link as MuiLink,
+} from '@mui/material';
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
@@ -30,11 +36,16 @@ export default function NavBar() {
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
           />
         </IconButton>
-        <Link href={ROUTES.HOME}>
-          <Typography variant="h6" noWrap>
+        <MuiLink component={Link} href={ROUTES.HOME} underline="none">
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ display: { xs: 'none', sm: 'flex' } }}
+          >
             STUDYLINK
           </Typography>
-        </Link>
+        </MuiLink>
       </Toolbar>
     </AppBar>
   );

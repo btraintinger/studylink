@@ -7,7 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../utils/apolloClient';
 import createEmotionCache from '../utils/createEmotionCache';
-import { themeDark } from '../utils/theme-dark';
+import { theme } from '../utils/theme';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -31,7 +31,7 @@ export default function MyApp(props: MyAppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
 
-      <ThemeProvider theme={themeDark}>
+      <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline enableColorScheme />
         <ApolloProvider client={apolloClient}>

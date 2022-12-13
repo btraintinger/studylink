@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import Layout from '../../../components/page/layout';
 
 const SCHOOL_QUERY = gql`
   query GetSchoolById($getSchoolByIdId: Float!) {
@@ -102,55 +103,62 @@ export default function School() {
   }, [isSubmitSuccessful]);
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-      <TextField
-        sx={{ mb: 2 }}
-        label="Name"
-        fullWidth
-        required
-        type="text"
-        error={!!errors['name']}
-        helperText={errors['name'] ? errors['name'].message : ''}
-        defaultValue={queryId === null ? '' : ' '} // formatting
-        {...register('name')}
-      />
-      <TextField
-        sx={{ mb: 2 }}
-        label="Handle"
-        fullWidth
-        required
-        type="text"
-        error={!!errors['handle']}
-        helperText={errors['handle'] ? errors['handle'].message : ''}
-        defaultValue={queryId === null ? '' : ' '} // formatting
-        disabled={queryId !== null}
-        {...register('handle')}
-      />
-      <TextField
-        sx={{ mb: 2 }}
-        label="Domain"
-        fullWidth
-        required
-        type="text"
-        error={!!errors['domain']}
-        helperText={errors['domain'] ? errors['domain'].message : ''}
-        defaultValue={queryId === null ? '' : ' '} // formatting
-        {...register('domain')}
-      />
-      <Button
-        sx={{
-          display: queryId ? 'inherit' : 'none',
-        }}
-        component={Link}
-        href="/admin/departments/new"
-        variant="contained"
-        passHref
-      >
-        neue Abteilung hinzufügen
-      </Button>
-      <Button variant="contained" fullWidth type="submit" sx={{ mt: 1, mb: 2 }}>
-        Speichern
-      </Button>
-    </Box>
+    <Layout home>
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
+        <TextField
+          sx={{ mb: 2 }}
+          label="Name"
+          fullWidth
+          required
+          type="text"
+          error={!!errors['name']}
+          helperText={errors['name'] ? errors['name'].message : ''}
+          defaultValue={queryId === null ? '' : ' '} // formatting
+          {...register('name')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Handle"
+          fullWidth
+          required
+          type="text"
+          error={!!errors['handle']}
+          helperText={errors['handle'] ? errors['handle'].message : ''}
+          defaultValue={queryId === null ? '' : ' '} // formatting
+          disabled={queryId !== null}
+          {...register('handle')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Domain"
+          fullWidth
+          required
+          type="text"
+          error={!!errors['domain']}
+          helperText={errors['domain'] ? errors['domain'].message : ''}
+          defaultValue={queryId === null ? '' : ' '} // formatting
+          {...register('domain')}
+        />
+        <Button
+          sx={{
+            display: queryId ? 'inherit' : 'none',
+          }}
+          component={Link}
+          href="/admin/departments/new"
+          variant="contained"
+          passHref
+        >
+          neue Abteilung hinzufügen
+        </Button>
+        <Button
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mt: 1, mb: 2 }}
+        >
+          Speichern
+        </Button>
+      </Box>
+    </Layout>
   );
 }
