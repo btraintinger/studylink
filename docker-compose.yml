@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: studylink
+    restart: always
+
+  studylink:
+    build: ./docker/app
+    container_name: studylink
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
+    command: npm run dev
+
+  webserver:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    command: certonly --webroot -w /var/www/certbot/ -d ${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --rsa-key-size 4096 --force-renewal
+
+volumes:
+  mysql_data:
