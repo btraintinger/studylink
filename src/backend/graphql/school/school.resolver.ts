@@ -12,7 +12,30 @@ import {
   Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { School, SchoolInput } from './school.type';
+import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
+
+async function isSchoolRelatedToUSer(
+  ctx: Context,
+  schoolId: number
+): Promise<boolean> {
+  return ctx.user?.admin?.schoolId === schoolId;
+}
+
+async function isSchoolExistent(
+  ctx: Context,
+  schoolId: number
+): Promise<boolean> {
+  const school = await ctx.prisma.school.findUnique({
+    where: {
+      id: schoolId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return school ? true : false;
+}
 
 @Resolver((of) => School)
 export class SchoolResolver {
@@ -37,58 +60,82 @@ export class SchoolResolver {
   @Authorized('ADMIN')
   @Query((returns) => School)
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!ctx.user) throw new Error('Not logged in');
+    if (!(await isSchoolRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
 
-    if (ctx.user.admin?.schoolId !== id) throw new Error('Not authorized');
-
-    return await ctx.prisma.school.findUnique({
+    const school = await ctx.prisma.school.findUnique({
       where: {
         id: id,
       },
     });
+
+    if (!school) throw new Error('School not found');
+    return school;
   }
 
   @Authorized('ADMIN')
   @Mutation((returns) => School)
-  async school(@Arg('school') schoolInput: SchoolInput, @Ctx() ctx: Context) {
-    if (!ctx.user) throw new Error('Not logged in');
-
-    if (ctx.user.admin?.schoolId !== schoolInput.id)
-      throw new Error('Not authorized');
-
-    let school = await ctx.prisma.school.findUnique({
-      where: {
-        id: schoolInput.id,
+  async createSchool(
+    @Arg('schoolCreationInput') schoolCreationInput: SchoolCreationInput,
+    @Ctx() ctx: Context
+  ) {
+    const school = await ctx.prisma.school.create({
+      data: {
+        name: schoolCreationInput.name,
+        handle: schoolCreationInput.handle,
+        domain: schoolCreationInput.domain,
+        admins: {
+          connect: {
+            id: ctx.user?.admin?.id,
+          },
+        },
       },
     });
 
-    if (school) {
-      school = await ctx.prisma.school.update({
-        where: {
-          id: schoolInput.id,
-        },
-        data: {
-          name: schoolInput.name,
-          domain: schoolInput.domain,
-        },
-      });
-    } else {
-      school = await ctx.prisma.school.create({
-        data: {
-          id: schoolInput.id,
-          name: schoolInput.name,
-          handle: schoolInput.handle,
-          domain: schoolInput.domain,
-          admins: {
-            connect: {
-              id: ctx.user.admin?.id,
-            },
-          },
-        },
-      });
-    }
+    if (!school) throw new Error('School creation failed');
+    return school;
+  }
 
-    if (!school) throw new Error('School creation / update failed');
+  @Authorized('ADMIN')
+  @Mutation((returns) => School)
+  async updateSchool(
+    @Arg('schoolUpdateInput') schoolUpdateInput: SchoolUpdateInput,
+    @Ctx() ctx: Context
+  ) {
+    if (!(await isSchoolRelatedToUSer(ctx, schoolUpdateInput.id)))
+      throw new Error('Not authorized');
+
+    if (!(await isSchoolExistent(ctx, schoolUpdateInput.id)))
+      throw new Error('School does not exist');
+
+    const school = await ctx.prisma.school.update({
+      where: {
+        id: schoolUpdateInput.id,
+      },
+      data: {
+        name: schoolUpdateInput.name,
+        domain: schoolUpdateInput.domain,
+      },
+    });
+
+    if (!school) throw new Error('School update failed');
+    return school;
+  }
+
+  @Mutation((returns) => School)
+  async deleteSchool(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isSchoolRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
+
+    if (!(await isSchoolExistent(ctx, id)))
+      throw new Error('School does not exist');
+
+    const school = await ctx.prisma.school.delete({
+      where: {
+        id: id,
+      },
+    });
+
     return school;
   }
 }

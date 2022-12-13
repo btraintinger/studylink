@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import LoadingPage from '../../../components/loadingPage';
+import { signOut } from 'next-auth/react';
 
 const SCHOOL_QUERY = gql`
   query GetAdministeredSchool {
@@ -36,7 +37,7 @@ export default function School() {
     return <LoadingPage />;
   }
 
-  if (data === null)
+  if (data === undefined)
     return (
       <Box
         sx={{
@@ -47,7 +48,15 @@ export default function School() {
         }}
       >
         <Typography>Keine Schule gefunden</Typography>
-        <Button component={Link} href="/admin/school/new" passHref>
+        <Button
+          component={Link}
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mt: 1, mb: 2 }}
+          href="/admin/school/new"
+          passHref
+        >
           Neue Schule erstellen
         </Button>
       </Box>
@@ -56,6 +65,18 @@ export default function School() {
   return (
     <>
       <Typography>{data.getAdministeredSchool.name}</Typography>
+      <Button
+        component={Link}
+        variant="contained"
+        fullWidth
+        type="submit"
+        sx={{ mt: 1, mb: 2 }}
+        href={'/admin/school/' + data.getAdministeredSchool.id}
+        passHref
+      >
+        Schule bearbeiten
+      </Button>
+      <Button onClick={() => signOut()}>Sign out</Button>
     </>
   );
 }
