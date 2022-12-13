@@ -1,4 +1,8 @@
-import { SchoolClass, SchoolClassInput } from './schoolClass.type';
+import {
+  SchoolClass,
+  SchoolClassUpdateInput,
+  SchoolClassCreationInput,
+} from './schoolClass.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
@@ -12,6 +16,30 @@ import {
   Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
+import { SchoolCreationInput } from '../school/school.type';
+
+async function isSchoolClassRelatedToUSer(
+  ctx: Context,
+  schoolClassId: number
+): Promise<boolean> {
+  return ctx.user?.admin?.schoolId === schoolClassId;
+}
+
+async function isSchoolClassExistent(
+  ctx: Context,
+  schoolClassId: number
+): Promise<boolean> {
+  const schoolClass = await ctx.prisma.schoolClass.findUnique({
+    where: {
+      id: schoolClassId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return schoolClass ? true : false;
+}
 
 @Resolver((of) => SchoolClass)
 export class SchoolClassResolver {
@@ -33,71 +61,76 @@ export class SchoolClassResolver {
   @Authorized('ADMIN')
   @Query((returns) => SchoolClass)
   async getSchoolClassById(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isSchoolClassExistent(ctx, id)))
+      throw new Error('SchoolClass not found');
+    if (!(await isSchoolClassRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
+
     const schoolClass = await ctx.prisma.schoolClass.findUnique({
       where: {
         id: id,
       },
     });
-    const department = await ctx.prisma.department.findUnique({
-      where: {
-        id: schoolClass?.departmentId,
-      },
-      select: {
-        schoolId: true,
-      },
-    });
-    if (!schoolClass) throw new Error('SchoolClass not found');
-    if (department?.schoolId !== ctx.user?.admin?.schoolId)
-      throw new Error('Not authorized');
 
     return schoolClass;
   }
 
   @Authorized('ADMIN')
   @Mutation((returns) => SchoolClass)
-  async schoolClass(
-    @Arg('schoolClass') schoolClassInput: SchoolClassInput,
+  async createSchoolClass(
+    @Arg('schoolClassCreateInput')
+    SchoolClassCreationInput: SchoolClassCreationInput,
     @Ctx() ctx: Context
   ) {
-    if (!ctx.user) throw new Error('Not logged in');
-
-    const department = await ctx.prisma.department.findUnique({
-      where: {
-        id: schoolClassInput.departmentId,
-      },
-      select: {
-        schoolId: true,
+    const schoolClass = await ctx.prisma.schoolClass.create({
+      data: {
+        name: SchoolClassCreationInput.name,
+        grade: SchoolClassCreationInput.grade,
+        department: {
+          connect: {
+            id: SchoolClassCreationInput.departmentId,
+          },
+        },
       },
     });
+  }
 
-    if (ctx.user.admin?.schoolId !== department?.schoolId)
+  @Authorized('ADMIN')
+  @Mutation((returns) => SchoolClass)
+  async updateSchoolClass(
+    @Arg('schoolClassUpdateInput')
+    SchoolClassUpdateInput: SchoolClassUpdateInput,
+    @Ctx() ctx: Context
+  ) {
+    if (!(await isSchoolClassExistent(ctx, SchoolClassUpdateInput.id)))
+      throw new Error('SchoolClass not found');
+    if (!(await isSchoolClassRelatedToUSer(ctx, SchoolClassUpdateInput.id)))
       throw new Error('Not authorized');
 
-    let schoolClass = await ctx.prisma.schoolClass.findUnique({
+    const schoolClass = await ctx.prisma.schoolClass.update({
       where: {
-        id: schoolClassInput.id,
+        id: SchoolClassUpdateInput.id,
+      },
+      data: {
+        name: SchoolClassUpdateInput.name,
+        grade: SchoolClassUpdateInput.grade,
       },
     });
+  }
 
-    if (!schoolClass) {
-      schoolClass = await ctx.prisma.schoolClass.create({
-        data: {
-          id: schoolClassInput.id,
-          name: schoolClassInput.name,
-          departmentId: schoolClassInput.departmentId,
-          grade: schoolClassInput.grade,
-        },
-      });
-    } else {
-      schoolClass = await ctx.prisma.schoolClass.update({
-        where: {
-          id: schoolClassInput.id,
-        },
-        data: {
-          name: schoolClassInput.name,
-        },
-      });
-    }
+  @Authorized('ADMIN')
+  @Mutation((returns) => SchoolClass)
+  async deleteSchoolClass(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isSchoolClassExistent(ctx, id)))
+      throw new Error('SchoolClass not found');
+    if (!(await isSchoolClassRelatedToUSer(ctx, id)))
+      throw new Error('Not authorized');
+
+    const schoolClass = await ctx.prisma.schoolClass.delete({
+      where: {
+        id: id,
+      },
+    });
 
     return schoolClass;
   }
