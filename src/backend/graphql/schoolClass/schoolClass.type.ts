@@ -23,10 +23,7 @@ export class SchoolClass {
 }
 
 @InputType()
-export class SchoolClassInput {
-  @Field((type) => ID)
-  id!: number;
-
+export class SchoolClassCreationInput {
   @Field()
   name!: string;
 
@@ -35,4 +32,16 @@ export class SchoolClassInput {
 
   @Field((type) => Int)
   departmentId!: number;
+}
+
+@InputType()
+export class SchoolClassUpdateInput {
+  @Field((type) => ID)
+  id!: number;
+
+  @Field()
+  name!: string;
+
+  @Field()
+  grade!: number;
 }
