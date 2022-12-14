@@ -12,19 +12,20 @@ export default function NotSignedInHome() {
           alignItems: 'center',
           flexDirection: 'column',
           minHeight: '100vh',
+          backgroundColor: '#ebfff1',
         }}
       >
-        <Typography variant="h6">
+        <Typography variant="h5">
           Studylink ist eine Plattform, die es Schülern innerhalb der Schule
           ermöglicht sich Nachhilfe anzubieten.
         </Typography>
-        <Typography variant="h6">
+        <Typography variant="h6" sx={{ m: 1 }}>
           Anmelden oder Registrieren um fortzufahren.
         </Typography>
-        <Button variant="contained">
+        <Button variant="contained" sx={{ m: 1 }}>
           <Link href="/auth/signin">Anmelden</Link>
         </Button>
-        <Button variant="contained">
+        <Button variant="contained" sx={{ m: 1 }}>
           <Link href="/auth/signup">Registrieren</Link>
         </Button>
       </Box>

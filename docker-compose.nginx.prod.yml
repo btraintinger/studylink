@@ -1,0 +1,107 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: db
+    volumes:
+      - db_data:/var/lib/mysql
+    expose:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
+    networks:
+      - backend
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/prod/Dockerfile
+    container_name: studylink
+    volumes:
+      - .:/app
+    expose:
+      - 3000
+    depends_on:
+      db_migration:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
+      NEXTAUTH_URL: ${DOMAIN}
+      DOMAIN: ${DOMAIN}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: development
+    restart: always
+    networks:
+      - backend
+      - frontend
+
+  db_migration:
+    build:
+      context: .
+      dockerfile: ./docker/app/prod/Dockerfile
+    container_name: db_migration
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
+    command: npx prisma db push
+    networks:
+      - backend
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN=${DOMAIN}
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    depends_on:
+      - app
+      - certbot
+    volumes:
+      - certbot_var:/var/lib/letsencrypt/:ro
+      - certbot_var:/etc/letsencrypt/:ro
+      - nginx_logs:/var/log/nginx/:rw
+    networks:
+      - frontend
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - certbot_var:/var/lib/letsencrypt/:rw
+      - certbot_var:/etc/letsencrypt/:rw
+    command: cerbot certonly --webroot -w /var/www/certbot/ -d ${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --rsa-key-size 4096 --force-renewal
+    networks:
+      - frontend
+
+  cert_renewer:
+    build: ./docker/cert_renewer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - frontend
+
+volumes:
+  db_data:
+  certbot_var:
+  certbot_etc:
+  nginx_logs:
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
