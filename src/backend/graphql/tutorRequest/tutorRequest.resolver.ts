@@ -1,4 +1,9 @@
-import { TutorRequest, TutorRequestInput } from './tutorRequest.type';
+import {
+  TutorRequest,
+  TutorRequestInput,
+  TutorRequestCreationInput,
+  TutorRequestUpdateInput,
+} from './tutorRequest.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
@@ -13,66 +18,138 @@ import {
 } from 'type-graphql';
 import type { Context } from '../context';
 
+async function isTutorRequestExistent(
+  ctx: Context,
+  tutorRequestId: number
+): Promise<boolean> {
+  const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+    where: {
+      id: tutorRequestId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return tutorRequest ? true : false;
+}
+
+async function isTutorRequestRelatedToUser(
+  ctx: Context,
+  tutorRequestId: number
+): Promise<boolean> {
+  return ctx.user?.student?.id === tutorRequestId;
+}
+
 @Resolver((of) => TutorRequest)
 export class TutorRequestResolver {
-  @Authorized('STUDENT', 'ADMIN')
-  @Mutation((returns) => TutorRequest)
-  async tutorRequest(
-    @Ctx() ctx: Context,
-    @Arg('tutorRequestInput') tutorRequestInput: TutorRequestInput
-  ) {
-    if (
-      ctx.user?.role === 'STUDENT' &&
-      tutorRequestInput.studentId !== ctx.user?.student?.id
-    ) {
-      throw new Error('Unauthorized');
+  @Authorized('STUDENT')
+  @Query((returns) => TutorRequest)
+  async getTutorRequestById(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isTutorRequestExistent(ctx, id))) {
+      throw new Error('TutorRequest does not exist');
     }
 
-    let tutorRequest = await ctx.prisma.tutorRequest.findUnique({
-      where: { id: tutorRequestInput.id },
+    if (!(await isTutorRequestRelatedToUser(ctx, id))) {
+      throw new Error('TutorRequest is not related to user');
+    }
+
+    const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+      where: {
+        id: id,
+      },
     });
-
-    if (tutorRequest) {
-      tutorRequest = await ctx.prisma.tutorRequest.update({
-        where: { id: tutorRequestInput.id },
-        data: tutorRequestInput,
-      });
-      if (!tutorRequest) throw new Error('Tutor Request could not be updated');
-    } else {
-      tutorRequest = await ctx.prisma.tutorRequest.create({
-        data: {
-          studentId: tutorRequestInput.studentId,
-          schoolClassId: tutorRequestInput.schoolClassId,
-          schoolSubjectId: tutorRequestInput.schoolSubjectId,
-          description: tutorRequestInput.description,
-        },
-      });
-      if (!tutorRequest) throw new Error('Tutor Request could not be created');
-    }
 
     return tutorRequest;
   }
 
-  @Authorized('STUDENT', 'ADMIN')
+  @Authorized('STUDENT')
   @Mutation((returns) => TutorRequest)
-  async deleteTutorRequest(@Ctx() ctx: Context, @Arg('id') id: string) {
-    const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
-      where: {},
+  async createTutorRequest(
+    @Arg('TutorRequestCreationInput')
+    TutorRequestCreationInput: TutorRequestCreationInput,
+    @Ctx() ctx: Context
+  ) {
+    const tutorRequest = await ctx.prisma.tutorRequest.create({
+      data: {
+        schoolClass: {
+          connect: {
+            id: TutorRequestCreationInput.schoolClassId,
+          },
+        },
+        schoolSubject: {
+          connect: {
+            id: TutorRequestCreationInput.schoolSubjectId,
+          },
+        },
+        teacher: TutorRequestCreationInput.teacher,
+        description: TutorRequestCreationInput.description,
+        student: {
+          connect: {
+            id: ctx.user?.student?.id,
+          },
+        },
+      },
     });
 
-    if (!tutorRequest) throw new Error('Tutor Request not found');
+    return tutorRequest;
+  }
 
-    if (
-      ctx.user?.role === 'STUDENT' &&
-      tutorRequest.studentId !== ctx.user?.student?.id
-    ) {
-      throw new Error('Unauthorized');
+  @Authorized('STUDENT')
+  @Mutation((returns) => TutorRequest)
+  async updateTutorRequest(
+    @Arg('TutorRequestUpdateInput')
+    TutorRequestUpdateInput: TutorRequestUpdateInput,
+    @Ctx() ctx: Context
+  ) {
+    if (!(await isTutorRequestExistent(ctx, TutorRequestUpdateInput.id))) {
+      throw new Error('TutorRequest does not exist');
     }
 
-    const deletedTutorRequest = await ctx.prisma.tutorRequest.delete({
-      where: { id: tutorRequest.id },
+    if (!(await isTutorRequestRelatedToUser(ctx, TutorRequestUpdateInput.id))) {
+      throw new Error('TutorRequest is not related to user');
+    }
+
+    const tutorRequest = await ctx.prisma.tutorRequest.update({
+      where: {
+        id: TutorRequestUpdateInput.id,
+      },
+      data: {
+        schoolClass: {
+          connect: {
+            id: TutorRequestUpdateInput.schoolClassId,
+          },
+        },
+        schoolSubject: {
+          connect: {
+            id: TutorRequestUpdateInput.schoolSubjectId,
+          },
+        },
+        teacher: TutorRequestUpdateInput.teacher,
+        description: TutorRequestUpdateInput.description,
+      },
     });
 
-    return deletedTutorRequest;
+    return tutorRequest;
+  }
+
+  @Authorized('STUDENT')
+  @Mutation((returns) => TutorRequest)
+  async deleteTutorRequest(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isTutorRequestExistent(ctx, id))) {
+      throw new Error('TutorRequest does not exist');
+    }
+
+    if (!(await isTutorRequestRelatedToUser(ctx, id))) {
+      throw new Error('TutorRequest is not related to user');
+    }
+
+    const tutorRequest = await ctx.prisma.tutorRequest.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return tutorRequest;
   }
 }
