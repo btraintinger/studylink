@@ -14,8 +14,6 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
-    networks:
-      - backend
 
   app:
     build:

@@ -60,6 +60,7 @@ export default function School() {
         >
           Neue Schule erstellen
         </Button>
+        <Button onClick={() => signOut()}>Sign out</Button>
       </Box>
     );
 
