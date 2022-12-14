@@ -5,5 +5,5 @@ export default function FormWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  return <Box sx={{ padding: 10 }}>{children}</Box>;
+  return <Box sx={{ marginTop: 10 }}>{children}</Box>;
 }

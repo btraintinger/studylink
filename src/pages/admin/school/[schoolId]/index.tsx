@@ -104,7 +104,7 @@ export default function School() {
   }, [isSubmitSuccessful]);
 
   return (
-    <Layout role="admin">
+    <Layout role="ADMIN">
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField

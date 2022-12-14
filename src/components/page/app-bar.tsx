@@ -44,9 +44,6 @@ export default function NavBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'flex' }, ml: 4 }}
           >
-            <Groups3TwoToneIcon
-              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
-            />
             STUDYLINK
           </Typography>
         </MuiLink>

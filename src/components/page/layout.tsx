@@ -34,15 +34,12 @@ export default function Layout({ children, role }: Props) {
 
   return (
     <AppContextProvider>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid container>
+        <Grid>
           <NavBar />
         </Grid>
         <MiniDrawer />
-        <Grid item xs={8}>
-          <Main>{children}</Main>
-        </Grid>
-        <Grid></Grid>
+        <Main>{children}</Main>
       </Grid>
     </AppContextProvider>
   );
