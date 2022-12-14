@@ -26,7 +26,6 @@ import {
   COMMON_LINKS,
 } from '../../constants/menu-items-list';
 import Link from 'next/link';
-import { IMenuItem } from '../types';
 
 const drawerWidth = 240;
 
@@ -77,7 +76,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer(role: string) {
+export default function MiniDrawer() {
   const theme = useTheme();
   const { isDrawerOpen, setDrawerOpen } = useAppContext();
 
