@@ -1,53 +1,55 @@
 version: '3'
 
 services:
-  db_dev:
+  db:
     image: mariadb:latest
-    container_name: db_dev
-    ports:
-      - 3306:3306
+    container_name: db
     volumes:
-      - db_data_dev:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    expose:
+      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
+    networks:
+      - backend
 
-  app_dev:
+  app:
     build:
       context: .
-      dockerfile: ./docker/app/dev/Dockerfile
-    container_name: studylink_dev
-    ports:
-      - 3000:3000
+      dockerfile: ./docker/app/prod/Dockerfile
+    container_name: studylink
     volumes:
       - .:/app
+    ports:
+      - 80:80
     depends_on:
-      db_migration_dev:
+      db_migration:
         condition: service_completed_successfully
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db_dev:3306/${MYSQL_DATABASE}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       NEXTAUTH_URL: ${DOMAIN}
       DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: development
     restart: always
+    command: npm run start -p 80
 
-  db_migration_dev:
+  db_migration:
     build:
       context: .
-      dockerfile: ./docker/app/dev/Dockerfile
-    container_name: db_migration_dev
+      dockerfile: ./docker/app/prod/Dockerfile
+    container_name: db_migration
     volumes:
       - .:/app
     depends_on:
-      db_dev:
-        condition: service_started
+      - db
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db_dev:3306/${MYSQL_DATABASE}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
     command: npx prisma db push
 
 volumes:
-  db_data_dev:
+  db_data:

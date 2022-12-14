@@ -30,7 +30,7 @@ services:
       db_migration:
         condition: service_completed_successfully
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       NEXTAUTH_URL: ${DOMAIN}
       DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
@@ -50,7 +50,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
     command: npx prisma db push
     networks:
       - backend
