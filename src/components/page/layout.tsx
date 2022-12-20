@@ -34,13 +34,11 @@ export default function Layout({ children, role }: Props) {
 
   return (
     <AppContextProvider>
-      <Grid container>
-        <Grid>
-          <NavBar />
-        </Grid>
+      <Box sx={{ display: 'flex' }}>
+        <NavBar />
         <MiniDrawer />
         <Main>{children}</Main>
-      </Grid>
+      </Box>
     </AppContextProvider>
   );
 }

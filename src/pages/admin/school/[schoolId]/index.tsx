@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -108,7 +108,8 @@ export default function School() {
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
-            sx={{ mb: 2 }}
+            sx={{ mb: 8 }}
+            variant="standard"
             label="Name"
             fullWidth
             required

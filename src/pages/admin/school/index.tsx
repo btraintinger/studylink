@@ -65,7 +65,7 @@ export default function School() {
     );
 
   return (
-    <Layout>
+    <Layout role="ADMIN">
       <Typography>{data.getAdministeredSchool.name}</Typography>
       <Button
         component={Link}
