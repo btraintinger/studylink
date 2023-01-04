@@ -18,8 +18,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { useAppContext } from '../../context/app-context';
+import { useDrawerContext } from '../../context/app-context';
 import { useContext } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   ADMIN_LINKS,
   STUDENT_LINKS,
@@ -79,7 +80,12 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer(role: string) {
   const theme = useTheme();
-  const { isDrawerOpen, setDrawerOpen } = useAppContext();
+  const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
+  const { data: session, status } = useSession();
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const userRole = session?.user?.role;
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -101,6 +107,7 @@ export default function MiniDrawer(role: string) {
         </IconButton>
       </DrawerHeader>
       <Divider />
+
       <List>
         {ADMIN_LINKS.map(({ text, route, icon }, id) => (
           <ListItem

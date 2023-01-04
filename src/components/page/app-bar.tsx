@@ -8,9 +8,8 @@ import {
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
-import Brightness5Icon from '@mui/icons-material/Brightness5';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import { useAppContext } from '../../context/app-context';
+import { useDrawerContext } from '../../context/app-context';
 
 export default function NavBar() {
   const handleDrawerOpen = () => {
@@ -20,7 +19,7 @@ export default function NavBar() {
     setDrawerOpen(!isDrawerOpen);
   };
 
-  const { isDrawerOpen, setDrawerOpen } = useAppContext();
+  const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
 
   return (
     <AppBar
@@ -33,7 +32,7 @@ export default function NavBar() {
           aria-label="open drawer"
           onClick={handleDrawerOpen}
           edge="start"
-          sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
+          sx={{ display: { xs: 'flex', md: 'flex', color: '#ffffff' }, mr: 1 }}
         >
           <MenuIcon />
         </IconButton>
@@ -43,6 +42,20 @@ export default function NavBar() {
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'flex' }, ml: 4 }}
+          >
+            <Groups3TwoToneIcon
+              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+            />
+            STUDYLINK
+          </Typography>
+          <Typography
+            variant="h4"
+            noWrap
+            component="div"
+            sx={{
+              display: { xs: 'flex', sm: 'none', color: '#ffffff' },
+              ml: 4,
+            }}
           >
             <Groups3TwoToneIcon
               sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}

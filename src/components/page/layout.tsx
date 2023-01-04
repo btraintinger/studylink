@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { styled, Grid } from '@mui/material';
 import NavBar from './app-bar';
 
-import { AppContextProvider } from '../../context/app-context';
+import { DrawerContextProvider } from '../../context/app-context';
 import MiniDrawer from './variant-drawer';
 
 export const siteTitle = 'Studylink';
@@ -31,17 +31,17 @@ const ItemBox = styled(Box)`
 
 export default function Layout({ children }: Props) {
   return (
-    <AppContextProvider>
+    <DrawerContextProvider>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <NavBar />
         </Grid>
         <MiniDrawer />
-        <Grid item xs={8}>
+        <Grid item xs={9}>
           <Main>{children}</Main>
         </Grid>
-        <Grid></Grid>
+        <Grid> xs={3}</Grid>
       </Grid>
-    </AppContextProvider>
+    </DrawerContextProvider>
   );
 }

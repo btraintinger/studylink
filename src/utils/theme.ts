@@ -32,7 +32,6 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#1E5128',
-          //#D8E9A8
         },
       },
     },
@@ -80,7 +79,6 @@ export const darkTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#1E5128',
-          //#D8E9A8
         },
       },
     },
