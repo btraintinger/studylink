@@ -95,14 +95,6 @@ export default function MiniDrawer() {
     }
   };
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
-
   return (
     <Drawer variant="permanent" open={isDrawerOpen}>
       <DrawerHeader
