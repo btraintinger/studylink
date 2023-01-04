@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import { useDrawerContext } from '../../context/app-context';
 import { useContext } from 'react';
 import { useSession } from 'next-auth/react';
@@ -86,6 +87,14 @@ export default function MiniDrawer() {
   // @ts-ignore
   const userRole = session?.user?.role;
 
+  const toggleDrawerOpen = () => {
+    if (isDrawerOpen === true) {
+      setDrawerOpen(false);
+    } else {
+      setDrawerOpen(true);
+    }
+  };
+
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
   };
@@ -96,8 +105,36 @@ export default function MiniDrawer() {
 
   return (
     <Drawer variant="permanent" open={isDrawerOpen}>
-      <DrawerHeader>
-        <IconButton onClick={handleDrawerClose}>
+      <DrawerHeader
+        sx={{
+          display: { color: '#000000' },
+        }}
+      >
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            display: { xs: 'none', sm: 'flex', color: '#000000' },
+            ml: 1,
+          }}
+        >
+          <InstagramIcon />
+        </Typography>
+
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          letterSpacing={2}
+          sx={{
+            display: { xs: 'none', sm: 'flex', color: '#000000' },
+            ml: 1,
+          }}
+        >
+          STUDYLINK
+        </Typography>
+        <IconButton onClick={toggleDrawerOpen}>
           {theme.direction === 'rtl' ? (
             <ChevronRightIcon />
           ) : (

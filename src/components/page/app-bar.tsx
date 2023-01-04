@@ -41,7 +41,10 @@ export default function NavBar() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'flex' }, ml: 4 }}
+            sx={{
+              display: { xs: 'none', sm: 'flex', color: '#ffffff' },
+              ml: 4,
+            }}
           >
             STUDYLINK
           </Typography>
@@ -55,7 +58,10 @@ export default function NavBar() {
             }}
           >
             <Groups3TwoToneIcon
-              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+              sx={{
+                display: { xs: 'none', md: 'flex', color: '#ffffff' },
+                mr: 1,
+              }}
             />
             STUDYLINK
           </Typography>
@@ -66,7 +72,7 @@ export default function NavBar() {
           aria-label="change theme"
           onClick={handleChangeTheme}
           edge="start"
-          sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
+          sx={{ display: { xs: 'flex', md: 'flex', color: '#ffffff' }, mr: 1 }}
         >
           <Brightness4Icon
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}

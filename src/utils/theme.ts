@@ -31,14 +31,14 @@ export const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1E5128',
+          backgroundColor: '#4E9F3D',
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#4E9F3D',
+          backgroundColor: '#ffffff',
         },
       },
     },
