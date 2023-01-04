@@ -1,6 +1,5 @@
 import {
   TutorRequest,
-  TutorRequestInput,
   TutorRequestCreationInput,
   TutorRequestUpdateInput,
 } from './tutorRequest.type';

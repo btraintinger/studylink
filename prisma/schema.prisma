@@ -8,6 +8,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model School {
+  id          Int          @id @unique @default(autoincrement())
+  handle      String       @unique
+  domain      String
+  name        String
+  departments Department[]
+  admins      Admin[]
+
+  @@map("school")
+}
+
 model ClassHasSubject {
   schoolClassId Int           @map("school_class_id")
   subjectId     Int           @map("subject_id")
@@ -18,17 +29,6 @@ model ClassHasSubject {
   @@index([schoolClassId])
   @@index([subjectId])
   @@map("class_has_subject")
-}
-
-model School {
-  id          Int          @id @unique @default(autoincrement())
-  handle      String       @unique
-  domain      String
-  name        String
-  departments Department[]
-  admins      Admin[]
-
-  @@map("school")
 }
 
 model Department {

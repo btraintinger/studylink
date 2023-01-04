@@ -26,7 +26,28 @@ export class TutorOffering {
 }
 
 @InputType()
-export class TutorOfferingInput {
+export class TutorOfferingInputCreation {
+  @Field((type) => Int)
+  id!: number;
+
+  @Field((type) => Int)
+  studentId!: number;
+
+  @Field((type) => Int)
+  schoolClassId!: number;
+
+  @Field((type) => Int)
+  schoolSubjectId!: number;
+
+  @Field()
+  teacher!: string;
+
+  @Field()
+  description!: string;
+}
+
+@InputType()
+export class TutorOfferingUpdateInput {
   @Field((type) => Int)
   id!: number;
 
