@@ -1,13 +1,13 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
-import Layout from '../../../components/page/layout';
-import FormWrapper from '../../../components/utils/formWrapper';
+import Layout from '../../../../components/page/layout';
+import FormWrapper from '../../../../components/utils/formWrapper';
 
 const SCHOOL_QUERY = gql`
   query GetSchoolById($getSchoolByIdId: Float!) {
@@ -104,11 +104,12 @@ export default function School() {
   }, [isSubmitSuccessful]);
 
   return (
-    <Layout home>
+    <Layout role="ADMIN">
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
-            sx={{ mb: 2 }}
+            sx={{ mb: 8 }}
+            variant="standard"
             label="Name"
             fullWidth
             required

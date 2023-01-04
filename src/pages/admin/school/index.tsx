@@ -60,11 +60,12 @@ export default function School() {
         >
           Neue Schule erstellen
         </Button>
+        <Button onClick={() => signOut()}>Sign out</Button>
       </Box>
     );
 
   return (
-    <Layout>
+    <Layout role="ADMIN">
       <Typography>{data.getAdministeredSchool.name}</Typography>
       <Button
         component={Link}
