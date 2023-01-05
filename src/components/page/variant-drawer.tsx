@@ -97,17 +97,13 @@ export default function MiniDrawer() {
 
   return (
     <Drawer variant="permanent" open={isDrawerOpen}>
-      <DrawerHeader
-        sx={{
-          display: { color: '#000000' },
-        }}
-      >
+      <DrawerHeader>
         <Typography
           variant="h6"
           noWrap
           component="div"
           sx={{
-            display: { xs: 'none', sm: 'flex', color: '#000000' },
+            display: { xs: 'none', sm: 'flex' },
             ml: 1,
           }}
         >
@@ -120,7 +116,7 @@ export default function MiniDrawer() {
           component="div"
           letterSpacing={2}
           sx={{
-            display: { xs: 'none', sm: 'flex', color: '#000000' },
+            display: { xs: 'none', sm: 'flex' },
             ml: 1,
           }}
         >

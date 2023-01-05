@@ -1,7 +1,7 @@
 import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
-import { amber, deepOrange, green, grey } from '@mui/material/colors';
+import { amber, blue, deepOrange, green, grey } from '@mui/material/colors';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -18,7 +18,8 @@ export const getDesignTokens = (mode: PaletteMode) => ({
       ? {
           // palette values for light mode
           primary: green,
-          divider: green[200],
+          secondary: deepOrange,
+          divider: blue[200],
           text: {
             primary: grey[900],
             secondary: grey[800],
@@ -26,46 +27,72 @@ export const getDesignTokens = (mode: PaletteMode) => ({
         }
       : {
           // palette values for dark mode
-          primary: deepOrange,
-          divider: deepOrange[700],
+          primary: blue,
+          divider: blue[700],
           background: {
-            default: deepOrange[900],
-            paper: deepOrange[900],
+            default: grey[900],
+            paper: grey[900],
           },
           text: {
-            primary: '#fff',
-            secondary: grey[500],
+            primary: '#fffff',
+            secondary: grey[400],
           },
         }),
   },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#ffffff',
-        },
-      },
-    },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: '#ffffff',
-        },
-      },
-    },
-    MuiLink: {
-      styleOverrides: {
-        root: {
-          color: '#000000',
-        },
-      },
-    },
-    MuiListItem: {
-      styleOverrides: {
-        root: {
-          color: '#000000',
-        },
-      },
-    },
+    ...(mode === 'light'
+      ? {
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                backgroundColor: '#ffffff',
+              },
+            },
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: '#ffffff',
+              },
+            },
+          },
+          MuiListItem: {
+            styleOverrides: {
+              root: {
+                color: '#000000',
+              },
+            },
+          },
+        }
+      : {
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                backgroundColor: '#000000',
+              },
+            },
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: grey[900],
+              },
+            },
+          },
+          MuiLink: {
+            styleOverrides: {
+              root: {
+                color: '#000000',
+              },
+            },
+          },
+          MuiListItem: {
+            styleOverrides: {
+              root: {
+                color: '#ffffff',
+              },
+            },
+          },
+        }),
   },
 });
