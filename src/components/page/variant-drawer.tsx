@@ -96,7 +96,11 @@ export default function MiniDrawer() {
   };
 
   return (
-    <Drawer variant="permanent" open={isDrawerOpen}>
+    <Drawer
+      variant="permanent"
+      open={isDrawerOpen}
+      sx={{ display: { xs: 'none', sm: 'flex' } }}
+    >
       <DrawerHeader>
         <Typography
           variant="h6"

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Main from './main';
 import Box from '@mui/material/Box';
-import { styled, Grid } from '@mui/material';
+import { styled, Grid, Link } from '@mui/material';
 import NavBar from './app-bar';
 
 import { DrawerContextProvider } from '../../context/app-context';
@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
 import Typography from '@mui/material/Typography';
+import { Footer } from './footer';
 
 export const siteTitle = 'Studylink';
 
@@ -43,6 +44,7 @@ export default function Layout({ children, role }: Props) {
         <Grid item padding={3} paddingTop={1}>
           <Main>{children}</Main>
         </Grid>
+        <Footer />
       </Grid>
     </DrawerContextProvider>
   );
