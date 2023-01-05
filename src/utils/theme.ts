@@ -1,7 +1,5 @@
-import { createContext, useState, useMemo } from 'react';
-import { createTheme } from '@mui/material/styles';
 import { Roboto } from '@next/font/google';
-import React from 'react';
+
 import { PaletteMode } from '@mui/material';
 import { amber, deepOrange, green, grey } from '@mui/material/colors';
 
@@ -20,7 +18,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
       ? {
           // palette values for light mode
           primary: green,
-          divider: amber[200],
+          divider: green[200],
           text: {
             primary: grey[900],
             secondary: grey[800],
@@ -39,5 +37,35 @@ export const getDesignTokens = (mode: PaletteMode) => ({
             secondary: grey[500],
           },
         }),
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+        },
+      },
+    },
   },
 });
