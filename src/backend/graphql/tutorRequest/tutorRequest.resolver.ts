@@ -33,11 +33,19 @@ async function isTutorRequestExistent(
   return tutorRequest ? true : false;
 }
 
-async function isTutorRequestRelatedToUser(
+async function isTutorRequestByUser(
   ctx: Context,
   tutorRequestId: number
 ): Promise<boolean> {
-  return ctx.user?.student?.id === tutorRequestId;
+  const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+    where: {
+      id: tutorRequestId,
+    },
+    select: {
+      studentId: true,
+    },
+  });
+  return ctx.user?.student?.id === tutorRequest?.studentId;
 }
 
 @Resolver((of) => TutorRequest)
@@ -45,13 +53,10 @@ export class TutorRequestResolver {
   @Authorized('STUDENT')
   @Query((returns) => TutorRequest)
   async getTutorRequestById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isTutorRequestExistent(ctx, id))) {
+    if (!(await isTutorRequestExistent(ctx, id)))
       throw new Error('TutorRequest does not exist');
-    }
-
-    if (!(await isTutorRequestRelatedToUser(ctx, id))) {
-      throw new Error('TutorRequest is not related to user');
-    }
+    if (!(await isTutorRequestByUser(ctx, id)))
+      throw new Error('TutorRequest was not created by user');
 
     const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
       where: {
@@ -101,13 +106,10 @@ export class TutorRequestResolver {
     TutorRequestUpdateInput: TutorRequestUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isTutorRequestExistent(ctx, TutorRequestUpdateInput.id))) {
+    if (!(await isTutorRequestExistent(ctx, TutorRequestUpdateInput.id)))
       throw new Error('TutorRequest does not exist');
-    }
-
-    if (!(await isTutorRequestRelatedToUser(ctx, TutorRequestUpdateInput.id))) {
+    if (!(await isTutorRequestByUser(ctx, TutorRequestUpdateInput.id)))
       throw new Error('TutorRequest is not related to user');
-    }
 
     const tutorRequest = await ctx.prisma.tutorRequest.update({
       where: {
@@ -135,19 +137,18 @@ export class TutorRequestResolver {
   @Authorized('STUDENT')
   @Mutation((returns) => TutorRequest)
   async deleteTutorRequest(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isTutorRequestExistent(ctx, id))) {
+    if (!(await isTutorRequestExistent(ctx, id)))
       throw new Error('TutorRequest does not exist');
-    }
-
-    if (!(await isTutorRequestRelatedToUser(ctx, id))) {
+    if (!(await isTutorRequestByUser(ctx, id)))
       throw new Error('TutorRequest is not related to user');
-    }
 
     const tutorRequest = await ctx.prisma.tutorRequest.delete({
       where: {
         id: id,
       },
     });
+
+    if (!tutorRequest) throw new Error('TutorRequest could not be deleted');
 
     return tutorRequest;
   }

@@ -22,11 +22,23 @@ export default function NotSignedInHome() {
         <Typography variant="h6" sx={{ m: 1 }}>
           Anmelden oder Registrieren um fortzufahren.
         </Typography>
-        <Button variant="contained" sx={{ m: 1 }}>
-          <Link href="/auth/signin">Anmelden</Link>
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          component={Link}
+          href="/auth/signin"
+          passHref
+        >
+          Anmelden
         </Button>
-        <Button variant="contained" sx={{ m: 1 }}>
-          <Link href="/auth/signup">Registrieren</Link>
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          component={Link}
+          href="/auth/signup"
+          passHref
+        >
+          Registrieren als Admin um eine Schule zu organisieren
         </Button>
       </Box>
       <Footer />

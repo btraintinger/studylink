@@ -3,6 +3,23 @@ import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
 import prisma from '../utils/prismadb';
 
+async function isUserAlreadyExistent(email: string) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+
+  return user ? true : false;
+}
+
+function areCredentialsValid(credentials) {
+  return (
+    isEmail(credentials.email) &&
+    credentials.password.length > 0 &&
+    credentials.name.length > 0
+  );
+}
+
 export async function signin(credentials) {
   if (credentials === undefined) throw new Error('Invalid credentials');
 
@@ -22,26 +39,9 @@ export async function signin(credentials) {
 export async function signup(credentials) {
   if (credentials === undefined) throw new Error('Invalid credentials');
 
-  const roles = ['ADMIN', 'STUDENT'];
-  if (
-    !isEmail(credentials.email) ||
-    credentials.password.length < 1 ||
-    credentials.name.length < 1 ||
-    !roles.includes(credentials.role)
-  ) {
-    throw new Error('Invalid credentials');
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      email: credentials.email,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (user !== null) throw new Error('User existiert bereits');
+  if (!areCredentialsValid(credentials)) throw new Error('Invalid credentials');
+  if (await isUserAlreadyExistent(credentials.email))
+    throw new Error('User existiert bereits');
 
   // hash and salt password with bcrypt
   const hashedPassword = await bcrypt.hash(credentials.password, 10);
@@ -51,28 +51,23 @@ export async function signup(credentials) {
       name: credentials.name,
       email: credentials.email,
       password: hashedPassword,
-      role: credentials.role,
+      role: 'ADMIN',
     },
   });
 
   if (newUser === null) throw new Error('User konnte nicht erstellt werden');
 
-  let reference: Student | Admin | null = null;
-  if (credentials.role === 'STUDENT') {
-    reference = await prisma.student.create({
-      data: {
-        userId: newUser.id,
+  const admin = await prisma.admin.create({
+    data: {
+      user: {
+        connect: {
+          id: newUser.id,
+        },
       },
-    });
-  } else if (credentials.role === 'ADMIN') {
-    reference = await prisma.admin.create({
-      data: {
-        userId: newUser.id,
-      },
-    });
-  }
+    },
+  });
 
-  if (reference === null) {
+  if (admin === null) {
     await prisma.user.delete({
       where: {
         id: newUser.id,

@@ -18,7 +18,7 @@ import {
 import type { Context } from '../context';
 import { SchoolCreationInput } from '../school/school.type';
 
-async function isSchoolClassRelatedToUSer(
+async function isUserAdministratingSchoolClass(
   ctx: Context,
   schoolClassId: number
 ): Promise<boolean> {
@@ -63,7 +63,7 @@ export class SchoolClassResolver {
   async getSchoolClassById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isSchoolClassExistent(ctx, id)))
       throw new Error('SchoolClass not found');
-    if (!(await isSchoolClassRelatedToUSer(ctx, id)))
+    if (!(await isUserAdministratingSchoolClass(ctx, id)))
       throw new Error('Not authorized');
 
     const schoolClass = await ctx.prisma.schoolClass.findUnique({
@@ -104,7 +104,9 @@ export class SchoolClassResolver {
   ) {
     if (!(await isSchoolClassExistent(ctx, SchoolClassUpdateInput.id)))
       throw new Error('SchoolClass not found');
-    if (!(await isSchoolClassRelatedToUSer(ctx, SchoolClassUpdateInput.id)))
+    if (
+      !(await isUserAdministratingSchoolClass(ctx, SchoolClassUpdateInput.id))
+    )
       throw new Error('Not authorized');
 
     const schoolClass = await ctx.prisma.schoolClass.update({
@@ -123,7 +125,7 @@ export class SchoolClassResolver {
   async deleteSchoolClass(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isSchoolClassExistent(ctx, id)))
       throw new Error('SchoolClass not found');
-    if (!(await isSchoolClassRelatedToUSer(ctx, id)))
+    if (!(await isUserAdministratingSchoolClass(ctx, id)))
       throw new Error('Not authorized');
 
     const schoolClass = await ctx.prisma.schoolClass.delete({

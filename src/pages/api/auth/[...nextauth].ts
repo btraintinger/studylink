@@ -32,7 +32,6 @@ export const authOptions = {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
         name: { label: 'Name', type: 'text' },
-        role: { label: 'Role', type: 'text' },
       },
 
       async authorize(credentials, req) {

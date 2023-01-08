@@ -33,11 +33,19 @@ async function isTutorOfferingExistent(
   return tutorRequest ? true : false;
 }
 
-async function isTutorOfferingtRelatedToUser(
+async function isTutorOfferingByUser(
   ctx: Context,
   tutorRequestId: number
 ): Promise<boolean> {
-  return ctx.user?.student?.id === tutorRequestId;
+  const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+    where: {
+      id: tutorRequestId,
+    },
+    select: {
+      studentId: true,
+    },
+  });
+  return ctx.user?.student?.id === tutorRequest?.studentId;
 }
 
 @Resolver((of) => TutorOffering)
@@ -47,8 +55,8 @@ export class TutorOfferingResolver {
   async getTutorOfferingById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isTutorOfferingExistent(ctx, id)))
       throw new Error('Tutor request not found');
-    if (!(await isTutorOfferingtRelatedToUser(ctx, id)))
-      throw new Error('Tutor request not relatet to user');
+    if (!(await isTutorOfferingByUser(ctx, id)))
+      throw new Error('Tutor request not related to user');
 
     const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
       where: {
@@ -98,15 +106,10 @@ export class TutorOfferingResolver {
     TutorOfferingUpdateInput: TutorOfferingUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isTutorOfferingExistent(ctx, TutorOfferingUpdateInput.id))) {
+    if (!(await isTutorOfferingExistent(ctx, TutorOfferingUpdateInput.id)))
       throw new Error('TutorOffering does not exist');
-    }
-
-    if (
-      !(await isTutorOfferingtRelatedToUser(ctx, TutorOfferingUpdateInput.id))
-    ) {
-      throw new Error('TutorOffering is not related to user');
-    }
+    if (!(await isTutorOfferingByUser(ctx, TutorOfferingUpdateInput.id)))
+      throw new Error('TutorOffering was not created by user');
 
     const tutorOffering = await ctx.prisma.tutorOffering.update({
       where: {
@@ -133,22 +136,16 @@ export class TutorOfferingResolver {
 
   @Authorized('STUDENT')
   @Mutation((returns) => TutorOffering)
-  async deleteTutorOffering(@Ctx() ctx: Context, @Arg('id') id: string) {
-    const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
-      where: {},
-    });
-
-    if (!tutorOffering) throw new Error('Tutor offering not found');
-
-    if (
-      ctx.user?.role === 'STUDENT' &&
-      tutorOffering.studentId !== ctx.user?.student?.id
-    ) {
-      throw new Error('You are not authorized to delete this tutor offering');
-    }
+  async deleteTutorOffering(@Ctx() ctx: Context, @Arg('id') id: number) {
+    if (!(await isTutorOfferingExistent(ctx, Number(id))))
+      throw new Error('TutorOffering does not exist');
+    if (!(await isTutorOfferingByUser(ctx, Number(id))))
+      throw new Error('TutorOffering was not created by user');
 
     const deletedTutorOffering = await ctx.prisma.tutorOffering.delete({
-      where: { id: tutorOffering.id },
+      where: {
+        id: id,
+      },
     });
 
     if (!deletedTutorOffering)
