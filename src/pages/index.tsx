@@ -13,8 +13,6 @@ export default function Home() {
 
   if (status === 'loading') return <LoadingPage />;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const userRole = session?.user?.role;
 
   if (userRole === 'STUDENT') {
