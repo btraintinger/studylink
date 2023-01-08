@@ -2,6 +2,7 @@ import { PaletteMode, ThemeProvider, createTheme } from '@mui/material';
 import React, { PropsWithChildren, useContext } from 'react';
 import { getDesignTokens } from '../utils/theme';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const ThemeModeContext = React.createContext({ toggleColorMode: () => {} });
 
 export default function ThemeModeContextProvider({

@@ -73,7 +73,7 @@ export class SchoolResolver {
 
     return school;
   }
- 
+
   @Authorized('ADMIN')
   @Mutation((returns) => School)
   async createSchool(
