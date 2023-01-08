@@ -1,18 +1,11 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import {
-  CssBaseline,
-  PaletteMode,
-  ThemeProvider,
-  createTheme,
-} from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { SessionProvider } from 'next-auth/react';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../utils/apolloClient';
 import createEmotionCache from '../utils/createEmotionCache';
-import { getDesignTokens } from '../utils/theme';
-import React from 'react';
 import ThemeModeContextProvider from '../context/mode-context';
 
 const clientSideEmotionCache = createEmotionCache();

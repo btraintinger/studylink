@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { PropsWithChildren } from 'react';
 import { Typography } from '@mui/material';

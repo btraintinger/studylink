@@ -1,4 +1,3 @@
-import { Admin, Student } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
 import prisma from '../utils/prismadb';

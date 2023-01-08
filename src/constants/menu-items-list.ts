@@ -5,7 +5,7 @@ import { IMenuItem } from '../types/iMenuItem';
 
 const HOME = '/';
 const SIGN_IN = '/auth/signin';
-const REGISTER = '/create-account';
+const REGISTER = '/auth/signup';
 
 //admin
 const DEPARTMENTS_ADMIN = '/admin/departments';

@@ -32,7 +32,7 @@ const SCHOOL_QUERY = gql`
 `;
 
 export default function School() {
-  const { data, loading, error } = useQuery(SCHOOL_QUERY);
+  const { data, loading } = useQuery(SCHOOL_QUERY);
 
   if (loading) {
     return <LoadingPage />;

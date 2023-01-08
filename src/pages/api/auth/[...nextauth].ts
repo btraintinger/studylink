@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { signin, signup } from '../../../backend/auth';
@@ -17,6 +18,7 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async authorize(credentials, req) {
         try {
           return await signin(credentials);
@@ -34,6 +36,7 @@ export const authOptions = {
         name: { label: 'Name', type: 'text' },
       },
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async authorize(credentials, req) {
         try {
           return await signup(credentials);

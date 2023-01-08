@@ -1,21 +1,8 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  Link as MuiLink,
-  Alert,
-} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Box, Button, TextField, Alert } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 import Layout from '../../components/page/layout';
 
 // TODO get school from backend over user email

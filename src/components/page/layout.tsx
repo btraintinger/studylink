@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Main from './main';
-import Box from '@mui/material/Box';
-import { styled, Grid, Link } from '@mui/material';
+import { Grid } from '@mui/material';
 import NavBar from './app-bar';
 
 import { DrawerContextProvider } from '../../context/app-context';
@@ -9,7 +8,6 @@ import MiniDrawer from './variant-drawer';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
-import Typography from '@mui/material/Typography';
 import { Footer } from './footer';
 
 export const siteTitle = 'Studylink';
