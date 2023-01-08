@@ -31,17 +31,15 @@ export default function Layout({ children, role }: Props) {
   if (role !== userRole) router.push('/401');
 
   return (
-    <DrawerContextProvider>
-      <Grid container xs={12}>
-        <Grid item>
-          <MiniDrawer />
-          <NavBar />
-        </Grid>
-        <Grid item padding={3} paddingTop={1}>
-          <Main>{children}</Main>
-        </Grid>
-        <Footer />
+    <Grid container xs={12}>
+      <Grid item>
+        <MiniDrawer />
+        <NavBar />
       </Grid>
-    </DrawerContextProvider>
+      <Grid item padding={3} paddingTop={1}>
+        <Main>{children}</Main>
+      </Grid>
+      <Footer />
+    </Grid>
   );
 }

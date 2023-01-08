@@ -40,28 +40,23 @@ export default function School() {
 
   if (data === undefined)
     return (
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Typography>Keine Schule gefunden</Typography>
-        <Button
-          component={Link}
-          variant="contained"
-          fullWidth
-          type="submit"
-          sx={{ mt: 1, mb: 2 }}
-          href="/admin/school/new"
-          passHref
-        >
-          Neue Schule erstellen
-        </Button>
-        <Button onClick={() => signOut()}>Sign out</Button>
-      </Box>
+      <Layout role="ADMIN">
+        <Box>
+          <Typography>Keine Schule gefunden</Typography>
+          <Button
+            component={Link}
+            variant="contained"
+            fullWidth
+            type="submit"
+            sx={{ mt: 1, mb: 2 }}
+            href="/admin/school/new"
+            passHref
+          >
+            Neue Schule erstellen
+          </Button>
+          <Button onClick={() => signOut()}>Sign out</Button>
+        </Box>
+      </Layout>
     );
 
   return (

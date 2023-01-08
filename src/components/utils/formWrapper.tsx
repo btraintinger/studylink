@@ -8,9 +8,11 @@ export default function FormWrapper({
   return (
     <Box
       sx={{
-        margin: 10,
+        topMargin: 10,
         maxWidth: 'md',
         justifyContent: 'center',
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
       {children}
