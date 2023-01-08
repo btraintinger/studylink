@@ -10,13 +10,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
 import { CollectionsBookmarkRounded } from '@mui/icons-material';
 import { useContext } from 'react';
 
 export default function NavBar() {
-  const toggleDrawe = () => {
+  const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
 
@@ -30,13 +31,25 @@ export default function NavBar() {
       sx={{ zIndex: (theme) => theme.zIndex.drawer - 1 }}
     >
       <Toolbar sx={{ display: 'flex' }}>
+        <IconButton
+          color="inherit"
+          aria-label="change theme"
+          onClick={toggleDrawer}
+          edge="start"
+          sx={{ display: { xs: 'flex' }, mr: 1 }}
+        >
+          <ChevronRightIcon
+            sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
+          />
+        </IconButton>
+
         <MuiLink component={Link} href={'/'} underline="none" sx={{ flex: 1 }}>
           <Typography
             variant="h5"
             noWrap
             component="div"
             sx={{
-              display: { xs: 'flex', sm: 'none', color: '#000000' },
+              display: { xs: 'flex', sm: 'none' },
               padding: 1,
               justifyContent: 'center',
             }}

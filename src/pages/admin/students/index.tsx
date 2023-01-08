@@ -1,7 +1,11 @@
+import { Typography } from "@mui/material";
+import Layout from "../../../components/page/layout";
+
 export default function Students() {
   return (
-    <div>
-      <h1>Students</h1>
-    </div>
+    <Layout role="ADMIN">
+      <Typography>Students</Typography>
+    </Layout>
+  );
   );
 }

@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import Layout from '../../components/page/layout';
 
 // TODO get school from backend over user email
 
@@ -49,45 +50,47 @@ export default function Student() {
   };
 
   return (
-    <Box>
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        sx={{ mt: 3 }}
-      >
-        <TextField
-          sx={{ mb: 2 }}
-          label="Schulklasse"
-          fullWidth
-          required
-          type="number"
-          error={!!errors['schoolClassId']}
-          helperText={
-            errors['schoolClassId'] ? errors['schoolClassId'].message : ''
-          }
-          {...register('schoolClassId')}
-        />
+    <Layout role="STUDENT">
+      <Box>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit(onSubmitHandler)}
+          sx={{ mt: 3 }}
+        >
+          <TextField
+            sx={{ mb: 2 }}
+            label="Schulklasse"
+            fullWidth
+            required
+            type="number"
+            error={!!errors['schoolClassId']}
+            helperText={
+              errors['schoolClassId'] ? errors['schoolClassId'].message : ''
+            }
+            {...register('schoolClassId')}
+          />
 
-        <Button
-          variant="contained"
-          fullWidth
-          type="submit"
-          sx={{ mt: 1, mb: 2 }}
-        >
-          Bestätigen
-        </Button>
-        <Alert
-          severity="error"
-          sx={{
-            display: error ? null : 'none',
-            marginTop: '15px',
-          }}
-        >
-          {error}
-        </Alert>
+          <Button
+            variant="contained"
+            fullWidth
+            type="submit"
+            sx={{ mt: 1, mb: 2 }}
+          >
+            Bestätigen
+          </Button>
+          <Alert
+            severity="error"
+            sx={{
+              display: error ? null : 'none',
+              marginTop: '15px',
+            }}
+          >
+            {error}
+          </Alert>
+        </Box>
       </Box>
-    </Box>
+    </Layout>
   );
 }

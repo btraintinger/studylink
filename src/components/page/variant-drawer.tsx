@@ -28,6 +28,7 @@ import {
   COMMON_LINKS,
 } from '../../constants/menu-items-list';
 import Link from 'next/link';
+import { IMenuItem } from '../../types/iMenuItem';
 
 const drawerWidth = 240;
 
@@ -87,6 +88,13 @@ export default function MiniDrawer() {
   // @ts-ignore
   const userRole = session?.user?.role;
 
+  let myLinks: IMenuItem[] = STUDENT_LINKS;
+  if (userRole === 'admin') {
+    myLinks = ADMIN_LINKS;
+  } else if (userRole === 'student') {
+    myLinks = STUDENT_LINKS;
+  }
+
   const toggleDrawerOpen = () => {
     if (isDrawerOpen === true) {
       setDrawerOpen(false);
@@ -99,7 +107,11 @@ export default function MiniDrawer() {
     <Drawer
       variant="permanent"
       open={isDrawerOpen}
-      sx={{ display: { xs: 'none', sm: 'flex' } }}
+      sx={
+        isDrawerOpen
+          ? { display: { xs: 'flex', sm: 'flex' } }
+          : { display: { xs: 'none', sm: 'flex' } }
+      }
     >
       <DrawerHeader>
         <Typography
