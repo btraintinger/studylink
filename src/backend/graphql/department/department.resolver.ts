@@ -80,7 +80,7 @@ export class DepartmentResolver {
     @Arg('departmentInput') input: DepartmentCreateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isDepartmentRelatedToUSer(ctx, input.id)))
+    if (input.schoolId !== ctx.user?.admin?.schoolId)
       throw new Error('Not authorized');
 
     if (await isDepartmentExistent(ctx, input.id))
@@ -108,7 +108,7 @@ export class DepartmentResolver {
       throw new Error('Not authorized');
 
     if (!(await isDepartmentExistent(ctx, input.id)))
-      throw new Error('Department already exists');
+      throw new Error('Department does not exist');
 
     const department = await ctx.prisma.department.update({
       where: {
