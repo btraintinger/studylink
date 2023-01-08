@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { MapsUgc } from '@mui/icons-material';
 import {
   Authorized,
   Ctx,
@@ -14,7 +13,7 @@ import {
 import type { Context } from '../context';
 import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
 
-async function isSchoolRelatedToUSer(
+async function isUserAdministratingSchool(
   ctx: Context,
   schoolId: number
 ): Promise<boolean> {
@@ -62,7 +61,7 @@ export class SchoolResolver {
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isSchoolExistent(ctx, id)))
       throw new Error('School does not exist');
-    if (!(await isSchoolRelatedToUSer(ctx, id)))
+    if (!(await isUserAdministratingSchool(ctx, id)))
       throw new Error('Not authorized');
 
     const school = await ctx.prisma.school.findUnique({
@@ -106,7 +105,7 @@ export class SchoolResolver {
     if (!(await isSchoolExistent(ctx, schoolUpdateInput.id)))
       throw new Error('School does not exist');
 
-    if (!(await isSchoolRelatedToUSer(ctx, schoolUpdateInput.id)))
+    if (!(await isUserAdministratingSchool(ctx, schoolUpdateInput.id)))
       throw new Error('Not authorized');
 
     const school = await ctx.prisma.school.update({
@@ -128,7 +127,7 @@ export class SchoolResolver {
     if (!(await isSchoolExistent(ctx, id)))
       throw new Error('School does not exist');
 
-    if (!(await isSchoolRelatedToUSer(ctx, id)))
+    if (!(await isUserAdministratingSchool(ctx, id)))
       throw new Error('Not authorized');
 
     const school = await ctx.prisma.school.delete({

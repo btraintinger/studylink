@@ -16,7 +16,6 @@ import {
   Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { SchoolCreationInput } from '../school/school.type';
 
 async function isUserAdministratingSchoolClass(
   ctx: Context,
