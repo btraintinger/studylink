@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
 import { Footer } from './footer';
+import StudylinkHead from '../utils/head';
 
 export const siteTitle = 'Studylink';
 
@@ -31,15 +32,18 @@ export default function Layout({ children, role }: Props) {
   if (role !== userRole) router.push('/401');
 
   return (
-    <Grid container xs={12}>
-      <Grid item>
-        <MiniDrawer />
-        <NavBar />
+    <>
+      <StudylinkHead></StudylinkHead>
+      <Grid container xs={12}>
+        <Grid item>
+          <MiniDrawer />
+          <NavBar />
+        </Grid>
+        <Grid item padding={3} paddingTop={1}>
+          <Main>{children}</Main>
+        </Grid>
+        <Footer />
       </Grid>
-      <Grid item padding={3} paddingTop={1}>
-        <Main>{children}</Main>
-      </Grid>
-      <Footer />
-    </Grid>
+    </>
   );
 }

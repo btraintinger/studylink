@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import StudylinkHead from '../../components/utils/head';
 
 const signUpSchema = object({
   email: string().email('* Email must be a valid email address'),
@@ -69,6 +70,7 @@ export default function LoginPage() {
 
   return (
     <Container maxWidth="xs">
+      <StudylinkHead></StudylinkHead>
       <Box
         sx={{
           display: 'flex',

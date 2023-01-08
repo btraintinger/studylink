@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import StudylinkHead from '../../components/utils/head';
 
 const loginSchema = object({
   email: string().email('* Email must be a valid email address'),
@@ -59,6 +60,7 @@ export default function LoginPage() {
 
   return (
     <Container maxWidth="xs">
+      <StudylinkHead></StudylinkHead>
       <Box
         sx={{
           display: 'flex',
