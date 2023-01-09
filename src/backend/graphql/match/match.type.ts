@@ -6,6 +6,9 @@ import { TutorRequest } from '../tutorRequest/tutorRequest.type';
 @ObjectType()
 export class Match {
   @Field()
+  rating!: number;
+
+  @Field()
   tutorOffering!: TutorOffering;
 
   @Field()
