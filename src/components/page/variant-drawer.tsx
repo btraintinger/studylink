@@ -1,6 +1,6 @@
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
-import { Link as MuiLink } from '@mui/material';
+import { Icon, Link as MuiLink } from '@mui/material';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -75,7 +75,8 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const theme = useTheme();
-  const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
+  const { selectedItem, isDrawerOpen, setDrawerOpen, setSelectedItem } =
+    useDrawerContext();
   const { data: session, status } = useSession();
 
   const userRole = session?.user?.role;
@@ -118,20 +119,9 @@ export default function MiniDrawer() {
           <InstagramIcon />
         </Typography>
 
-        <MuiLink component={Link} href={'/'} underline="none">
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            letterSpacing={2}
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-              ml: 1,
-            }}
-          >
-            STUDYLINK
-          </Typography>
-        </MuiLink>
+        <Typography variant="h6" noWrap letterSpacing={2}>
+          STUDYLINK
+        </Typography>
         <IconButton onClick={toggleDrawerOpen}>
           {theme.direction === 'rtl' ? (
             <ChevronRightIcon />
@@ -150,6 +140,7 @@ export default function MiniDrawer() {
             sx={{ display: 'block' }}
             component={Link}
             href={route}
+            onClick={() => setSelectedItem(route)}
           >
             <ListItemButton
               sx={{
@@ -165,7 +156,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <Icon></Icon>
               </ListItemIcon>
               <ListItemText
                 primary={text}
@@ -184,6 +175,7 @@ export default function MiniDrawer() {
             sx={{ display: 'block' }}
             component={Link}
             href={route}
+            onClick={() => setSelectedItem(route)}
           >
             <ListItemButton
               sx={{
@@ -199,7 +191,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {selectedItem === route ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Main from './main';
-import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import { styled, Grid, Link } from '@mui/material';
 import NavBar from './app-bar';
 
 import { DrawerContextProvider } from '../../context/app-context';
@@ -9,7 +10,6 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
 import { Footer } from './footer';
-import StudylinkHead from '../utils/head';
 
 export const siteTitle = 'Studylink';
 
@@ -23,6 +23,8 @@ export default function Layout({ children, role }: Props) {
 
   const { data: session, status } = useSession();
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const userRole = session?.user?.role;
 
   if (status === 'loading') return <LoadingPage />;
@@ -32,18 +34,12 @@ export default function Layout({ children, role }: Props) {
   if (role !== userRole) router.push('/401');
 
   return (
-    <>
-      <StudylinkHead></StudylinkHead>
-      <Grid container xs={12}>
-        <Grid item>
-          <MiniDrawer />
-          <NavBar />
-        </Grid>
-        <Grid item padding={3} paddingTop={1}>
-          <Main>{children}</Main>
-        </Grid>
-        <Footer />
-      </Grid>
-    </>
+    <Box sx={{ display: 'flex' }}>
+      <MiniDrawer />
+      <NavBar />
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 10 }}>
+        <Main> {children}</Main>
+      </Box>
+    </Box>
   );
 }

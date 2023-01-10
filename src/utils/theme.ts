@@ -1,7 +1,14 @@
 import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
-import { blue, deepOrange, green, grey } from '@mui/material/colors';
+import {
+  amber,
+  blue,
+  deepOrange,
+  green,
+  grey,
+  orange,
+} from '@mui/material/colors';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -18,17 +25,18 @@ export const getDesignTokens = (mode: PaletteMode) => ({
       ? {
           // palette values for light mode
           primary: green,
-          secondary: deepOrange,
-          divider: blue[200],
+          secondary: orange,
+          divider: green[500],
           text: {
-            primary: grey[900],
+            primary: grey[800],
             secondary: grey[800],
           },
         }
       : {
           // palette values for dark mode
           primary: blue,
-          divider: blue[700],
+          secondary: orange,
+          divider: green[500],
           background: {
             default: grey[900],
             paper: grey[900],
@@ -45,7 +53,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           MuiAppBar: {
             styleOverrides: {
               root: {
-                backgroundColor: '#ffffff',
+                backgroundColor: '#f0f0f0f0',
               },
             },
           },
@@ -57,6 +65,13 @@ export const getDesignTokens = (mode: PaletteMode) => ({
             },
           },
           MuiListItem: {
+            styleOverrides: {
+              root: {
+                color: '#000000',
+              },
+            },
+          },
+          MuiLink: {
             styleOverrides: {
               root: {
                 color: '#000000',
@@ -82,7 +97,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           MuiLink: {
             styleOverrides: {
               root: {
-                color: '#000000',
+                color: '#ffffff',
               },
             },
           },
