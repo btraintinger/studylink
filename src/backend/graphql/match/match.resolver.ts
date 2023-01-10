@@ -11,7 +11,17 @@ import {
   Root,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { TutorOffering } from '@prisma/client';
+import { TutorOffering, TutorRequest } from '@prisma/client';
+import { number } from 'zod';
+
+async function matchRating(
+  teacher1: string,
+  teacher2: string
+): Promise<number> {
+  if (teacher1 === teacher2) return 2;
+
+  return 1;
+}
 
 @Resolver((of) => Match)
 export class MatchResolver {
@@ -33,7 +43,7 @@ export class MatchResolver {
         matches.push({
           tutorRequest: request,
           tutorOffering: offering,
-          rating: 0,
+          rating: matchRating(request.teacher, offering.teacher),
         });
       });
     }

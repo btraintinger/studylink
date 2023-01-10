@@ -1,7 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, TextField } from '@mui/material';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -12,10 +11,22 @@ import FormWrapper from '../../../../components/utils/formWrapper';
 const SCHOOL_QUERY = gql`
   query GetSchoolById($getSchoolByIdId: Float!) {
     getSchoolById(id: $getSchoolByIdId) {
-      name
-      id
-      handle
+      admins {
+        id
+        user {
+          email
+          name
+          id
+        }
+      }
+      departments {
+        id
+        name
+      }
       domain
+      handle
+      id
+      name
     }
   }
 `;
@@ -78,11 +89,17 @@ export default function School() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  useEffect(() => {
+    if (error) router.push('/401');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
   const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
     if (queryId === null) {
-      await createFunction({
+      const school = await createFunction({
         variables: { schoolCreationInput: { ...values } },
       });
+      router.push(`/admin/school/${school.data.createSchool.id}`);
     } else {
       await updateFunction({
         variables: {
@@ -108,7 +125,7 @@ export default function School() {
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
-            sx={{ mb: 8 }}
+            sx={{ mb: 2 }}
             variant="standard"
             label="Name"
             fullWidth
@@ -146,10 +163,9 @@ export default function School() {
             sx={{
               display: queryId ? 'inherit' : 'none',
             }}
-            component={Link}
-            href="/admin/departments/new"
             variant="contained"
-            passHref
+            onClick={() => router.push(`/admin/school/${schoolId}//new`)}
+            fullWidth
           >
             neue Abteilung hinzufügen
           </Button>

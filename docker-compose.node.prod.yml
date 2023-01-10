@@ -23,7 +23,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - 80:80
+      - ${PORT}:3000
     depends_on:
       db_migration:
         condition: service_completed_successfully
@@ -32,9 +32,8 @@ services:
       NEXTAUTH_URL: ${DOMAIN}
       DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
-      NODE_ENV: development
+      NODE_ENV: production
     restart: always
-    command: npm run start -p 80
 
   db_migration:
     build:

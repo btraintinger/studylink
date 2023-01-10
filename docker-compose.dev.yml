@@ -21,9 +21,10 @@ services:
       dockerfile: ./docker/app/dev/Dockerfile
     container_name: studylink_dev
     ports:
-      - 3000:3000
+      - ${PORT}:3000
     volumes:
       - .:/app
+      - node_modules_dev:/app/node_modules
     depends_on:
       db_migration_dev:
         condition: service_completed_successfully
@@ -51,3 +52,4 @@ services:
 
 volumes:
   db_data_dev:
+  node_modules_dev:

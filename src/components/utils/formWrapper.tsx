@@ -12,6 +12,7 @@ export default function FormWrapper({
         justifyContent: 'center',
         display: 'flex',
         alignItems: 'center',
+        flexGrow: 1,
       }}
     >
       <Box sx={{ maxWidth: 'md' }}>{children}</Box>
