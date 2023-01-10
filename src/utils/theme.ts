@@ -71,6 +71,13 @@ export const getDesignTokens = (mode: PaletteMode) => ({
               },
             },
           },
+          MuiLink: {
+            styleOverrides: {
+              root: {
+                color: '#000000',
+              },
+            },
+          },
         }
       : {
           MuiAppBar: {
@@ -90,7 +97,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           MuiLink: {
             styleOverrides: {
               root: {
-                color: '#000000',
+                color: '#ffffff',
               },
             },
           },

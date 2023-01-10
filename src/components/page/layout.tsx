@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
 import { Footer } from './footer';
-import StudylinkHead from '../utils/head';
 
 export const siteTitle = 'Studylink';
 
