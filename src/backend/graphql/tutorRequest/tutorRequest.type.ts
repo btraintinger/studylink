@@ -79,7 +79,7 @@ export class TutorRequestUpdateInput {
   schoolSubjectId!: number;
 
   @Field()
-  teacher?: string;
+  teacher!: string;
 
   @Field()
   description?: string;

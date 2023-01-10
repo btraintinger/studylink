@@ -77,8 +77,8 @@ model TutorRequest {
   schoolSubjectId Int           @map("school_subject_id")
   schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  description String? @db.VarChar(1000)
-  teacher     String? @db.VarChar(50)
+  description String @db.VarChar(1000)
+  teacher     String @db.VarChar(50)
 
   @@index([schoolClassId])
   @@index([schoolSubjectId])
@@ -95,8 +95,8 @@ model TutorOffering {
   schoolSubjectId Int           @map("school_subject_id")
   schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  description String? @db.VarChar(1000)
-  teacher     String? @db.VarChar(50)
+  description String @db.VarChar(1000)
+  teacher     String @db.VarChar(50)
 
   @@index([schoolClassId])
   @@index([schoolSubjectId])
