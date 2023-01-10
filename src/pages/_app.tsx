@@ -14,6 +14,7 @@ import createEmotionCache from '../utils/createEmotionCache';
 import { getDesignTokens } from '../utils/theme';
 import React from 'react';
 import ThemeModeContextProvider from '../context/mode-context';
+import { DrawerContextProvider } from '../context/app-context';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -42,7 +43,9 @@ export default function MyApp(props: MyAppProps) {
         <CssBaseline enableColorScheme />
         <ApolloProvider client={apolloClient}>
           <SessionProvider session={session}>
-            <Component {...pageProps} />
+            <DrawerContextProvider>
+              <Component {...pageProps} />
+            </DrawerContextProvider>
           </SessionProvider>
         </ApolloProvider>
       </ThemeModeContextProvider>

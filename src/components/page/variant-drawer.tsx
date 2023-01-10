@@ -81,7 +81,8 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const theme = useTheme();
-  const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
+  const { selectedItem, isDrawerOpen, setDrawerOpen, setSelectedItem } =
+    useDrawerContext();
   const { data: session, status } = useSession();
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -134,6 +135,7 @@ export default function MiniDrawer() {
           sx={{
             display: { xs: 'none', sm: 'flex' },
             ml: 1,
+            color: 'theme.palette.primary',
           }}
         >
           STUDYLINK
@@ -156,6 +158,7 @@ export default function MiniDrawer() {
             sx={{ display: 'block' }}
             component={Link}
             href={route}
+            onClick={() => setSelectedItem(route)}
           >
             <ListItemButton
               sx={{
@@ -171,7 +174,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {selectedItem === route ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
@@ -190,6 +193,7 @@ export default function MiniDrawer() {
             sx={{ display: 'block' }}
             component={Link}
             href={route}
+            onClick={() => setSelectedItem(route)}
           >
             <ListItemButton
               sx={{
@@ -205,7 +209,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {id % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {selectedItem === route ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}

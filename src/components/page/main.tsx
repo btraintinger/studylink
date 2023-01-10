@@ -19,28 +19,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function Main({ children }: PropsWithChildren<unknown>) {
-  const theme = useTheme();
   return (
     <StyledMain>
-      <Typography
-        variant="h4"
-        noWrap
-        component="div"
-        sx={{
-          display: {
-            fontWeight: 'light',
-            letterSpacing: '200',
-            xs: 'none',
-            sm: 'flex',
-            p: theme.spacing(0, 1),
-            paddingTop: 10,
-            justifyContent: 'flex-end',
-            ...theme.mixins.toolbar,
-          },
-        }}
-      >
-        Edit
-      </Typography>
       <Box>{children}</Box>
     </StyledMain>
   );
