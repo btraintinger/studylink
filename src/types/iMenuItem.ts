@@ -4,5 +4,5 @@ import type { OverridableComponent } from '@mui/material/OverridableComponent';
 export interface IMenuItem {
   text: string;
   route: string;
-  icon: OverridableComponent<SvgIconTypeMap>;
+  icon: string;
 }
