@@ -9,8 +9,8 @@ import MiniDrawer from './variant-drawer';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import LoadingPage from '../utils/loadingPage';
-import Typography from '@mui/material/Typography';
 import { Footer } from './footer';
+import StudylinkHead from '../utils/head';
 
 export const siteTitle = 'Studylink';
 

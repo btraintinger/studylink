@@ -1,15 +1,10 @@
-import * as React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
+import { Link as MuiLink } from '@mui/material';
 import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -20,8 +15,6 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useDrawerContext } from '../../context/app-context';
-import { useContext } from 'react';
-import { useSession } from 'next-auth/react';
 import {
   ADMIN_LINKS,
   STUDENT_LINKS,
@@ -29,6 +22,7 @@ import {
 } from '../../constants/menu-items-list';
 import Link from 'next/link';
 import { IMenuItem } from '../../types/iMenuItem';
+import { useSession } from 'next-auth/react';
 
 const drawerWidth = 240;
 
@@ -85,8 +79,6 @@ export default function MiniDrawer() {
     useDrawerContext();
   const { data: session, status } = useSession();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const userRole = session?.user?.role;
 
   let myLinks: IMenuItem[] = STUDENT_LINKS;
@@ -127,19 +119,20 @@ export default function MiniDrawer() {
           <InstagramIcon />
         </Typography>
 
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          letterSpacing={2}
-          sx={{
-            display: { xs: 'none', sm: 'flex' },
-            ml: 1,
-            color: 'theme.palette.primary',
-          }}
-        >
-          STUDYLINK
-        </Typography>
+        <MuiLink component={Link} href={'/'} underline="none">
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            letterSpacing={2}
+            sx={{
+              display: { xs: 'none', sm: 'flex' },
+              ml: 1,
+            }}
+          >
+            STUDYLINK
+          </Typography>
+        </MuiLink>
         <IconButton onClick={toggleDrawerOpen}>
           {theme.direction === 'rtl' ? (
             <ChevronRightIcon />

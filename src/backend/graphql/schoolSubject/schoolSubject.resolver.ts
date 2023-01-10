@@ -33,20 +33,44 @@ async function isSchoolSubjectExistent(
   return schoolSubject ? true : false;
 }
 
+async function isUserAdministratingSchoolSubject(
+  ctx: Context,
+  schoolClassId: number
+): Promise<boolean> {
+  const schoolClass = await ctx.prisma.schoolClass.findUnique({
+    where: {
+      id: schoolClassId,
+    },
+    include: {
+      department: {
+        select: {
+          schoolId: true,
+        },
+      },
+    },
+  });
+  return ctx.user?.admin?.schoolId === schoolClass?.department.schoolId;
+}
+
 @Resolver((of) => SchoolSubject)
 export class SchoolSubjectResolver {
   @Authorized('ADMIN')
   @Query((returns) => SchoolSubject)
   async getSchoolSubjectById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isSchoolSubjectExistent(ctx, id))) {
+    if (!(await isSchoolSubjectExistent(ctx, id)))
       throw new Error('SchoolSubject does not exist');
-    }
+    if (!(await isUserAdministratingSchoolSubject(ctx, id)))
+      throw new Error('Not authorized');
 
-    const SchoolSubject = await ctx.prisma.schoolSubject.findUnique({
+    const schoolSubject = await ctx.prisma.schoolSubject.findUnique({
       where: {
         id: id,
       },
     });
+
+    if (!schoolSubject) throw new Error('SchoolSubject does not exist');
+
+    return schoolSubject;
   }
 
   @Authorized('ADMIN')
@@ -56,14 +80,16 @@ export class SchoolSubjectResolver {
     SchoolSubjectCreationInput: SchoolSubjectCreationInput,
     @Ctx() ctx: Context
   ) {
-    const SchoolSubject = await ctx.prisma.schoolSubject.create({
+    const schoolSubject = await ctx.prisma.schoolSubject.create({
       data: {
         name: SchoolSubjectCreationInput.name,
         extendedName: SchoolSubjectCreationInput.extendedName,
       },
     });
 
-    return SchoolSubject;
+    if (!schoolSubject) throw new Error('SchoolSubject could not be created');
+
+    return schoolSubject;
   }
 
   @Authorized('ADMIN')
@@ -74,11 +100,13 @@ export class SchoolSubjectResolver {
     SchoolSubjectUpdateInput: SchoolSubjectUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isSchoolSubjectExistent(ctx, id))) {
+    if (!(await isSchoolSubjectExistent(ctx, id)))
       throw new Error('SchoolSubject does not exist');
-    }
 
-    const SchoolSubject = await ctx.prisma.schoolSubject.update({
+    if (!(await isUserAdministratingSchoolSubject(ctx, id)))
+      throw new Error('Not authorized');
+
+    const schoolSubject = await ctx.prisma.schoolSubject.update({
       where: {
         id: id,
       },
@@ -88,22 +116,24 @@ export class SchoolSubjectResolver {
       },
     });
 
-    return SchoolSubject;
+    return schoolSubject;
   }
 
   @Authorized('ADMIN')
   @Mutation((returns) => SchoolSubject)
   async deleteSchoolSubject(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isSchoolSubjectExistent(ctx, id))) {
+    if (!(await isSchoolSubjectExistent(ctx, id)))
       throw new Error('SchoolSubject does not exist');
-    }
 
-    const SchoolSubject = await ctx.prisma.schoolSubject.delete({
+    if (!(await isUserAdministratingSchoolSubject(ctx, id)))
+      throw new Error('Not authorized');
+
+    const schoolSubject = await ctx.prisma.schoolSubject.delete({
       where: {
         id: id,
       },
     });
 
-    return SchoolSubject;
+    return schoolSubject;
   }
 }

@@ -17,7 +17,7 @@ import {
 } from 'type-graphql';
 import type { Context } from '../context';
 
-async function isDepartmentRelatedToUSer(
+async function isUserAdministratingDepartment(
   ctx: Context,
   departmentId: number
 ): Promise<boolean> {
@@ -61,7 +61,7 @@ export class DepartmentResolver {
 
   @Query((returns) => Department)
   async getDepartmentById(@Arg('id') id: number, @Ctx() ctx: Context) {
-    if (!(await isDepartmentRelatedToUSer(ctx, id)))
+    if (!(await isUserAdministratingDepartment(ctx, id)))
       throw new Error('Not authorized');
 
     const department = await ctx.prisma.department.findUnique({
@@ -80,11 +80,8 @@ export class DepartmentResolver {
     @Arg('departmentInput') input: DepartmentCreateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isDepartmentRelatedToUSer(ctx, input.id)))
+    if (input.schoolId !== ctx.user?.admin?.schoolId)
       throw new Error('Not authorized');
-
-    if (await isDepartmentExistent(ctx, input.id))
-      throw new Error('Department already exists');
 
     const department = await ctx.prisma.department.create({
       data: {
@@ -104,11 +101,11 @@ export class DepartmentResolver {
     @Arg('departmentInput') input: DepartmentUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isDepartmentRelatedToUSer(ctx, input.id)))
+    if (!(await isUserAdministratingDepartment(ctx, input.id)))
       throw new Error('Not authorized');
 
     if (!(await isDepartmentExistent(ctx, input.id)))
-      throw new Error('Department already exists');
+      throw new Error('Department does not exist');
 
     const department = await ctx.prisma.department.update({
       where: {

@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from 'react';
 import { PropsWithChildren } from 'react';
-import { ThemeContext, ThemeProvider } from '@emotion/react';
 import * as items from '../constants/menu-items';
 
 type drawerState = {

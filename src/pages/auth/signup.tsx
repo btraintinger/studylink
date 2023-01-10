@@ -6,11 +6,6 @@ import {
   Grid,
   TextField,
   Typography,
-  Select,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
   Link as MuiLink,
   Alert,
 } from '@mui/material';
@@ -21,13 +16,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import StudylinkHead from '../../components/utils/head';
 
 const signUpSchema = object({
   email: string().email('* Email must be a valid email address'),
   password: string().min(1, '* Passwort wird benötigt'),
   passwordConfirm: string().min(1, 'Bitte Passwort bestätigen'),
   name: string().min(1, '* Name wird benötigt'),
-  role: string().min(1, '* Rolle wird benötigt'),
 }).refine((data) => data.password === data.passwordConfirm, {
   path: ['passwordConfirm'],
   message: '* Passwords do not match',
@@ -36,6 +32,8 @@ const signUpSchema = object({
 type SignUpInput = TypeOf<typeof signUpSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [error, setError] = useState('');
 
   const {
@@ -60,18 +58,19 @@ export default function LoginPage() {
       email: values.email,
       password: values.password,
       name: values.name,
-      role: values.role,
       redirect: false,
     });
     if (response === undefined) return;
-    if (response.ok) return;
-    if (!response.error) return;
-
-    setError(response.error);
+    if (response.ok)
+      return router.push({
+        pathname: '/',
+      });
+    if (response.error) setError(response.error);
   };
 
   return (
     <Container maxWidth="xs">
+      <StudylinkHead></StudylinkHead>
       <Box
         sx={{
           display: 'flex',
@@ -142,27 +141,6 @@ export default function LoginPage() {
             helperText={errors['name'] ? errors['name'].message : ''}
             {...register('name')}
           />
-
-          <FormControl fullWidth>
-            <InputLabel id="account-type-select-lable" error={!!errors['role']}>
-              Account Typ
-            </InputLabel>
-            <Select
-              labelId="account-type-select-label"
-              id="account-type-select"
-              label="Account Typ"
-              required
-              defaultValue={''}
-              error={!!errors['role']}
-              {...register('role')}
-            >
-              <MenuItem value={'STUDENT'}>Schüler</MenuItem>
-              <MenuItem value={'ADMIN'}>Administrator</MenuItem>
-            </Select>
-            <FormHelperText error={!!errors['role']}>
-              {errors['role'] ? errors['role'].message : ''}
-            </FormHelperText>
-          </FormControl>
 
           <Button
             variant="contained"

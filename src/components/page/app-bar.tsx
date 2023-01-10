@@ -6,15 +6,10 @@ import {
   Link as MuiLink,
 } from '@mui/material';
 import Link from 'next/link';
-import MenuIcon from '@mui/icons-material/Menu';
-import Groups3TwoToneIcon from '@mui/icons-material/Groups3TwoTone';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { CollectionsBookmarkRounded } from '@mui/icons-material';
-import { useContext } from 'react';
 
 export default function NavBar() {
   const toggleDrawer = () => {

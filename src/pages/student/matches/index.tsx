@@ -1,4 +1,3 @@
-import { signOut } from 'next-auth/react';
 import Layout from '../../../components/page/layout';
 import { Typography } from '@mui/material';
 
