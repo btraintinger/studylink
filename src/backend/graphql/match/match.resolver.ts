@@ -22,16 +22,21 @@ export class MatchResolver {
         id: ctx.user?.student?.id,
       },
     });
-    const matchingOfferings: TutorOffering[] = [];
+    const matches: any[] = [];
     for (const request of requests) {
-      const offerings = await ctx.prisma.tutorOffering.findMany({
+      const machtingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
           schoolSubjectId: request.schoolSubjectId,
         },
       });
-      matchingOfferings.concat(offerings);
+      machtingOfferings.forEach((offering) => {
+        matches.push({
+          tutorRequest: request,
+          tutorOffering: offering,
+          rating: 0,
+        });
+      });
     }
-
-    return matchingOfferings;
+    return matches;
   }
 }
