@@ -88,6 +88,7 @@ export class TutorRequestResolver {
         },
         teacher: TutorRequestCreationInput.teacher,
         description: TutorRequestCreationInput.description,
+        grade: TutorRequestCreationInput.grade,
         student: {
           connect: {
             id: ctx.user?.student?.id,

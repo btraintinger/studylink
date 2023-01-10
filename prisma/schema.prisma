@@ -49,8 +49,6 @@ model SchoolClass {
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
-  tutorRequest    TutorRequest[]
-  tutorOffering   TutorOffering[]
   student         Student[]
 
   @@index([departmentId])
@@ -69,9 +67,8 @@ model SchoolSubject {
 }
 
 model TutorRequest {
-  id              Int           @id @unique() @default(autoincrement())
-  schoolClassId   Int           @map("school_class_id")
-  schoolClass     SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id Int @id @unique() @default(autoincrement())
+
   studentId       Int           @unique() @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
@@ -79,8 +76,8 @@ model TutorRequest {
 
   description String @db.VarChar(1000)
   teacher     String @db.VarChar(50)
+  grade       Int
 
-  @@index([schoolClassId])
   @@index([schoolSubjectId])
   @@index([studentId])
   @@map("tutor_request")
@@ -88,8 +85,6 @@ model TutorRequest {
 
 model TutorOffering {
   id              Int           @id @unique() @default(autoincrement())
-  schoolClassId   Int           @map("school_class_id")
-  schoolClass     SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   studentId       Int           @unique() @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
@@ -97,8 +92,8 @@ model TutorOffering {
 
   description String @db.VarChar(1000)
   teacher     String @db.VarChar(50)
+  grade       Int
 
-  @@index([schoolClassId])
   @@index([schoolSubjectId])
   @@index([studentId])
   @@map("tutor_offering")

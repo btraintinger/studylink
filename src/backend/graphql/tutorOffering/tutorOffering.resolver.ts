@@ -76,11 +76,6 @@ export class TutorOfferingResolver {
   ) {
     const tutorOffering = await ctx.prisma.tutorOffering.create({
       data: {
-        schoolClass: {
-          connect: {
-            id: TutorOfferingInputCreation.schoolClassId,
-          },
-        },
         schoolSubject: {
           connect: {
             id: TutorOfferingInputCreation.schoolSubjectId,
@@ -93,6 +88,7 @@ export class TutorOfferingResolver {
         },
         teacher: TutorOfferingInputCreation.teacher,
         description: TutorOfferingInputCreation.description,
+        grade: TutorOfferingInputCreation.grade,
       },
     });
 
@@ -116,11 +112,6 @@ export class TutorOfferingResolver {
         id: TutorOfferingUpdateInput.id,
       },
       data: {
-        schoolClass: {
-          connect: {
-            id: TutorOfferingUpdateInput.schoolClassId,
-          },
-        },
         schoolSubject: {
           connect: {
             id: TutorOfferingUpdateInput.schoolSubjectId,

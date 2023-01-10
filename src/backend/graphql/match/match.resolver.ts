@@ -37,6 +37,7 @@ export class MatchResolver {
       const machtingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
           schoolSubjectId: request.schoolSubjectId,
+          grade: request.grade,
         },
       });
       machtingOfferings.forEach((offering) => {

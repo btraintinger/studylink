@@ -13,9 +13,6 @@ export class TutorOffering {
   studentId!: number;
 
   @Field()
-  schoolClass!: SchoolClass;
-
-  @Field()
   schoolSubject!: SchoolSubject;
 
   @Field()
@@ -23,6 +20,9 @@ export class TutorOffering {
 
   @Field()
   description!: string;
+
+  @Field()
+  grade!: number;
 }
 
 @InputType()
@@ -34,9 +34,6 @@ export class TutorOfferingInputCreation {
   studentId!: number;
 
   @Field((type) => Int)
-  schoolClassId!: number;
-
-  @Field((type) => Int)
   schoolSubjectId!: number;
 
   @Field()
@@ -44,6 +41,9 @@ export class TutorOfferingInputCreation {
 
   @Field()
   description!: string;
+
+  @Field()
+  grade!: number;
 }
 
 @InputType()
@@ -55,9 +55,6 @@ export class TutorOfferingUpdateInput {
   studentId!: number;
 
   @Field((type) => Int)
-  schoolClassId!: number;
-
-  @Field((type) => Int)
   schoolSubjectId!: number;
 
   @Field()
@@ -65,4 +62,7 @@ export class TutorOfferingUpdateInput {
 
   @Field()
   description!: string;
+
+  @Field()
+  grade!: number;
 }
