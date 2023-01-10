@@ -139,6 +139,18 @@ model User {
   role          String
   student       Student?
   admin         Admin?
+  Chat          Chat?
 
   @@map("user")
+}
+
+model Chat {
+  id       Int    @id @unique @default(autoincrement())
+  message  String
+  sender   String
+  receiver String
+  userId   String @unique() @map("user_id")
+  user     User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([userId])
 }

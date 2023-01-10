@@ -15,10 +15,11 @@ import { TutorOffering, TutorRequest } from '@prisma/client';
 import { number } from 'zod';
 
 async function matchRating(
-  teacher1: string,
-  teacher2: string
+  reqTeacher: string,
+  offTeacher: string
 ): Promise<number> {
-  if (teacher1 === teacher2) return 2;
+  if (  reqTeacher: string,
+    === offTeacher) return 2;
 
   return 1;
 }
