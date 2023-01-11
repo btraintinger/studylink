@@ -17,7 +17,7 @@ export default function NavBar() {
   };
 
   const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
-  const colorMode = useThemeModeContext();
+  const myColorMode = useThemeModeContext();
 
   return (
     <AppBar
@@ -56,7 +56,7 @@ export default function NavBar() {
         <IconButton
           color="inherit"
           aria-label="change theme"
-          onClick={colorMode.toggleColorMode}
+          onClick={myColorMode.colorMode.toggleColorMode}
           edge="start"
           sx={{ display: { xs: 'flex' }, mr: 1 }}
         >

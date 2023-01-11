@@ -5,20 +5,14 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import * as Muicon from '@mui/icons-material';
 import Image from 'next/image';
-const logoPath = '/../../../public/images/studylink_logo_light';
-
 import { useDrawerContext } from '../../context/app-context';
+import { useThemeModeContext } from '../../context/mode-context';
 import {
   ADMIN_LINKS,
   STUDENT_LINKS,
@@ -105,6 +99,9 @@ export default function MiniDrawer() {
     return <IconName {...props} />;
   };
 
+  const myColorMode = useThemeModeContext();
+  myColorMode.mode;
+
   return (
     <Drawer
       variant="permanent"
@@ -116,24 +113,36 @@ export default function MiniDrawer() {
       }
     >
       <DrawerHeader>
-        <Image height={30} width={30} src={logoPath} alt="logo" />
-
+        <Typography sx={{ display: isDrawerOpen ? 'flex' : 'none' }}>
+          {myColorMode.mode === 'light' ? (
+            <Image
+              height={30}
+              width={30}
+              src="/images/studylink_logo_dark.svg"
+              alt="logo"
+            />
+          ) : (
+            <Image
+              height={30}
+              width={30}
+              src="/images/studylink_logo_light.svg"
+              alt="logo"
+            />
+          )}
+        </Typography>
         <Typography
           variant="h6"
           noWrap
           letterSpacing={2}
           sx={{
-            display: { xs: 'none', sm: 'flex' },
+            display: isDrawerOpen ? 'flex' : 'none',
+            ml: 1,
           }}
         >
           STUDYLINK
         </Typography>
         <IconButton onClick={toggleDrawerOpen}>
-          {theme.direction === 'rtl' ? (
-            <ChevronRightIcon />
-          ) : (
-            <ChevronLeftIcon />
-          )}
+          {isDrawerOpen ? <Muicon.ChevronLeftRounded /> : <Muicon.Menu />}
         </IconButton>
       </DrawerHeader>
       <Divider />
