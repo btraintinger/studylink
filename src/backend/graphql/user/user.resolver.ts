@@ -17,7 +17,7 @@ export class UserResolver {
   @Authorized('ADMIN', 'STUDENT')
   @Query((returns) => User)
   async getCurrentUser(@Ctx() ctx: Context) {
-    if (!ctx.user) throw new Error('Not logged in');
+    if (!ctx.user) throw new Error('NotAuthorizedError');
 
     return await ctx.prisma.user.findUnique({
       where: { id: ctx.user.id },

@@ -1,18 +1,8 @@
 import { Match } from './match.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import {
-  Authorized,
-  Ctx,
-  FieldResolver,
-  Query,
-  Mutation,
-  Resolver,
-  Root,
-} from 'type-graphql';
+import { Ctx, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
-import { TutorOffering, TutorRequest } from '@prisma/client';
-import { number } from 'zod';
 
 async function matchRating(
   teacher1: string,
@@ -34,12 +24,12 @@ export class MatchResolver {
     });
     const matches: any[] = [];
     for (const request of requests) {
-      const machtingOfferings = await ctx.prisma.tutorOffering.findMany({
+      const matchingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
           schoolSubjectId: request.schoolSubjectId,
         },
       });
-      machtingOfferings.forEach((offering) => {
+      matchingOfferings.forEach((offering) => {
         matches.push({
           tutorRequest: request,
           tutorOffering: offering,

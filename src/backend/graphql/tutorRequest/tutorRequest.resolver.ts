@@ -54,9 +54,9 @@ export class TutorRequestResolver {
   @Query((returns) => TutorRequest)
   async getTutorRequestById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isTutorRequestExistent(ctx, id)))
-      throw new Error('TutorRequest does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorRequestByUser(ctx, id)))
-      throw new Error('TutorRequest was not created by user');
+      throw new Error('NotAuthorizedError');
 
     const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
       where: {
@@ -96,6 +96,8 @@ export class TutorRequestResolver {
       },
     });
 
+    if (!tutorRequest) throw new Error('CreationFailedError');
+
     return tutorRequest;
   }
 
@@ -107,9 +109,9 @@ export class TutorRequestResolver {
     @Ctx() ctx: Context
   ) {
     if (!(await isTutorRequestExistent(ctx, TutorRequestUpdateInput.id)))
-      throw new Error('TutorRequest does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorRequestByUser(ctx, TutorRequestUpdateInput.id)))
-      throw new Error('TutorRequest is not related to user');
+      throw new Error('NotAuthorizedError');
 
     const tutorRequest = await ctx.prisma.tutorRequest.update({
       where: {
@@ -131,6 +133,8 @@ export class TutorRequestResolver {
       },
     });
 
+    if (!tutorRequest) throw new Error('UpdateFailedError');
+
     return tutorRequest;
   }
 
@@ -138,17 +142,15 @@ export class TutorRequestResolver {
   @Mutation((returns) => TutorRequest)
   async deleteTutorRequest(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isTutorRequestExistent(ctx, id)))
-      throw new Error('TutorRequest does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorRequestByUser(ctx, id)))
-      throw new Error('TutorRequest is not related to user');
+      throw new Error('NotAuthorizedError');
 
     const tutorRequest = await ctx.prisma.tutorRequest.delete({
       where: {
         id: id,
       },
     });
-
-    if (!tutorRequest) throw new Error('TutorRequest could not be deleted');
 
     return tutorRequest;
   }

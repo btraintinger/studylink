@@ -123,7 +123,7 @@ export class StudentResolver {
       select: { id: true },
     });
 
-    if (!student) throw new Error('Student not found');
+    if (!student) throw new Error('DoesNotExistError');
 
     return student;
   }
@@ -169,7 +169,7 @@ export class StudentResolver {
           id: studentUser.id,
         },
       });
-      throw new Error('Student could not be created');
+      throw new Error('CreationFailedError');
     }
 
     sendPasswordToStudent(ctx, student.id, password);
@@ -183,10 +183,10 @@ export class StudentResolver {
     @Arg('studentInput') StudentInput: StudentUpdateInput
   ) {
     if (!(await isStudentExistent(ctx, StudentInput.id)))
-      throw new Error('Student not found');
+      throw new Error('DoesNotExistError');
 
     if (!(await isUserAdministratingStudent(ctx, StudentInput.id)))
-      throw new Error('User is not administrating student');
+      throw new Error('NotAuthorizedError');
 
     const student = await ctx.prisma.student.update({
       where: {
@@ -211,8 +211,8 @@ export class StudentResolver {
       },
     });
 
-    if (!studentUser) throw new Error('Student user could not be updated');
-    if (!student) throw new Error('Student could not be updated');
+    if (!studentUser) throw new Error('UpdateFailedError');
+    if (!student) throw new Error('UpdateFailedError');
 
     return student;
   }
@@ -221,10 +221,10 @@ export class StudentResolver {
   @Mutation((returns) => Student)
   async deleteStudent(@Ctx() ctx: Context, @Arg('id') id: number) {
     if (!(await isStudentExistent(ctx, id)))
-      throw new Error('Student not found');
+      throw new Error('DoesNotExistError');
 
     if (!(await isUserAdministratingStudent(ctx, id)))
-      throw new Error('User is not administrating student');
+      throw new Error('NotAuthorizedError');
 
     return await ctx.prisma.student.delete({
       where: {

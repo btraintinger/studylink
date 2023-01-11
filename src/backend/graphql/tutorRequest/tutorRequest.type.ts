@@ -26,27 +26,6 @@ export class TutorRequest {
 }
 
 @InputType()
-export class TutorRequestInput {
-  @Field((type) => ID)
-  id!: number;
-
-  @Field()
-  studentId!: number;
-
-  @Field()
-  schoolClassId!: number;
-
-  @Field()
-  schoolSubjectId!: number;
-
-  @Field()
-  teacher?: string;
-
-  @Field()
-  description?: string;
-}
-
-@InputType()
 export class TutorRequestCreationInput {
   @Field()
   studentId!: number;
@@ -58,15 +37,15 @@ export class TutorRequestCreationInput {
   schoolSubjectId!: number;
 
   @Field()
-  teacher?: string;
+  teacher!: string;
 
   @Field()
-  description?: string;
+  description!: string;
 }
 
 @InputType()
 export class TutorRequestUpdateInput {
-  @Field((type) => ID)
+  @Field((type) => Int)
   id!: number;
 
   @Field()
@@ -82,5 +61,5 @@ export class TutorRequestUpdateInput {
   teacher!: string;
 
   @Field()
-  description?: string;
+  description!: string;
 }

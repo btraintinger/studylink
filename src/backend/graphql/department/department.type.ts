@@ -29,7 +29,7 @@ export class DepartmentCreateInput {
 
 @InputType()
 export class DepartmentUpdateInput {
-  @Field((type) => ID)
+  @Field((type) => Int)
   id!: number;
 
   @Field()

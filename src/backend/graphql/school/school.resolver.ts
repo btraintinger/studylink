@@ -60,10 +60,9 @@ export class SchoolResolver {
   @Query((returns) => School)
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isSchoolExistent(ctx, id)))
-      throw new Error('School does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isUserAdministratingSchool(ctx, id)))
-      throw new Error('Not authorized');
-
+      throw new Error('NotAuthorizedError');
     const school = await ctx.prisma.school.findUnique({
       where: {
         id: id,
@@ -92,7 +91,7 @@ export class SchoolResolver {
       },
     });
 
-    if (!school) throw new Error('School creation failed');
+    if (!school) throw new Error('CreationFailedError');
     return school;
   }
 
@@ -103,10 +102,9 @@ export class SchoolResolver {
     @Ctx() ctx: Context
   ) {
     if (!(await isSchoolExistent(ctx, schoolUpdateInput.id)))
-      throw new Error('School does not exist');
-
+      throw new Error('DoesNotExistError');
     if (!(await isUserAdministratingSchool(ctx, schoolUpdateInput.id)))
-      throw new Error('Not authorized');
+      throw new Error('NotAuthorizedError');
 
     const school = await ctx.prisma.school.update({
       where: {
@@ -118,17 +116,16 @@ export class SchoolResolver {
       },
     });
 
-    if (!school) throw new Error('School update failed');
+    if (!school) throw new Error('UpdateFailedError');
     return school;
   }
 
   @Mutation((returns) => School)
   async deleteSchool(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isSchoolExistent(ctx, id)))
-      throw new Error('School does not exist');
-
+      throw new Error('DoesNotExistError');
     if (!(await isUserAdministratingSchool(ctx, id)))
-      throw new Error('Not authorized');
+      throw new Error('NotAuthorizedError');
 
     const school = await ctx.prisma.school.delete({
       where: {

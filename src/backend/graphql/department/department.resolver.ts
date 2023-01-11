@@ -62,7 +62,7 @@ export class DepartmentResolver {
   @Query((returns) => Department)
   async getDepartmentById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isUserAdministratingDepartment(ctx, id)))
-      throw new Error('Not authorized');
+      throw new Error('NotAuthorizedError');
 
     const department = await ctx.prisma.department.findUnique({
       where: {
@@ -70,7 +70,7 @@ export class DepartmentResolver {
       },
     });
 
-    if (!department) throw new Error('Department not found');
+    if (!department) throw new Error('DoesNotExistError');
     return department;
   }
 
@@ -81,7 +81,7 @@ export class DepartmentResolver {
     @Ctx() ctx: Context
   ) {
     if (input.schoolId !== ctx.user?.admin?.schoolId)
-      throw new Error('Not authorized');
+      throw new Error('NotAuthorizedError');
 
     const department = await ctx.prisma.department.create({
       data: {
@@ -90,7 +90,7 @@ export class DepartmentResolver {
       },
     });
 
-    if (!department) throw new Error('Department could not be created');
+    if (!department) throw new Error('CreationFailedError');
 
     return department;
   }
@@ -102,10 +102,10 @@ export class DepartmentResolver {
     @Ctx() ctx: Context
   ) {
     if (!(await isUserAdministratingDepartment(ctx, input.id)))
-      throw new Error('Not authorized');
+      throw new Error('NotAuthorizedError');
 
     if (!(await isDepartmentExistent(ctx, input.id)))
-      throw new Error('Department does not exist');
+      throw new Error('DoesNotExistError');
 
     const department = await ctx.prisma.department.update({
       where: {
@@ -116,7 +116,7 @@ export class DepartmentResolver {
       },
     });
 
-    if (!department) throw new Error('Department could not be updated');
+    if (!department) throw new Error('UpdateFailedError');
     return department;
   }
 }

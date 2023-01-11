@@ -37,7 +37,7 @@ export class StudentCreationInput {
 
 @InputType()
 export class StudentUpdateInput {
-  @Field((type) => ID)
+  @Field((type) => Int)
   id!: number;
 
   @Field()

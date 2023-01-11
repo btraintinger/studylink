@@ -54,9 +54,9 @@ export class TutorOfferingResolver {
   @Query((returns) => TutorOffering)
   async getTutorOfferingById(@Arg('id') id: number, @Ctx() ctx: Context) {
     if (!(await isTutorOfferingExistent(ctx, id)))
-      throw new Error('Tutor request not found');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorOfferingByUser(ctx, id)))
-      throw new Error('Tutor request not related to user');
+      throw new Error('NotAuthorizedError');
 
     const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
       where: {
@@ -96,6 +96,8 @@ export class TutorOfferingResolver {
       },
     });
 
+    if (!tutorOffering) throw new Error('CreationFailedError');
+
     return tutorOffering;
   }
 
@@ -107,9 +109,9 @@ export class TutorOfferingResolver {
     @Ctx() ctx: Context
   ) {
     if (!(await isTutorOfferingExistent(ctx, TutorOfferingUpdateInput.id)))
-      throw new Error('TutorOffering does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorOfferingByUser(ctx, TutorOfferingUpdateInput.id)))
-      throw new Error('TutorOffering was not created by user');
+      throw new Error('NotAuthorizedError');
 
     const tutorOffering = await ctx.prisma.tutorOffering.update({
       where: {
@@ -131,6 +133,8 @@ export class TutorOfferingResolver {
       },
     });
 
+    if (!tutorOffering) throw new Error('UpdateFailedError');
+
     return tutorOffering;
   }
 
@@ -138,18 +142,15 @@ export class TutorOfferingResolver {
   @Mutation((returns) => TutorOffering)
   async deleteTutorOffering(@Ctx() ctx: Context, @Arg('id') id: number) {
     if (!(await isTutorOfferingExistent(ctx, Number(id))))
-      throw new Error('TutorOffering does not exist');
+      throw new Error('DoesNotExistError');
     if (!(await isTutorOfferingByUser(ctx, Number(id))))
-      throw new Error('TutorOffering was not created by user');
+      throw new Error('NotAuthorizedError');
 
     const deletedTutorOffering = await ctx.prisma.tutorOffering.delete({
       where: {
         id: id,
       },
     });
-
-    if (!deletedTutorOffering)
-      throw new Error('Tutor offering could not be deleted');
 
     return deletedTutorOffering;
   }

@@ -24,7 +24,7 @@ export class SchoolSubjectCreationInput {
 
 @InputType()
 export class SchoolSubjectUpdateInput {
-  @Field((type) => ID)
+  @Field((type) => Int)
   id!: number;
 
   @Field()
