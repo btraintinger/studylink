@@ -5,12 +5,16 @@ import { Ctx, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
 
 async function matchRating(
-  teacher1: string,
-  teacher2: string
+  reqTeacher: string,
+  offTeacher: string,
+  reqGrade: number,
+  offGrade: number
 ): Promise<number> {
-  if (teacher1 === teacher2) return 2;
-
-  return 1;
+  if (reqTeacher === offTeacher && reqGrade === offGrade) return 4;
+  else if (reqGrade === offGrade) return 3;
+  else if (reqTeacher === offTeacher && reqGrade <= offGrade) return 2;
+  else if (reqGrade <= offGrade) return 1;
+  return 0;
 }
 
 @Resolver((of) => Match)
@@ -30,13 +34,16 @@ export class MatchResolver {
         },
       });
       matchingOfferings.forEach((offering) => {
-        if (request.grade <= offering.grade) {
-          matches.push({
-            tutorRequest: request,
-            tutorOffering: offering,
-            rating: matchRating(request.teacher, offering.teacher),
-          });
-        }
+        matches.push({
+          tutorRequest: request,
+          tutorOffering: offering,
+          rating: matchRating(
+            request.teacher,
+            offering.teacher,
+            request.grade,
+            offering.grade
+          ),
+        });
       });
     }
     return matches;
