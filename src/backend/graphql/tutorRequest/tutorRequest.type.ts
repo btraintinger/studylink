@@ -20,6 +20,9 @@ export class TutorRequest {
 
   @Field()
   description!: string;
+
+  @Field()
+  grade!: number;
 }
 
 @InputType()

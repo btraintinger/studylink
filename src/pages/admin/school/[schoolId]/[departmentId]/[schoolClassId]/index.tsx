@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import Layout from '../../../../../../components/page/layout';
 import FormWrapper from '../../../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../../../components/utils/loadingPage';
 
 const DEPARTMENT_QUERY = gql`
   query GetDepartmentById($getDepartmentByIdId: Float!) {
@@ -57,7 +58,7 @@ export default function Department() {
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_DEPARTMENT_MUTATION);
   const [updateFunction] = useMutation(UPDATE_DEPARTMENT_MUTATION);
-  const { data, loading, error } = useQuery(DEPARTMENT_QUERY, {
+  const { data, loading, error, refetch } = useQuery(DEPARTMENT_QUERY, {
     variables: {
       getDepartmentByIdId: queryId,
     },
@@ -116,6 +117,8 @@ export default function Department() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
+
+  if (loading) return <LoadingPage></LoadingPage>;
 
   return (
     <Layout role="ADMIN">
