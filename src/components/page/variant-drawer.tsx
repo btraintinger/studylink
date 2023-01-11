@@ -1,6 +1,6 @@
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
-import { Icon, Link as MuiLink } from '@mui/material';
+import { Icon, Link as MuiLink, SvgIcon } from '@mui/material';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -14,6 +14,10 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import * as Muicon from '@mui/icons-material';
+import Image from 'next/image';
+const logoPath = '/../../../public/images/studylink_logo_light';
+
 import { useDrawerContext } from '../../context/app-context';
 import {
   ADMIN_LINKS,
@@ -96,6 +100,11 @@ export default function MiniDrawer() {
     }
   };
 
+  const IconDisplay = (variation, props = {}) => {
+    const IconName = Muicon[variation];
+    return <IconName {...props} />;
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -107,19 +116,16 @@ export default function MiniDrawer() {
       }
     >
       <DrawerHeader>
+        <Image height={30} width={30} src={logoPath} alt="logo" />
+
         <Typography
           variant="h6"
           noWrap
-          component="div"
+          letterSpacing={2}
           sx={{
             display: { xs: 'none', sm: 'flex' },
-            ml: 1,
           }}
         >
-          <InstagramIcon />
-        </Typography>
-
-        <Typography variant="h6" noWrap letterSpacing={2}>
           STUDYLINK
         </Typography>
         <IconButton onClick={toggleDrawerOpen}>
@@ -154,9 +160,11 @@ export default function MiniDrawer() {
                   minWidth: 0,
                   mr: isDrawerOpen ? 3 : 'auto',
                   justifyContent: 'center',
+                  boxShadow:
+                    selectedItem === route ? '1px 1px 0px 1px' : 'none',
                 }}
               >
-                <Icon></Icon>
+                {IconDisplay(icon)}
               </ListItemIcon>
               <ListItemText
                 primary={text}
@@ -191,7 +199,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                {selectedItem === route ? <InboxIcon /> : <MailIcon />}
+                {IconDisplay(icon)}
               </ListItemIcon>
               <ListItemText
                 primary={text}

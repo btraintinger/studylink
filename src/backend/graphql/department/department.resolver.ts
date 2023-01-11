@@ -119,4 +119,22 @@ export class DepartmentResolver {
     if (!department) throw new Error('UpdateFailedError');
     return department;
   }
+
+  @Authorized('ADMIN')
+  @Mutation((returns) => Department)
+  async deleteDepartment(@Arg('id') id: number, @Ctx() ctx: Context) {
+    if (!(await isUserAdministratingDepartment(ctx, id)))
+      throw new Error('NotAuthorizedError');
+
+    if (!(await isDepartmentExistent(ctx, id)))
+      throw new Error('DoesNotExistError');
+
+    const department = await ctx.prisma.department.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return department;
+  }
 }

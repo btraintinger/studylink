@@ -76,11 +76,7 @@ export class TutorRequestResolver {
   ) {
     const tutorRequest = await ctx.prisma.tutorRequest.create({
       data: {
-        schoolClass: {
-          connect: {
-            id: TutorRequestCreationInput.schoolClassId,
-          },
-        },
+        grade: TutorRequestCreationInput.grade,
         schoolSubject: {
           connect: {
             id: TutorRequestCreationInput.schoolSubjectId,
@@ -118,11 +114,7 @@ export class TutorRequestResolver {
         id: TutorRequestUpdateInput.id,
       },
       data: {
-        schoolClass: {
-          connect: {
-            id: TutorRequestUpdateInput.schoolClassId,
-          },
-        },
+        grade: TutorRequestUpdateInput.grade,
         schoolSubject: {
           connect: {
             id: TutorRequestUpdateInput.schoolSubjectId,
