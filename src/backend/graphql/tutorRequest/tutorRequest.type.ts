@@ -37,10 +37,10 @@ export class TutorRequestInput {
   schoolSubjectId!: number;
 
   @Field()
-  teacher?: string;
+  teacher!: string;
 
   @Field()
-  description?: string;
+  description!: string;
 
   @Field()
   grade!: number;
@@ -55,10 +55,10 @@ export class TutorRequestCreationInput {
   schoolSubjectId!: number;
 
   @Field()
-  teacher?: string;
+  teacher!: string;
 
   @Field()
-  description?: string;
+  description!: string;
 
   @Field()
   grade!: number;
@@ -79,7 +79,7 @@ export class TutorRequestUpdateInput {
   teacher!: string;
 
   @Field()
-  description?: string;
+  description!: string;
 
   @Field()
   grade!: number;

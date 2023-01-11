@@ -119,6 +119,7 @@ export class TutorOfferingResolver {
         },
         teacher: TutorOfferingUpdateInput.teacher,
         description: TutorOfferingUpdateInput.description,
+        grade: TutorOfferingUpdateInput.grade,
       },
     });
 

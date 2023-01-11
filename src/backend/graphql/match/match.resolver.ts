@@ -37,15 +37,16 @@ export class MatchResolver {
       const machtingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
           schoolSubjectId: request.schoolSubjectId,
-          grade: request.grade,
         },
       });
       machtingOfferings.forEach((offering) => {
-        matches.push({
-          tutorRequest: request,
-          tutorOffering: offering,
-          rating: matchRating(request.teacher, offering.teacher),
-        });
+        if (request.grade <= offering.grade) {
+          matches.push({
+            tutorRequest: request,
+            tutorOffering: offering,
+            rating: matchRating(request.teacher, offering.teacher),
+          });
+        }
       });
     }
     return matches;
