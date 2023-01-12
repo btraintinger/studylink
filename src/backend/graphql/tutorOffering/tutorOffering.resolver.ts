@@ -30,7 +30,7 @@ async function isTutorOfferingExistent(
     },
   });
 
-  return tutorRequest ? true : false;
+  return !!tutorRequest;
 }
 
 async function isTutorOfferingByUser(
@@ -60,7 +60,7 @@ export class TutorOfferingResolver {
 
     const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -140,7 +140,7 @@ export class TutorOfferingResolver {
 
     const deletedTutorOffering = await ctx.prisma.tutorOffering.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

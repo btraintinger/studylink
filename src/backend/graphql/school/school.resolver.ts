@@ -33,7 +33,7 @@ async function isSchoolExistent(
     },
   });
 
-  return school ? true : false;
+  return !!school;
 }
 
 @Resolver((of) => School)
@@ -65,7 +65,7 @@ export class SchoolResolver {
       throw new Error('NotAuthorizedError');
     const school = await ctx.prisma.school.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -126,7 +126,7 @@ export class SchoolResolver {
 
     const school = await ctx.prisma.school.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

@@ -8,7 +8,7 @@ async function isUserAlreadyExistent(email: string) {
     select: { id: true },
   });
 
-  return user ? true : false;
+  return !!user;
 }
 
 function areCredentialsValid(credentials) {

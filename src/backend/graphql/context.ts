@@ -1,6 +1,7 @@
 import { authOptions } from './../../pages/api/auth/[...nextauth]';
 import { Admin, PrismaClient, Student, User } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
+// eslint-disable-next-line camelcase
 import { unstable_getServerSession } from 'next-auth';
 import prisma from '../utils/prismadb';
 
@@ -33,8 +34,8 @@ export const context = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const context: Context = {
-    prisma: prisma,
-    user: user,
+    prisma,
+    user,
   };
   return context;
 };

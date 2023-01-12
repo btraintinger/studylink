@@ -100,7 +100,6 @@ export default function MiniDrawer() {
   };
 
   const myColorMode = useThemeModeContext();
-  myColorMode.mode;
 
   return (
     <Drawer

@@ -1,20 +1,14 @@
-import { Match } from './match.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
+import { Match } from './match.type';
 import { Ctx, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
+import { TutorOffering, TutorRequest } from '@prisma/client';
 
-async function matchRating(
-  reqTeacher: string,
-  offTeacher: string,
-  reqGrade: number,
-  offGrade: number
-): Promise<number> {
-  if (reqTeacher === offTeacher && reqGrade === offGrade) return 4;
-  else if (reqGrade === offGrade) return 3;
-  else if (reqTeacher === offTeacher && reqGrade <= offGrade) return 2;
-  else if (reqGrade <= offGrade) return 1;
-  return 0;
+function matchRating(request: TutorRequest, offering: TutorOffering): number {
+  let rating = 0;
+  if (request.grade === offering.grade) rating += 2;
+  if (request.teacher === offering.teacher) rating += 1;
+  return rating;
 }
 
 @Resolver((of) => Match)
@@ -26,26 +20,30 @@ export class MatchResolver {
         id: ctx.user?.student?.id,
       },
     });
-    const matches: any[] = [];
-    for (const request of requests) {
+    const matches: {
+      rating: number;
+      tutorOffering: TutorOffering;
+      tutorRequest: TutorRequest;
+    }[] = [];
+
+    requests.forEach(async (request) => {
       const matchingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
           schoolSubjectId: request.schoolSubjectId,
+          grade: {
+            gte: request.grade,
+          },
         },
       });
       matchingOfferings.forEach((offering) => {
         matches.push({
           tutorRequest: request,
           tutorOffering: offering,
-          rating: matchRating(
-            request.teacher,
-            offering.teacher,
-            request.grade,
-            offering.grade
-          ),
+          rating: matchRating(request, offering),
         });
       });
-    }
+    });
+
     return matches;
   }
 }

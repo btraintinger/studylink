@@ -1,10 +1,7 @@
 import { Box } from '@mui/material';
+import type { ReactElement } from 'react';
 
-export default function FormWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function FormWrapper({ children }: { children: ReactElement }) {
   return (
     <Box
       sx={{

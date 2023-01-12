@@ -37,7 +37,7 @@ async function isSchoolClassExistent(
     },
   });
 
-  return schoolClass ? true : false;
+  return !!schoolClass;
 }
 
 @Resolver((of) => SchoolClass)
@@ -67,7 +67,7 @@ export class SchoolClassResolver {
 
     const schoolClass = await ctx.prisma.schoolClass.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -137,7 +137,7 @@ export class SchoolClassResolver {
 
     const schoolClass = await ctx.prisma.schoolClass.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

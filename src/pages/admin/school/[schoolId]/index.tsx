@@ -12,20 +12,6 @@ import LoadingPage from '../../../../components/utils/loadingPage';
 const SCHOOL_QUERY = gql`
   query GetSchoolById($getSchoolByIdId: Float!) {
     getSchoolById(id: $getSchoolByIdId) {
-      admins {
-        id
-        user {
-          email
-          name
-          id
-        }
-      }
-      departments {
-        id
-        name
-      }
-      domain
-      handle
       id
       name
     }
@@ -61,7 +47,7 @@ export default function School() {
 
   // get schoolId from url
   const { schoolId } = router.query;
-  let queryId: number | null = parseInt(schoolId as string);
+  let queryId: number | null = parseInt(schoolId as string, 10);
   if (schoolId === 'new') queryId = null;
 
   // graphql queries and mutations
@@ -87,7 +73,6 @@ export default function School() {
     if (data) {
       reset(data.getSchoolById);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -97,7 +82,6 @@ export default function School() {
       setErrorMessage('Die Erstellung war nicht möglich');
     if (error?.message === 'UpdateFailedError')
       setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
@@ -127,7 +111,6 @@ export default function School() {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
   if (loading) <LoadingPage></LoadingPage>;

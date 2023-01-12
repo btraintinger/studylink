@@ -47,7 +47,7 @@ async function isStudentExistent(
     },
   });
 
-  return student ? true : false;
+  return !!student;
 }
 
 async function isUserAdministratingStudent(

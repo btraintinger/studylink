@@ -10,5 +10,5 @@ const apolloServer = new ApolloServer({
 });
 
 export default startServerAndCreateNextHandler(apolloServer, {
-  context: context,
+  context,
 });
