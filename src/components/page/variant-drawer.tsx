@@ -137,6 +137,7 @@ export default function MiniDrawer() {
           sx={{
             display: isDrawerOpen ? 'flex' : 'none',
             ml: 1,
+            color: 'primary',
           }}
         >
           STUDYLINK

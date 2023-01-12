@@ -4,6 +4,7 @@ import {
   Typography,
   IconButton,
   Link as MuiLink,
+  Avatar,
 } from '@mui/material';
 import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -52,6 +53,10 @@ export default function NavBar() {
             STUDYLINK
           </Typography>
         </MuiLink>
+
+        <Avatar sx={{ mr: 2, bgcolor: '#13cf6a', width: 32, height: 32 }}>
+          LS
+        </Avatar>
 
         <IconButton
           color="inherit"
