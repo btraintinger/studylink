@@ -28,9 +28,6 @@ export class TutorRequest {
 @InputType()
 export class TutorRequestCreationInput {
   @Field()
-  studentId!: number;
-
-  @Field()
   schoolSubjectId!: number;
 
   @Field()
@@ -47,9 +44,6 @@ export class TutorRequestCreationInput {
 export class TutorRequestUpdateInput {
   @Field((type) => Int)
   id!: number;
-
-  @Field()
-  studentId!: number;
 
   @Field()
   schoolSubjectId!: number;

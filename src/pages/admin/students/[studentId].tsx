@@ -49,7 +49,7 @@ const studentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
   email: string().email('* Bitte geben Sie eine gültige E-Mail-Adresse an'),
   studentClass: object({
-    id: number().nonnegative('* Bitte wählen Sie eine Klasse aus'),
+    id: number().int().nonnegative('* Bitte wählen Sie eine Klasse aus'),
   }),
 });
 

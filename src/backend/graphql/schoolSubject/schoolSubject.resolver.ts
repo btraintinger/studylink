@@ -74,7 +74,7 @@ export class SchoolSubjectResolver {
   }
 
   @Authorized('ADMIN')
-  @Query((returns) => SchoolSubject)
+  @Mutation((returns) => SchoolSubject)
   async createSchoolSubject(
     @Arg('SchoolSubjectCreationInput')
     SchoolSubjectCreationInput: SchoolSubjectCreationInput,

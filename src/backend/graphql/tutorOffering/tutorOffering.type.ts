@@ -28,12 +28,6 @@ export class TutorOffering {
 @InputType()
 export class TutorOfferingInputCreation {
   @Field((type) => Int)
-  id!: number;
-
-  @Field((type) => Int)
-  studentId!: number;
-
-  @Field((type) => Int)
   schoolSubjectId!: number;
 
   @Field()
@@ -50,9 +44,6 @@ export class TutorOfferingInputCreation {
 export class TutorOfferingUpdateInput {
   @Field((type) => Int)
   id!: number;
-
-  @Field((type) => Int)
-  studentId!: number;
 
   @Field((type) => Int)
   schoolSubjectId!: number;

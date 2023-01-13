@@ -99,7 +99,7 @@ export class TutorOfferingResolver {
 
   @Authorized('STUDENT')
   @Mutation((returns) => TutorOffering)
-  async updateOfferingRequest(
+  async updateTutorOffering(
     @Arg('TutorOfferingUpdateInput')
     TutorOfferingUpdateInput: TutorOfferingUpdateInput,
     @Ctx() ctx: Context

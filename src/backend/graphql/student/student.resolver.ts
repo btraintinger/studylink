@@ -1,3 +1,4 @@
+import { SchoolSubject } from './../schoolSubject/schoolSubject.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Student,
@@ -139,6 +140,29 @@ export class StudentResolver {
     return await ctx.prisma.student.findUnique({
       where: { id },
     });
+  }
+
+  @Authorized('STUDENT')
+  @Query((returns) => [SchoolSubject])
+  async getSubjectsOfStudent(@Ctx() ctx: Context) {
+    const dbQuery = await ctx.prisma.student.findUnique({
+      where: { userId: ctx.user?.id },
+      select: {
+        schoolClass: {
+          include: {
+            classHasSubject: {
+              include: {
+                schoolSubject: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return dbQuery?.schoolClass?.classHasSubject.map(
+      (classHasSubject) => classHasSubject.schoolSubject as SchoolSubject
+    );
   }
 
   @Authorized('ADMIN')
