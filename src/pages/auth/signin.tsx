@@ -28,6 +28,10 @@ type LoginInput = TypeOf<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
 
+  const { data: session, status } = useSession();
+  if (status === 'loading') return <LoadingPage />;
+  if (session) router.push('/');
+
   const [error, setError] = useState('');
 
   const {

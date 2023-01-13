@@ -86,7 +86,11 @@ export default function Student() {
 
   useEffect(() => {
     if (data) {
-      reset(data.getStudentById);
+      reset({
+        name: data.getStudentById.user.name,
+        email: data.getStudentById.user.email,
+        studentClass: { id: data.getStudentById.schoolClass.id },
+      });
     }
   }, [data]);
 

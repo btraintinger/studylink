@@ -8,10 +8,9 @@ export default function FormWrapper({ children }: { children: ReactElement }) {
         topMargin: 10,
         justifyContent: 'center',
         display: 'flex',
-        alignItems: 'center',
       }}
     >
-      <Box sx={{ maxWidth: 'xl' }}>{children}</Box>
+      <Box sx={{ maxWidth: 'md' }}>{children}</Box>
     </Box>
   );
 }
