@@ -1,10 +1,22 @@
 import { gql, useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
+import { Typography, ListItem } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import InboxIcon from '@mui/icons-material/Inbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
+
+const students = [peter, paul, max];
 
 const OFFERS_QUERY = gql`
-  query GetSchoolClassesOfSchool {
+  query GetStudentOfCurrentUser {
     getStudentOfCurrentUser {
       tutorOfferings {
         description
@@ -24,6 +36,8 @@ const OFFERS_QUERY = gql`
 export default function Offers() {
   const { data, loading, error } = useQuery(OFFERS_QUERY);
 
+  const toDisplay = data.getStudentOfCurrentUser.tutorOfferings.teacher;
+
   if (loading)
     return (
       <Layout role="STUDENT">
@@ -34,6 +48,17 @@ export default function Offers() {
   return (
     <Layout role="STUDENT">
       <Typography>Offers</Typography>
+      <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <nav aria-label="main mailbox folders">
+          <List>
+            {toDisplay.map(({ text }, id) => (
+              <ListItem key={id} disablePadding sx={{ display: 'block' }}>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </nav>
+      </Box>
     </Layout>
   );
 }
