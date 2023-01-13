@@ -15,7 +15,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { useState, MouseEvent, useEffect } from 'react';
+import { useState, MouseEvent, useEffect, useMemo } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -27,7 +27,6 @@ const USER_QUERY = gql`
     }
   }
 `;
-
 function getInitials(name: string): string {
   if (name) {
     const nameArray = name.split(' ');
@@ -47,6 +46,7 @@ export default function NavBar() {
 
   const { isDrawerOpen, setDrawerOpen } = useDrawerContext();
   const myColorMode = useThemeModeContext();
+  const [name, setName] = useState('');
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -59,14 +59,16 @@ export default function NavBar() {
 
   const { data, loading, error } = useQuery(USER_QUERY);
 
-  let name = '';
   useEffect(() => {
     if (data) {
-      name = getInitials(data.getCurrentUser.name).toUpperCase();
+      setName(getInitials(data.getCurrentUser.name).toUpperCase());
     }
   }, [data]);
 
   const router = useRouter();
+
+  console.log('initials: ');
+  console.log(name);
 
   return (
     <AppBar
@@ -86,7 +88,6 @@ export default function NavBar() {
             sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}
           />
         </IconButton>
-
         <MuiLink component={Link} href={'/'} underline="none" sx={{ flex: 1 }}>
           <Typography
             variant="h5"
@@ -101,13 +102,11 @@ export default function NavBar() {
             STUDYLINK
           </Typography>
         </MuiLink>
-
         <Button sx={{ mr: 2 }} onClick={handleClick}>
           <Avatar sx={{ bgcolor: '#13cf6a', width: 32, height: 32 }}>
             {name}
           </Avatar>
         </Button>
-
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
@@ -120,7 +119,6 @@ export default function NavBar() {
           <MenuItem onClick={() => router.push('/user')}>Account</MenuItem>
           <MenuItem onClick={() => signOut()}>Ausloggen</MenuItem>
         </Menu>
-
         <IconButton
           color="inherit"
           aria-label="change theme"

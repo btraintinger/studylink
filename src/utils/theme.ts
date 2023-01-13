@@ -1,14 +1,7 @@
 import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
-import {
-  amber,
-  blue,
-  deepOrange,
-  green,
-  grey,
-  orange,
-} from '@mui/material/colors';
+import { blue, green, grey, orange } from '@mui/material/colors';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
