@@ -139,6 +139,14 @@ export default function School() {
           >
             Speichern
           </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
+            onClick={() => router.push(`/admin/school/${schoolId}/new`)}
+          >
+            Neue Abteilung hinzufügen
+          </Button>
           <Alert
             severity="error"
             sx={{

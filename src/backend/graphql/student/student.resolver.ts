@@ -129,6 +129,19 @@ export class StudentResolver {
   }
 
   @Authorized('ADMIN')
+  @Query((returns) => Student)
+  async getStudentById(@Ctx() ctx: Context, @Arg('id') id: number) {
+    if (!(await isStudentExistent(ctx, id)))
+      throw new Error('DoesNotExistError');
+    if (!(await isUserAdministratingStudent(ctx, id)))
+      throw new Error('NotAuthorizedError');
+
+    return await ctx.prisma.student.findUnique({
+      where: { id },
+    });
+  }
+
+  @Authorized('ADMIN')
   @Mutation((returns) => Student)
   async createStudent(
     @Ctx() ctx: Context,

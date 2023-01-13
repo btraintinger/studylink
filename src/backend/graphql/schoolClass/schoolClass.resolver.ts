@@ -75,6 +75,34 @@ export class SchoolClassResolver {
   }
 
   @Authorized('ADMIN')
+  @Query((returns) => [SchoolClass])
+  async getSchoolClassesOfSchool(@Ctx() ctx: Context) {
+    if (!ctx.user?.admin?.schoolId) return [];
+
+    const departments = await ctx.prisma.department.findMany({
+      where: {
+        schoolId: ctx.user?.admin?.schoolId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const schoolClasses: SchoolClass[] = [];
+
+    for (const department of departments) {
+      const classes = await ctx.prisma.schoolClass.findMany({
+        where: {
+          departmentId: department.id,
+        },
+      });
+      schoolClasses.push(...classes);
+    }
+
+    return schoolClasses;
+  }
+
+  @Authorized('ADMIN')
   @Mutation((returns) => SchoolClass)
   async createSchoolClass(
     @Arg('schoolClassCreateInput')

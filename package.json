@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
-    "@apollo/server": "^4.2.2",
+    "@apollo/server": "^4.3.0",
     "@as-integrations/next": "^1.2.0",
     "@babel/core": "^7.0.0",
     "@emotion/cache": "^11.10.5",
