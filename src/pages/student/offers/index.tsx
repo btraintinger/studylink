@@ -12,8 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
-
-const students = [peter, paul, max];
+import { useEffect, useState } from 'react';
 
 const OFFERS_QUERY = gql`
   query GetStudentOfCurrentUser {
@@ -35,8 +34,13 @@ const OFFERS_QUERY = gql`
 
 export default function Offers() {
   const { data, loading, error } = useQuery(OFFERS_QUERY);
+  const [array, setArray] = useState([]);
 
-  const toDisplay = data.getStudentOfCurrentUser.tutorOfferings.teacher;
+  useEffect(() => {
+    if (data) {
+      setArray(data.getStudentOfCurrentUser.tutorOfferings.teacher);
+    }
+  }, [data]);
 
   if (loading)
     return (
@@ -51,11 +55,9 @@ export default function Offers() {
       <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
         <nav aria-label="main mailbox folders">
           <List>
-            {toDisplay.map(({ text }, id) => (
-              <ListItem key={id} disablePadding sx={{ display: 'block' }}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            {array.map(function (array) {
+              return <ListItem> {array} </ListItem>;
+            })}
           </List>
         </nav>
       </Box>

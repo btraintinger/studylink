@@ -159,7 +159,7 @@ export default function MiniDrawer() {
       <Divider />
 
       <List>
-        {ADMIN_LINKS.map(({ text, route, icon }, id) => (
+        {STUDENT_LINKS.map(({ text, route, icon }, id) => (
           <ListItem
             key={id}
             disablePadding
