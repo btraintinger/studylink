@@ -67,9 +67,6 @@ export default function NavBar() {
 
   const router = useRouter();
 
-  console.log('initials: ');
-  console.log(name);
-
   return (
     <AppBar
       position="fixed"
