@@ -15,3 +15,12 @@ export class User {
   @Field()
   role!: string;
 }
+
+@InputType()
+export class UserUpdateInput {
+  @Field()
+  email!: string;
+
+  @Field()
+  name!: string;
+}
