@@ -48,7 +48,12 @@ export default function Department() {
   const { departmentId, schoolId } = router.query;
   let queryId: number | null = parseInt(departmentId as string, 10);
   if (departmentId === 'new') queryId = null;
-  if (!schoolId) return router.push('/404');
+
+  useEffect(() => {
+    if (schoolId === undefined) {
+      router.push('/404');
+    }
+  }, [schoolId]);
 
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_DEPARTMENT_MUTATION);

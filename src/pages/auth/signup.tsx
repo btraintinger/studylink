@@ -15,8 +15,9 @@ import { object, string, TypeOf } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import LoadingPage from '../../components/utils/loadingPage';
 
 const signUpSchema = object({
   email: string().email('* Email must be a valid email address'),
@@ -34,8 +35,6 @@ export default function LoginPage() {
   const router = useRouter();
 
   const { data: session, status } = useSession();
-  if (status === 'loading') return <LoadingPage />;
-  if (session) router.push('/');
 
   const [error, setError] = useState('');
 
@@ -54,6 +53,9 @@ export default function LoginPage() {
       reset();
     }
   }, [isSubmitSuccessful]);
+
+  if (status === 'loading') return <LoadingPage />;
+  if (session) router.push('/');
 
   const onSubmitHandler: SubmitHandler<SignUpInput> = async (values) => {
     const response = await signIn('signup', {
