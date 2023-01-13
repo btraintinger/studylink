@@ -1,4 +1,4 @@
-import { User } from './user.type';
+import { User, UserUpdateInput } from './user.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
@@ -9,6 +9,7 @@ import {
   Mutation,
   Resolver,
   Root,
+  Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
 
@@ -21,6 +22,23 @@ export class UserResolver {
 
     return await ctx.prisma.user.findUnique({
       where: { id: ctx.user.id },
+    });
+  }
+
+  @Authorized('ADMIN')
+  @Mutation((returns) => User)
+  async updateUser(
+    @Ctx() ctx: Context,
+    @Arg('userUpdateInput') userUpdateInput: UserUpdateInput
+  ) {
+    if (!ctx.user) throw new Error('NotAuthorizedError');
+
+    return await ctx.prisma.user.update({
+      where: { id: ctx.user.id },
+      data: {
+        name: userUpdateInput.name,
+        email: userUpdateInput.email,
+      },
     });
   }
 }
