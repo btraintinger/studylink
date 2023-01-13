@@ -30,7 +30,7 @@ async function isSchoolSubjectExistent(
     },
   });
 
-  return schoolSubject ? true : false;
+  return !!schoolSubject;
 }
 
 async function isUserAdministratingSchoolSubject(
@@ -64,7 +64,7 @@ export class SchoolSubjectResolver {
 
     const schoolSubject = await ctx.prisma.schoolSubject.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -74,7 +74,7 @@ export class SchoolSubjectResolver {
   }
 
   @Authorized('ADMIN')
-  @Query((returns) => SchoolSubject)
+  @Mutation((returns) => SchoolSubject)
   async createSchoolSubject(
     @Arg('SchoolSubjectCreationInput')
     SchoolSubjectCreationInput: SchoolSubjectCreationInput,
@@ -108,7 +108,7 @@ export class SchoolSubjectResolver {
 
     const schoolSubject = await ctx.prisma.schoolSubject.update({
       where: {
-        id: id,
+        id,
       },
       data: {
         name: SchoolSubjectUpdateInput.name,
@@ -131,7 +131,7 @@ export class SchoolSubjectResolver {
 
     const schoolSubject = await ctx.prisma.schoolSubject.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

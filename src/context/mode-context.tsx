@@ -8,7 +8,7 @@ type modeType = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-//const ThemeModeContext = React.createContext({ toggleColorMode: () => {} });
+// const ThemeModeContext = React.createContext({ toggleColorMode: () => {} });
 const ThemeModeContext = React.createContext<modeType | undefined>(undefined);
 
 export default function ThemeModeContextProvider({

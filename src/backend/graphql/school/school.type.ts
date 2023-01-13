@@ -11,12 +11,6 @@ export class School {
   @Field()
   name!: string;
 
-  @Field()
-  handle!: string;
-
-  @Field()
-  domain!: string;
-
   @Field((type) => [Department])
   departments?: Department[];
 
@@ -28,12 +22,6 @@ export class School {
 export class SchoolCreationInput {
   @Field()
   name!: string;
-
-  @Field()
-  handle!: string;
-
-  @Field()
-  domain!: string;
 }
 
 @InputType()
@@ -43,7 +31,4 @@ export class SchoolUpdateInput {
 
   @Field()
   name!: string;
-
-  @Field()
-  domain!: string;
 }

@@ -17,7 +17,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import StudylinkHead from '../../components/utils/head';
 
 const signUpSchema = object({
   email: string().email('* Email must be a valid email address'),
@@ -33,6 +32,10 @@ type SignUpInput = TypeOf<typeof signUpSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+
+  const { data: session, status } = useSession();
+  if (status === 'loading') return <LoadingPage />;
+  if (session) router.push('/');
 
   const [error, setError] = useState('');
 
@@ -50,7 +53,6 @@ export default function LoginPage() {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
   const onSubmitHandler: SubmitHandler<SignUpInput> = async (values) => {
@@ -61,16 +63,15 @@ export default function LoginPage() {
       redirect: false,
     });
     if (response === undefined) return;
-    if (response.ok)
-      return router.push({
-        pathname: '/',
-      });
+    if (response.ok) {
+      router.push('/');
+      return;
+    }
     if (response.error) setError(response.error);
   };
 
   return (
     <Container maxWidth="xs">
-      <StudylinkHead></StudylinkHead>
       <Box
         sx={{
           display: 'flex',

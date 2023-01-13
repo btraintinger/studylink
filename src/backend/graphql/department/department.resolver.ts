@@ -45,7 +45,7 @@ async function isDepartmentExistent(
     },
   });
 
-  return department ? true : false;
+  return !!department;
 }
 
 @Resolver((of) => Department)
@@ -66,7 +66,7 @@ export class DepartmentResolver {
 
     const department = await ctx.prisma.department.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -131,7 +131,7 @@ export class DepartmentResolver {
 
     const department = await ctx.prisma.department.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

@@ -20,13 +20,13 @@ export class TutorRequest {
 
   @Field()
   description!: string;
+
+  @Field()
+  grade!: number;
 }
 
 @InputType()
 export class TutorRequestCreationInput {
-  @Field()
-  studentId!: number;
-
   @Field()
   schoolSubjectId!: number;
 
@@ -44,9 +44,6 @@ export class TutorRequestCreationInput {
 export class TutorRequestUpdateInput {
   @Field((type) => Int)
   id!: number;
-
-  @Field()
-  studentId!: number;
 
   @Field()
   schoolSubjectId!: number;
