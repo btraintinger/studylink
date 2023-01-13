@@ -37,7 +37,7 @@ async function isSchoolClassExistent(
     },
   });
 
-  return schoolClass ? true : false;
+  return !!schoolClass;
 }
 
 @Resolver((of) => SchoolClass)
@@ -67,11 +67,39 @@ export class SchoolClassResolver {
 
     const schoolClass = await ctx.prisma.schoolClass.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
     return schoolClass;
+  }
+
+  @Authorized('ADMIN')
+  @Query((returns) => [SchoolClass])
+  async getSchoolClassesOfSchool(@Ctx() ctx: Context) {
+    if (!ctx.user?.admin?.schoolId) return [];
+
+    const departments = await ctx.prisma.department.findMany({
+      where: {
+        schoolId: ctx.user?.admin?.schoolId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const schoolClasses: SchoolClass[] = [];
+
+    for (const department of departments) {
+      const classes = await ctx.prisma.schoolClass.findMany({
+        where: {
+          departmentId: department.id,
+        },
+      });
+      schoolClasses.push(...classes);
+    }
+
+    return schoolClasses;
   }
 
   @Authorized('ADMIN')
@@ -137,7 +165,7 @@ export class SchoolClassResolver {
 
     const schoolClass = await ctx.prisma.schoolClass.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

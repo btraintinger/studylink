@@ -1,3 +1,4 @@
+import { SchoolSubject } from './../schoolSubject/schoolSubject.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Student,
@@ -47,7 +48,7 @@ async function isStudentExistent(
     },
   });
 
-  return student ? true : false;
+  return !!student;
 }
 
 async function isUserAdministratingStudent(
@@ -126,6 +127,42 @@ export class StudentResolver {
     if (!student) throw new Error('DoesNotExistError');
 
     return student;
+  }
+
+  @Authorized('ADMIN')
+  @Query((returns) => Student)
+  async getStudentById(@Ctx() ctx: Context, @Arg('id') id: number) {
+    if (!(await isStudentExistent(ctx, id)))
+      throw new Error('DoesNotExistError');
+    if (!(await isUserAdministratingStudent(ctx, id)))
+      throw new Error('NotAuthorizedError');
+
+    return await ctx.prisma.student.findUnique({
+      where: { id },
+    });
+  }
+
+  @Authorized('STUDENT')
+  @Query((returns) => [SchoolSubject])
+  async getSubjectsOfStudent(@Ctx() ctx: Context) {
+    const dbQuery = await ctx.prisma.student.findUnique({
+      where: { userId: ctx.user?.id },
+      select: {
+        schoolClass: {
+          include: {
+            classHasSubject: {
+              include: {
+                schoolSubject: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return dbQuery?.schoolClass?.classHasSubject.map(
+      (classHasSubject) => classHasSubject.schoolSubject as SchoolSubject
+    );
   }
 
   @Authorized('ADMIN')

@@ -33,7 +33,7 @@ async function isSchoolExistent(
     },
   });
 
-  return school ? true : false;
+  return !!school;
 }
 
 @Resolver((of) => School)
@@ -65,7 +65,7 @@ export class SchoolResolver {
       throw new Error('NotAuthorizedError');
     const school = await ctx.prisma.school.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -81,8 +81,6 @@ export class SchoolResolver {
     const school = await ctx.prisma.school.create({
       data: {
         name: schoolCreationInput.name,
-        handle: schoolCreationInput.handle,
-        domain: schoolCreationInput.domain,
         admins: {
           connect: {
             id: ctx.user?.admin?.id,
@@ -112,7 +110,6 @@ export class SchoolResolver {
       },
       data: {
         name: schoolUpdateInput.name,
-        domain: schoolUpdateInput.domain,
       },
     });
 
@@ -129,7 +126,7 @@ export class SchoolResolver {
 
     const school = await ctx.prisma.school.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

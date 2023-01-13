@@ -1,30 +1,17 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, TextField } from '@mui/material';
+import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../components/utils/loadingPage';
 
 const SCHOOL_QUERY = gql`
   query GetSchoolById($getSchoolByIdId: Float!) {
     getSchoolById(id: $getSchoolByIdId) {
-      admins {
-        id
-        user {
-          email
-          name
-          id
-        }
-      }
-      departments {
-        id
-        name
-      }
-      domain
-      handle
       id
       name
     }
@@ -49,8 +36,6 @@ const UPDATE_SCHOOL_MUTATION = gql`
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
-  handle: string().min(1, '* Bitte geben Sie einen Handle an'),
-  domain: string().min(1, '* Bitte geben Sie eine Domain an'),
 });
 
 type SchoolInput = TypeOf<typeof schoolSchema>;
@@ -58,15 +43,17 @@ type SchoolInput = TypeOf<typeof schoolSchema>;
 export default function School() {
   const router = useRouter();
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   // get schoolId from url
   const { schoolId } = router.query;
-  let queryId: number | null = parseInt(schoolId as string);
+  let queryId: number | null = parseInt(schoolId as string, 10);
   if (schoolId === 'new') queryId = null;
 
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_SCHOOL_MUTATION);
   const [updateFunction] = useMutation(UPDATE_SCHOOL_MUTATION);
-  const { data, loading, error } = useQuery(SCHOOL_QUERY, {
+  const { data, loading, error, refetch } = useQuery(SCHOOL_QUERY, {
     variables: {
       getSchoolByIdId: queryId,
     },
@@ -86,18 +73,25 @@ export default function School() {
     if (data) {
       reset(data.getSchoolById);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
-    if (error) router.push('/401');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (error?.message === 'DoesNotExistError') router.push('/404');
+    if (error?.message === 'NotAuthorizedError') router.push('/401');
+    if (error?.message === 'CreationFailedError')
+      setErrorMessage('Die Erstellung war nicht möglich');
+    if (error?.message === 'UpdateFailedError')
+      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
   }, [error]);
 
   const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
     if (queryId === null) {
       const school = await createFunction({
-        variables: { schoolCreationInput: { ...values } },
+        variables: {
+          schoolCreationInput: {
+            name: values.name,
+          },
+        },
       });
       router.push(`/admin/school/${school.data.createSchool.id}`);
     } else {
@@ -106,10 +100,10 @@ export default function School() {
           schoolUpdateInput: {
             id: queryId,
             name: values.name,
-            domain: values.domain,
           },
         },
       });
+      refetch();
     }
   };
 
@@ -117,8 +111,9 @@ export default function School() {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
+
+  if (loading) <LoadingPage></LoadingPage>;
 
   return (
     <Layout role="ADMIN">
@@ -136,39 +131,6 @@ export default function School() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('name')}
           />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Handle"
-            fullWidth
-            required
-            type="text"
-            error={!!errors['handle']}
-            helperText={errors['handle'] ? errors['handle'].message : ''}
-            defaultValue={queryId === null ? '' : ' '} // formatting
-            disabled={queryId !== null}
-            {...register('handle')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Domain"
-            fullWidth
-            required
-            type="text"
-            error={!!errors['domain']}
-            helperText={errors['domain'] ? errors['domain'].message : ''}
-            defaultValue={queryId === null ? '' : ' '} // formatting
-            {...register('domain')}
-          />
-          <Button
-            sx={{
-              display: queryId ? 'inherit' : 'none',
-            }}
-            variant="contained"
-            onClick={() => router.push(`/admin/school/${schoolId}//new`)}
-            fullWidth
-          >
-            neue Abteilung hinzufügen
-          </Button>
           <Button
             variant="contained"
             fullWidth
@@ -177,6 +139,23 @@ export default function School() {
           >
             Speichern
           </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
+            onClick={() => router.push(`/admin/school/${schoolId}/new`)}
+          >
+            Neue Abteilung hinzufügen
+          </Button>
+          <Alert
+            severity="error"
+            sx={{
+              display: errorMessage ? null : 'none',
+              marginTop: '15px',
+            }}
+          >
+            {errorMessage}
+          </Alert>
         </Box>
       </FormWrapper>
     </Layout>

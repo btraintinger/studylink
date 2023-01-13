@@ -2,15 +2,8 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:react/recommended",
-    "prettier"
-  ],
+  "extends": ["plugin:@typescript-eslint/recommended", "next", "prettier"],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "no-unused-vars": "off"
   }
 }

@@ -17,7 +17,7 @@ export const roboto = Roboto({
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 });
 
-//colors
+// colors
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
@@ -34,7 +34,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
         }
       : {
           // palette values for dark mode
-          primary: blue,
+          primary: green,
           secondary: orange,
           divider: blue[500],
           background: {

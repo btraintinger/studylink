@@ -16,7 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import StudylinkHead from '../../components/utils/head';
+import { useRouter } from 'next/router';
 
 const loginSchema = object({
   email: string().email('* Email must be a valid email address'),
@@ -26,6 +26,8 @@ const loginSchema = object({
 type LoginInput = TypeOf<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [error, setError] = useState('');
 
   const {
@@ -41,7 +43,6 @@ export default function LoginPage() {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
   const onSubmitHandler: SubmitHandler<LoginInput> = async (values) => {
@@ -50,17 +51,16 @@ export default function LoginPage() {
       password: values.password,
       redirect: false,
     });
-    console.log(response);
     if (response === undefined) return;
-    if (response.ok) return;
-    if (!response.error) return;
-
-    setError(response.error);
+    if (response.ok) {
+      router.push('/');
+      return;
+    }
+    if (response.error) setError(response.error);
   };
 
   return (
     <Container maxWidth="xs">
-      <StudylinkHead></StudylinkHead>
       <Box
         sx={{
           display: 'flex',

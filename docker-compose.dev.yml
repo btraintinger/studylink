@@ -32,6 +32,7 @@ services:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db_dev:3306/${MYSQL_DATABASE}
       NEXTAUTH_URL: ${DOMAIN}
       DOMAIN: ${DOMAIN}
+      NEXT_PUBLIC_DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: development
     restart: always

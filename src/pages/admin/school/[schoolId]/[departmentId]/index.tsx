@@ -1,24 +1,18 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, TextField } from '@mui/material';
+import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import Layout from '../../../../../components/page/layout';
 import FormWrapper from '../../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../../components/utils/loadingPage';
 
 const DEPARTMENT_QUERY = gql`
-  query GetDepartmentById($getDepartmentByIdId: Float!) {
+  query ExampleQuery($getDepartmentByIdId: Float!) {
     getDepartmentById(id: $getDepartmentByIdId) {
-      id
       name
-      schoolId
-      schoolClasses {
-        grade
-        id
-        name
-      }
     }
   }
 `;
@@ -32,7 +26,7 @@ const CREATE_DEPARTMENT_MUTATION = gql`
 `;
 
 const UPDATE_DEPARTMENT_MUTATION = gql`
-  mutation Mutation($departmentInput: DepartmentUpdateInput!) {
+  mutation UpdateDepartment($departmentInput: DepartmentUpdateInput!) {
     updateDepartment(departmentInput: $departmentInput) {
       id
     }
@@ -48,16 +42,18 @@ type DepartmentInput = TypeOf<typeof departmentSchema>;
 export default function Department() {
   const router = useRouter();
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   // get departmentId from url
-  const { schoolId, departmentId } = router.query;
-  const schoolQueryId: number | null = parseInt(schoolId as string);
-  let queryId: number | null = parseInt(departmentId as string);
+  const { departmentId, schoolId } = router.query;
+  let queryId: number | null = parseInt(departmentId as string, 10);
   if (departmentId === 'new') queryId = null;
+  if (!schoolId) return router.push('/404');
 
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_DEPARTMENT_MUTATION);
   const [updateFunction] = useMutation(UPDATE_DEPARTMENT_MUTATION);
-  const { data, loading, error } = useQuery(DEPARTMENT_QUERY, {
+  const { data, loading, error, refetch } = useQuery(DEPARTMENT_QUERY, {
     variables: {
       getDepartmentByIdId: queryId,
     },
@@ -77,12 +73,15 @@ export default function Department() {
     if (data) {
       reset(data.getDepartmentById);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
-    if (error) router.push('/401');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (error?.message === 'DoesNotExistError') router.push('/404');
+    if (error?.message === 'NotAuthorizedError') router.push('/401');
+    if (error?.message === 'CreationFailedError')
+      setErrorMessage('Die Erstellung war nicht möglich');
+    if (error?.message === 'UpdateFailedError')
+      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
   }, [error]);
 
   const onSubmitHandler: SubmitHandler<DepartmentInput> = async (values) => {
@@ -91,13 +90,11 @@ export default function Department() {
         variables: {
           departmentInput: {
             name: values.name,
-            schoolId: schoolQueryId,
+            schoolId: parseInt(schoolId as string, 10),
           },
         },
       });
-      router.push(
-        `/admin/school/${schoolId}/${department.data.createDepartment.id}`
-      );
+      router.push(`/admin/department/${department.data.createDepartment.id}`);
     } else {
       await updateFunction({
         variables: {
@@ -107,6 +104,7 @@ export default function Department() {
           },
         },
       });
+      refetch();
     }
   };
 
@@ -114,8 +112,9 @@ export default function Department() {
     if (isSubmitSuccessful) {
       reset();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
+
+  if (loading) <LoadingPage></LoadingPage>;
 
   return (
     <Layout role="ADMIN">
@@ -134,17 +133,6 @@ export default function Department() {
             {...register('name')}
           />
           <Button
-            sx={{
-              display: queryId ? 'inherit' : 'none',
-            }}
-            variant="contained"
-            onClick={() =>
-              router.push(`/admin/department/${schoolId}/${departmentId}/new`)
-            }
-          >
-            neue Klasse hinzufügen
-          </Button>
-          <Button
             variant="contained"
             fullWidth
             type="submit"
@@ -152,6 +140,25 @@ export default function Department() {
           >
             Speichern
           </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
+            onClick={() =>
+              router.push(`/admin/school/${schoolId}/${departmentId}/new}`)
+            }
+          >
+            Neue Schulklasse hinzufügen
+          </Button>
+          <Alert
+            severity="error"
+            sx={{
+              display: errorMessage ? null : 'none',
+              marginTop: '15px',
+            }}
+          >
+            {errorMessage}
+          </Alert>
         </Box>
       </FormWrapper>
     </Layout>
