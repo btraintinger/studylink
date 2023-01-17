@@ -21,8 +21,6 @@ const TUTOR_REQUEST_QUERY = gql`
         name
       }
     }
-  }
-  query GetSubjectsOfStudent {
     getSubjectsOfStudent {
       id
       extendedName
@@ -56,7 +54,7 @@ const tutorRequestSchema = object({
     .min(1, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an')
     .max(1000, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an'),
   teacher: string().min(1, '* Bitte gib einen Lehrer an'),
-  grade: number()
+  grade: number('* Bitte gib eine Schulstufe an')
     .min(1, '* Bitte gib eine Schulstufe an')
     .max(13, '* Bitte gib eine Schulstufe an'),
   schoolSubject: object({
@@ -156,6 +154,7 @@ export default function Offer() {
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
+            label="Schulfach"
             options={data?.getSubjectsOfStudent || []}
             getOptionLabel={(option: {
               id: number;
@@ -163,7 +162,9 @@ export default function Offer() {
               extendedName: string;
             }) => `${option.name} (${option.extendedName})`}
             fullWidth
-            renderInput={(params) => <TextField {...params} label="Klasse" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Schulfach" />
+            )}
             {...register('schoolSubject')}
           />
           <TextField
@@ -203,7 +204,7 @@ export default function Offer() {
             error={!!errors['grade']}
             helperText={errors['grade'] ? errors['grade'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
-            {...register('grade')}
+            {...register('grade', { valueAsNumber: true })}
           />
           <Button
             variant="contained"

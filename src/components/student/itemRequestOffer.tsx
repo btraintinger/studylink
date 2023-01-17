@@ -1,17 +1,16 @@
 import { ListItem } from '@mui/material';
 import { useRouter } from 'next/router';
-import { OFFERS_STUDENT, REQUESTS_STUDENT } from '../../constants/menu-items';
-
 interface ItemRequestOfferProps {
-  itemType: 'REQUEST' | 'OFFER';
   id: number;
+  baseRoute: string;
   schoolSubject: string;
   teacher: string;
   grade: number;
+  description: string;
 }
 
 export default function ItemRequestOffer({
-  itemType,
+  baseRoute,
   id,
   schoolSubject,
   teacher,
@@ -19,10 +18,7 @@ export default function ItemRequestOffer({
 }: ItemRequestOfferProps) {
   const router = useRouter();
 
-  let destinationRoute: string;
-  if ((itemType = 'OFFER')) destinationRoute = OFFERS_STUDENT;
-  else destinationRoute = REQUESTS_STUDENT;
-  destinationRoute += `/${id}`;
+  const destinationRoute = baseRoute + `/${id}`;
 
   return (
     <ListItem

@@ -14,6 +14,7 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { useEffect, useState } from 'react';
 import ItemRequestOffer from '../../../components/student/itemRequestOffer';
+import type { TutorOfferingInput } from './[offerId]';
 
 const OFFERS_QUERY = gql`
   query GetStudentOfCurrentUser {
@@ -52,13 +53,14 @@ export default function Offers() {
     <Layout role="STUDENT">
       <Typography>Offers</Typography>
       <List>
-        {array.map((offer) => {
+        {array.map((offer: any) => {
           return (
             <ItemRequestOffer
-              itemType="OFFER"
+              baseRoute="/student/offers"
               id={offer.id}
               teacher={offer.teacher}
               description={offer.description}
+              grade={offer.grade}
               schoolSubject={`${offer.schoolSubject.name} (${offer.schoolSubject.extendedName})`}
             ></ItemRequestOffer>
           );

@@ -13,11 +13,7 @@ import * as Muicon from '@mui/icons-material';
 import Image from 'next/image';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import {
-  ADMIN_LINKS,
-  STUDENT_LINKS,
-  COMMON_LINKS,
-} from '../../constants/menu-items-list';
+import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
 import Link from 'next/link';
 import { IMenuItem } from '../../types/iMenuItem';
 import { useSession } from 'next-auth/react';
