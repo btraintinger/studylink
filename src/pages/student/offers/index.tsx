@@ -14,7 +14,6 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { useEffect, useState } from 'react';
 import ItemRequestOffer from '../../../components/student/itemRequestOffer';
-import type { TutorOfferingInput } from './[offerId]';
 
 const OFFERS_QUERY = gql`
   query GetStudentOfCurrentUser {
