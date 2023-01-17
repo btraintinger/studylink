@@ -114,7 +114,14 @@ export default function NavBar() {
           }}
         >
           <MenuItem onClick={() => router.push('/user')}>Account</MenuItem>
-          <MenuItem onClick={() => signOut()}>Ausloggen</MenuItem>
+          <MenuItem
+            onClick={() => {
+              router.push('/');
+              signOut();
+            }}
+          >
+            Ausloggen
+          </MenuItem>
         </Menu>
         <IconButton
           color="inherit"

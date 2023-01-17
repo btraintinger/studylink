@@ -50,6 +50,18 @@ async function isTutorRequestByUser(
 
 @Resolver((of) => TutorRequest)
 export class TutorRequestResolver {
+  @FieldResolver()
+  async schoolSubject(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
+    return await ctx.prisma.tutorRequest
+
+      .findUnique({
+        where: {
+          id: tutorRequest.id,
+        },
+      })
+      .schoolSubject();
+  }
+
   @Authorized('STUDENT')
   @Query((returns) => TutorRequest)
   async getTutorRequestById(@Arg('id') id: number, @Ctx() ctx: Context) {

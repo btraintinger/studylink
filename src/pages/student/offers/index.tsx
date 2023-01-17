@@ -13,6 +13,7 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { useEffect, useState } from 'react';
+import ItemRequestOffer from '../../../components/student/itemRequestOffer';
 
 const OFFERS_QUERY = gql`
   query GetStudentOfCurrentUser {
@@ -37,9 +38,7 @@ export default function Offers() {
   const [array, setArray] = useState([]);
 
   useEffect(() => {
-    if (data) {
-      setArray(data.getStudentOfCurrentUser.tutorOfferings.teacher);
-    }
+    if (data) setArray(data.getStudentOfCurrentUser.tutorOfferings);
   }, [data]);
 
   if (loading)
@@ -52,15 +51,19 @@ export default function Offers() {
   return (
     <Layout role="STUDENT">
       <Typography>Offers</Typography>
-      <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        <nav aria-label="main mailbox folders">
-          <List>
-            {array.map(function (array) {
-              return <ListItem> {array} </ListItem>;
-            })}
-          </List>
-        </nav>
-      </Box>
+      <List>
+        {array.map((offer) => {
+          return (
+            <ItemRequestOffer
+              itemType="OFFER"
+              id={offer.id}
+              teacher={offer.teacher}
+              description={offer.description}
+              schoolSubject={`${offer.schoolSubject.name} (${offer.schoolSubject.extendedName})`}
+            ></ItemRequestOffer>
+          );
+        })}
+      </List>
     </Layout>
   );
 }
