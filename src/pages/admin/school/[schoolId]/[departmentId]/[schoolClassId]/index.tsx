@@ -1,4 +1,3 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -8,33 +7,11 @@ import { number, object, string, TypeOf } from 'zod';
 import Layout from '../../../../../../components/page/layout';
 import FormWrapper from '../../../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../../../components/utils/loadingPage';
-
-const SCHOOL_CLASS_QUERY = gql`
-  query Query($getSchoolClassByIdId: Float!) {
-    getSchoolClassById(id: $getSchoolClassByIdId) {
-      grade
-      name
-    }
-  }
-`;
-
-const CREATE_SCHOOL_CLASS_MUTATION = gql`
-  mutation CreateSchoolClass(
-    $schoolClassCreateInput: SchoolClassCreationInput!
-  ) {
-    createSchoolClass(schoolClassCreateInput: $schoolClassCreateInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_SCHOOL_CLASS_MUTATION = gql`
-  mutation UpdateSchoolClass($schoolClassUpdateInput: SchoolClassUpdateInput!) {
-    updateSchoolClass(schoolClassUpdateInput: $schoolClassUpdateInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetSchoolClassByIdQuery,
+  useCreateSchoolClassMutation,
+  useUpdateSchoolClassMutation,
+} from '../../../../../../../generated/graphql';
 
 const schoolClassSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -56,11 +33,33 @@ export default function SchoolClass() {
   if (schoolClassId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_SCHOOL_CLASS_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_SCHOOL_CLASS_MUTATION);
-  const { data, loading, error, refetch } = useQuery(SCHOOL_CLASS_QUERY, {
+  const [createFunction] = useCreateSchoolClassMutation({
+    onError: (error) => {
+      if (error.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const [updateFunction] = useUpdateSchoolClassMutation({
+    onError: (error) => {
+      if (error.message === 'UpdateFailedError')
+        setErrorMessage('Die Aktualisierung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { data, loading, refetch } = useGetSchoolClassByIdQuery({
+    skip: queryId === null,
     variables: {
-      getSchoolClassByIdId: queryId,
+      getSchoolClassByIdId: queryId as number,
+    },
+    onCompleted: (data) => {
+      reset(data.getSchoolClassById);
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
     },
   });
 
@@ -74,21 +73,6 @@ export default function SchoolClass() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getSchoolClassById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<SchoolClassInput> = async (values) => {
     if (queryId === null) {
       const schoolClass = await createFunction({
@@ -101,7 +85,7 @@ export default function SchoolClass() {
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${departmentId}/${schoolClass.data.createSchoolClass.id}`
+        `/admin/school/${schoolId}/${departmentId}/${schoolClass?.data?.createSchoolClass.id}`
       );
     } else {
       await updateFunction({
@@ -113,7 +97,6 @@ export default function SchoolClass() {
           },
         },
       });
-      refetch();
     }
   };
 
@@ -153,7 +136,7 @@ export default function SchoolClass() {
             type="number"
             error={!!errors['grade']}
             helperText={errors['grade'] ? errors['grade'].message : ''}
-            defaultValue={queryId === null ? '' : ' '} // formatting
+            defaultValue={queryId === null ? '' : '0'} // formatting
             {...register('grade', { valueAsNumber: true })}
           />
           <Button

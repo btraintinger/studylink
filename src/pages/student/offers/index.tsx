@@ -14,32 +14,19 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import { useEffect, useState } from 'react';
 import ItemRequestOffer from '../../../components/student/itemRequestOffer';
-
-const OFFERS_QUERY = gql`
-  query GetStudentOfCurrentUser {
-    getStudentOfCurrentUser {
-      tutorOfferings {
-        description
-        grade
-        id
-        teacher
-        schoolSubject {
-          extendedName
-          name
-          id
-        }
-      }
-    }
-  }
-`;
+import { useGetTutorOffersOfCurrentUserQuery } from '../../../../generated/graphql';
+import type { TutorOffering } from '../../../../generated/graphql';
 
 export default function Offers() {
-  const { data, loading, error } = useQuery(OFFERS_QUERY);
-  const [array, setArray] = useState([]);
-
-  useEffect(() => {
-    if (data) setArray(data.getStudentOfCurrentUser.tutorOfferings);
-  }, [data]);
+  const [array, setArray] = useState<TutorOffering[]>([]);
+  const { data, loading, error } = useGetTutorOffersOfCurrentUserQuery({
+    onCompleted: (data) => {
+      if (data)
+        setArray(
+          data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
+        );
+    },
+  });
 
   if (loading)
     return (

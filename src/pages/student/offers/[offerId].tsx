@@ -2,54 +2,18 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-
-const TUTOR_OFFERING_QUERY = gql`
-  query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
-    getTutorOfferingById(id: $getTutorOfferingByIdId) {
-      description
-      teacher
-      grade
-      schoolSubject {
-        extendedName
-        name
-        id
-      }
-    }
-    getSubjectsOfStudent {
-      id
-      extendedName
-      name
-    }
-  }
-`;
-
-const CREATE_TUTOR_OFFERING_MUTATION = gql`
-  mutation CreateTutorOffering(
-    $tutorOfferingInputCreation: TutorOfferingInputCreation!
-  ) {
-    createTutorOffering(
-      TutorOfferingInputCreation: $tutorOfferingInputCreation
-    ) {
-      id
-    }
-  }
-`;
-
-const UPDATE_TUTOR_OFFERING_MUTATION = gql`
-  mutation UpdateTutorOffering(
-    $tutorOfferingUpdateInput: TutorOfferingUpdateInput!
-  ) {
-    updateTutorOffering(TutorOfferingUpdateInput: $tutorOfferingUpdateInput) {
-      id
-    }
-  }
-`;
+import {
+  useCreateTutorOfferingMutation,
+  useUpdateTutorOfferingMutation,
+  useGetTutorOfferingByIdQuery,
+  useGetSubjectsOfStudentQuery,
+} from '../../../../generated/graphql';
 
 const tutorOfferingSchema = object({
   description: string()
@@ -77,13 +41,35 @@ export default function Offer() {
   if (tutorOfferingId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_TUTOR_OFFERING_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_TUTOR_OFFERING_MUTATION);
-  const { data, loading, error, refetch } = useQuery(TUTOR_OFFERING_QUERY, {
-    variables: {
-      getTutorOfferingByIdId: queryId,
+  const [createFunction] = useCreateTutorOfferingMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'CreationFailedError')
+        setErrorMessage('Bei der Erstellung ist ein Fehler aufgetreten');
     },
   });
+  const [updateFunction] = useUpdateTutorOfferingMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+  const { loading } = useGetTutorOfferingByIdQuery({
+    variables: {
+      getTutorOfferingByIdId: queryId as number,
+    },
+    onCompleted: (data) => {
+      if (data) reset(data.getTutorOfferingById);
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { data: subjects } = useGetSubjectsOfStudentQuery();
 
   const {
     register,
@@ -95,26 +81,11 @@ export default function Offer() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getTutorOfferingById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<TutorOfferingInput> = async (values) => {
     if (queryId === null) {
       const tutorOffering = await createFunction({
         variables: {
-          tutorOfferingCreationInput: {
+          tutorOfferingInputCreation: {
             description: values.description,
             teacher: values.teacher,
             grade: values.grade,
@@ -123,7 +94,7 @@ export default function Offer() {
         },
       });
       router.push(
-        `/admin/tutorOffering/${tutorOffering.data.createTutorOffering.id}`
+        `/admin/tutorOffering/${tutorOffering?.data?.createTutorOffering.id}`
       );
     } else {
       await updateFunction({
@@ -137,7 +108,6 @@ export default function Offer() {
           },
         },
       });
-      refetch();
     }
   };
 
@@ -156,7 +126,7 @@ export default function Offer() {
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
-            options={data?.getSubjectsOfStudent || []}
+            options={subjects?.getSubjectsOfStudent || []}
             getOptionLabel={(option: {
               id: number;
               name: string;

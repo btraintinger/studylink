@@ -21,7 +21,24 @@ async function isUserAdministratingSchoolClass(
   ctx: Context,
   schoolClassId: number
 ): Promise<boolean> {
-  return ctx.user?.admin?.schoolId === schoolClassId;
+  const schoolClass = await ctx.prisma.schoolClass.findUnique({
+    where: {
+      id: schoolClassId,
+    },
+    select: {
+      department: {
+        select: {
+          school: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return ctx.user?.admin?.schoolId === schoolClass?.department?.school?.id;
 }
 
 async function isSchoolClassExistent(

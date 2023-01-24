@@ -1,0 +1,60 @@
+query GetTutorOffersOfCurrentUser {
+  getStudentOfCurrentUser {
+    tutorOfferings {
+      description
+      grade
+      id
+      teacher
+      schoolSubject {
+        extendedName
+        name
+        id
+      }
+    }
+  }
+}
+
+query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
+  getTutorOfferingById(id: $getTutorOfferingByIdId) {
+    description
+    teacher
+    grade
+    schoolSubject {
+      extendedName
+      name
+      id
+    }
+  }
+}
+
+mutation CreateTutorOffering(
+  $tutorOfferingInputCreation: TutorOfferingInputCreation!
+) {
+  createTutorOffering(TutorOfferingInputCreation: $tutorOfferingInputCreation) {
+    id
+    description
+    teacher
+    grade
+    schoolSubject {
+      extendedName
+      name
+      id
+    }
+  }
+}
+
+mutation UpdateTutorOffering(
+  $tutorOfferingUpdateInput: TutorOfferingUpdateInput!
+) {
+  updateTutorOffering(TutorOfferingUpdateInput: $tutorOfferingUpdateInput) {
+    id
+    description
+    teacher
+    grade
+    schoolSubject {
+      extendedName
+      name
+      id
+    }
+  }
+}

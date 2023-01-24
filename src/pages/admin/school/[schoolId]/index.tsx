@@ -8,31 +8,11 @@ import { object, string, TypeOf } from 'zod';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
-
-const SCHOOL_QUERY = gql`
-  query GetSchoolById($getSchoolByIdId: Float!) {
-    getSchoolById(id: $getSchoolByIdId) {
-      id
-      name
-    }
-  }
-`;
-
-const CREATE_SCHOOL_MUTATION = gql`
-  mutation CreateSchool($schoolCreationInput: SchoolCreationInput!) {
-    createSchool(schoolCreationInput: $schoolCreationInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_SCHOOL_MUTATION = gql`
-  mutation UpdateSchool($schoolUpdateInput: SchoolUpdateInput!) {
-    updateSchool(schoolUpdateInput: $schoolUpdateInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetSchoolByIdQuery,
+  useCreateSchoolMutation,
+  useUpdateSchoolMutation,
+} from '../../../../../generated/graphql';
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -51,11 +31,32 @@ export default function School() {
   if (schoolId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_SCHOOL_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_SCHOOL_MUTATION);
-  const { data, loading, error, refetch } = useQuery(SCHOOL_QUERY, {
+  const [createFunction] = useCreateSchoolMutation({
+    onError: (error) => {
+      if (error.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const [updateFunction] = useUpdateSchoolMutation({
+    onError: (error) => {
+      if (error.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { data, loading, error, refetch } = useGetSchoolByIdQuery({
     variables: {
-      getSchoolByIdId: queryId,
+      getSchoolByIdId: queryId as number,
+    },
+    onError: (error) => {
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    onCompleted: (data) => {
+      if (data) reset(data.getSchoolById);
     },
   });
 
@@ -69,21 +70,6 @@ export default function School() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getSchoolById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
     if (queryId === null) {
       const school = await createFunction({
@@ -93,7 +79,7 @@ export default function School() {
           },
         },
       });
-      router.push(`/admin/school/${school.data.createSchool.id}`);
+      router.push(`/admin/school/${school?.data?.createSchool.id}`);
     } else {
       await updateFunction({
         variables: {
@@ -103,7 +89,6 @@ export default function School() {
           },
         },
       });
-      refetch();
     }
   };
 

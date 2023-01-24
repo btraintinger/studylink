@@ -1,0 +1,27 @@
+query GetSchoolById($getSchoolByIdId: Float!) {
+  getSchoolById(id: $getSchoolByIdId) {
+    id
+    name
+  }
+}
+
+mutation CreateSchool($schoolCreationInput: SchoolCreationInput!) {
+  createSchool(schoolCreationInput: $schoolCreationInput) {
+    id
+    name
+  }
+}
+
+mutation UpdateSchool($schoolUpdateInput: SchoolUpdateInput!) {
+  updateSchool(schoolUpdateInput: $schoolUpdateInput) {
+    id
+    name
+  }
+}
+
+query GetSchoolClassesOfSchool {
+  getSchoolClassesOfSchool {
+    name
+    id
+  }
+}

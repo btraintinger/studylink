@@ -8,46 +8,12 @@ import { number, object, string, TypeOf } from 'zod';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-
-const TUTOR_REQUEST_QUERY = gql`
-  query GetTutorRequestById($getTutorRequestByIdId: Float!) {
-    getTutorRequestById(id: $getTutorRequestByIdId) {
-      description
-      grade
-      teacher
-      schoolSubject {
-        extendedName
-        id
-        name
-      }
-    }
-    getSubjectsOfStudent {
-      id
-      extendedName
-      name
-    }
-  }
-`;
-
-const CREATE_TUTOR_REQUEST_MUTATION = gql`
-  mutation CreateTutorRequest(
-    $tutorRequestCreationInput: TutorRequestCreationInput!
-  ) {
-    createTutorRequest(TutorRequestCreationInput: $tutorRequestCreationInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_TUTOR_REQUEST_MUTATION = gql`
-  mutation UpdateTutorRequest(
-    $tutorRequestUpdateInput: TutorRequestUpdateInput!
-  ) {
-    updateTutorRequest(TutorRequestUpdateInput: $tutorRequestUpdateInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetTutorRequestByIdQuery,
+  useUpdateTutorRequestMutation,
+  useCreateTutorRequestMutation,
+  useGetSubjectsOfStudentQuery,
+} from '../../../../generated/graphql';
 
 const tutorRequestSchema = object({
   description: string()
@@ -75,13 +41,42 @@ export default function Offer() {
   if (tutorRequestId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_TUTOR_REQUEST_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_TUTOR_REQUEST_MUTATION);
-  const { data, loading, error, refetch } = useQuery(TUTOR_REQUEST_QUERY, {
-    variables: {
-      getTutorRequestByIdId: queryId,
+  const [createFunction] = useCreateTutorRequestMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
     },
   });
+  const [updateFunction] = useUpdateTutorRequestMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+  const { loading, error, refetch } = useGetTutorRequestByIdQuery({
+    variables: {
+      getTutorRequestByIdId: queryId as number,
+    },
+    onCompleted: (data) => {
+      if (data) {
+        reset(data.getTutorRequestById);
+      }
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+
+  const { data } = useGetSubjectsOfStudentQuery();
 
   const {
     register,
@@ -92,21 +87,6 @@ export default function Offer() {
     resolver: zodResolver(tutorRequestSchema),
     mode: 'onTouched',
   });
-
-  useEffect(() => {
-    if (data) {
-      reset(data.getTutorRequestById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
 
   const onSubmitHandler: SubmitHandler<TutorRequestInput> = async (values) => {
     if (queryId === null) {
@@ -121,7 +101,7 @@ export default function Offer() {
         },
       });
       router.push(
-        `/admin/tutorRequest/${tutorRequest.data.createTutorRequest.id}`
+        `/admin/tutorRequest/${tutorRequest?.data?.createTutorRequest.id}`
       );
     } else {
       await updateFunction({
@@ -135,7 +115,6 @@ export default function Offer() {
           },
         },
       });
-      refetch();
     }
   };
 

@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -8,42 +8,12 @@ import { number, object, string, TypeOf } from 'zod';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-
-const QUERY = gql`
-  query Query($getStudentByIdId: Float!) {
-    getStudentById(id: $getStudentByIdId) {
-      id
-      user {
-        email
-        name
-      }
-      schoolClass {
-        id
-        name
-      }
-    }
-    getSchoolClassesOfSchool {
-      name
-      id
-    }
-  }
-`;
-
-const CREATE_STUDENT_MUTATION = gql`
-  mutation Mutation($studentInput: StudentCreationInput!) {
-    createStudent(studentInput: $studentInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_STUDENT_MUTATION = gql`
-  mutation Mutation($studentInput: StudentUpdateInput!) {
-    updateStudent(studentInput: $studentInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetStudentByIdQuery,
+  useGetSchoolClassesOfSchoolQuery,
+  useCreateStudentMutation,
+  useUpdateStudentMutation,
+} from '../../../../generated/graphql';
 
 const studentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -66,13 +36,41 @@ export default function Student() {
   if (studentId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_STUDENT_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_STUDENT_MUTATION);
-  const { data, loading, error, refetch } = useQuery(QUERY, {
-    variables: {
-      getStudentByIdId: queryId,
+  const [createFunction] = useCreateStudentMutation({
+    onError: (error) => {
+      if (error.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
+  const [updateFunction] = useUpdateStudentMutation({
+    onError: (error) => {
+      if (error.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { loading } = useGetStudentByIdQuery({
+    variables: {
+      getStudentByIdId: queryId as number,
+    },
+    onError: (error) => {
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    onCompleted: (data) => {
+      if (data)
+        reset({
+          name: data.getStudentById.user.name,
+          email: data.getStudentById.user.email,
+          studentClass: { id: data.getStudentById.schoolClass.id },
+        });
+    },
+  });
+
+  const { data: schoolClasses } = useGetSchoolClassesOfSchoolQuery();
 
   const {
     register,
@@ -84,41 +82,22 @@ export default function Student() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset({
-        name: data.getStudentById.user.name,
-        email: data.getStudentById.user.email,
-        studentClass: { id: data.getStudentById.schoolClass.id },
-      });
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<StudentInput> = async (values) => {
     if (queryId === null) {
       const student = await createFunction({
         variables: {
-          studentCreationInput: {
+          studentInput: {
             name: values.name,
             email: values.email,
             schoolClassId: values.studentClass.id,
           },
         },
       });
-      router.push(`/admin/student/${student.data.createStudent.id}`);
+      router.push(`/admin/student/${student?.data?.createStudent.id}`);
     } else {
       await updateFunction({
         variables: {
-          studentUpdateInput: {
+          studentInput: {
             id: queryId,
             name: values.name,
             email: values.email,
@@ -126,7 +105,6 @@ export default function Student() {
           },
         },
       });
-      refetch();
     }
   };
 
@@ -169,7 +147,7 @@ export default function Student() {
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
-            options={data?.getSchoolClassesOfSchool || []}
+            options={schoolClasses?.getSchoolClassesOfSchool || []}
             getOptionLabel={(option: { id: number; name: string }) =>
               option.name
             }

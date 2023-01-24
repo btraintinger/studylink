@@ -1,0 +1,49 @@
+query getStudentById($getStudentByIdId: Float!) {
+  getStudentById(id: $getStudentByIdId) {
+    id
+    user {
+      email
+      name
+    }
+    schoolClass {
+      id
+      name
+    }
+  }
+}
+
+mutation createStudent($studentInput: StudentCreationInput!) {
+  createStudent(studentInput: $studentInput) {
+    id
+    user {
+      email
+      name
+    }
+    schoolClass {
+      id
+      name
+    }
+  }
+}
+
+mutation updateStudent($studentInput: StudentUpdateInput!) {
+  updateStudent(studentInput: $studentInput) {
+    id
+    user {
+      email
+      name
+    }
+    schoolClass {
+      id
+      name
+    }
+  }
+}
+
+query getSubjectsOfStudent {
+  getSubjectsOfStudent {
+    id
+    extendedName
+    name
+  }
+}

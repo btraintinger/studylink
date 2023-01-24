@@ -12,21 +12,13 @@ import {
 import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { useState, MouseEvent, useEffect, useMemo } from 'react';
-import { signOut, useSession } from 'next-auth/react';
-import { gql, useQuery } from '@apollo/client';
+import { useState, MouseEvent, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useGetUserNameQuery } from '../../../generated/graphql';
 
-const USER_QUERY = gql`
-  query GetCurrentUser {
-    getCurrentUser {
-      name
-    }
-  }
-`;
 function getInitials(name: string): string {
   if (name) {
     const nameArray = name.split(' ');
@@ -57,13 +49,12 @@ export default function NavBar() {
     setAnchorEl(null);
   };
 
-  const { data, loading, error } = useQuery(USER_QUERY);
+  const { data, loading, error } = useGetUserNameQuery();
 
   useEffect(() => {
-    if (data) {
-      setName(getInitials(data.getCurrentUser.name).toUpperCase());
-    }
-  }, [data]);
+    if (data?.getCurrentUser.name)
+      setName(getInitials(data.getCurrentUser.name));
+  });
 
   const router = useRouter();
 

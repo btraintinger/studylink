@@ -8,30 +8,11 @@ import { object, string, TypeOf } from 'zod';
 import Layout from '../../../../../components/page/layout';
 import FormWrapper from '../../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../../components/utils/loadingPage';
-
-const DEPARTMENT_QUERY = gql`
-  query ExampleQuery($getDepartmentByIdId: Float!) {
-    getDepartmentById(id: $getDepartmentByIdId) {
-      name
-    }
-  }
-`;
-
-const CREATE_DEPARTMENT_MUTATION = gql`
-  mutation CreateDepartment($departmentInput: DepartmentCreateInput!) {
-    createDepartment(departmentInput: $departmentInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_DEPARTMENT_MUTATION = gql`
-  mutation UpdateDepartment($departmentInput: DepartmentUpdateInput!) {
-    updateDepartment(departmentInput: $departmentInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetDepartmentByIdQuery,
+  useCreateDepartmentMutation,
+  useUpdateDepartmentMutation,
+} from '../../../../../../generated/graphql';
 
 const departmentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -50,11 +31,32 @@ export default function Department() {
   if (departmentId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_DEPARTMENT_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_DEPARTMENT_MUTATION);
-  const { data, loading, error, refetch } = useQuery(DEPARTMENT_QUERY, {
+  const [createFunction] = useCreateDepartmentMutation({
+    onError: (error) => {
+      if (error.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const [updateFunction] = useUpdateDepartmentMutation({
+    onError: (error) => {
+      if (error.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { data, loading, error, refetch } = useGetDepartmentByIdQuery({
     variables: {
-      getDepartmentByIdId: queryId,
+      getDepartmentByIdId: queryId as number,
+    },
+    onCompleted: (data) => {
+      if (data) reset(data.getDepartmentById);
+    },
+    onError: (error) => {
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
 
@@ -68,21 +70,6 @@ export default function Department() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getDepartmentById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<DepartmentInput> = async (values) => {
     if (queryId === null) {
       const department = await createFunction({
@@ -94,7 +81,7 @@ export default function Department() {
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${department.data.createDepartment.id}`
+        `/admin/school/${schoolId}/${department?.data?.createDepartment.id}`
       );
     } else {
       await updateFunction({
@@ -105,7 +92,6 @@ export default function Department() {
           },
         },
       });
-      refetch();
     }
   };
 

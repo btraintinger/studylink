@@ -1,4 +1,3 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useSession } from 'next-auth/react';
@@ -9,25 +8,10 @@ import { object, string, TypeOf } from 'zod';
 import Layout from '../../components/page/layout';
 import FormWrapper from '../../components/utils/formWrapper';
 import LoadingPage from '../../components/utils/loadingPage';
-
-const USER_QUERY = gql`
-  query GetCurrentUser {
-    getCurrentUser {
-      email
-      name
-      id
-      role
-    }
-  }
-`;
-
-const UPDATE_USER_MUTATION = gql`
-  mutation UpdateUser($userUpdateInput: UserUpdateInput!) {
-    updateUser(userUpdateInput: $userUpdateInput) {
-      id
-    }
-  }
-`;
+import {
+  useGetCurrentUserQuery,
+  useUpdateUserMutation,
+} from '../../../generated/graphql';
 
 const userSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -43,8 +27,24 @@ export default function User() {
   const [errorMessage, setErrorMessage] = useState('');
 
   // graphql queries and mutations
-  const [updateFunction] = useMutation(UPDATE_USER_MUTATION);
-  const { data, loading, error, refetch } = useQuery(USER_QUERY);
+  const [updateFunction] = useUpdateUserMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+
+  const { data, loading, error, refetch } = useGetCurrentUserQuery({
+    onCompleted: (data) => {
+      if (data) reset(data.getCurrentUser);
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
 
   const { data: session, status } = useSession();
 
@@ -58,21 +58,6 @@ export default function User() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getCurrentUser);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<UserInput> = async (values) => {
     await updateFunction({
       variables: {
@@ -82,7 +67,6 @@ export default function User() {
         },
       },
     });
-    refetch();
   };
 
   useEffect(() => {
