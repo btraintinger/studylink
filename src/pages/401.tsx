@@ -15,8 +15,8 @@ export default function Error() {
     >
       <Typography variant="h1">401</Typography>
       <Typography variant="h6">
-        Melden Sie sich mit einem Account an, der über die notwendige
-        Berechtigung verfügt, diese Seite zu sehen.
+        Bitte melden Sie sich mit einem Account an, der über die notwendigen
+        Berechtigung verfügt.
       </Typography>
       <Button component={Link} href="/" variant="contained" passHref>
         Zurück auf die Startseite

@@ -113,7 +113,10 @@ export default function School() {
     }
   }, [isSubmitSuccessful]);
 
-  if (loading) <LoadingPage></LoadingPage>;
+  if (loading)
+    <Layout role="ADMIN">
+      <LoadingPage></LoadingPage>
+    </Layout>;
 
   return (
     <Layout role="ADMIN">

@@ -49,12 +49,6 @@ export default function Department() {
   let queryId: number | null = parseInt(departmentId as string, 10);
   if (departmentId === 'new') queryId = null;
 
-  useEffect(() => {
-    if (schoolId === undefined) {
-      router.push('/404');
-    }
-  }, [schoolId]);
-
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_DEPARTMENT_MUTATION);
   const [updateFunction] = useMutation(UPDATE_DEPARTMENT_MUTATION);
@@ -99,7 +93,9 @@ export default function Department() {
           },
         },
       });
-      router.push(`/admin/department/${department.data.createDepartment.id}`);
+      router.push(
+        `/admin/school/${schoolId}/${department.data.createDepartment.id}`
+      );
     } else {
       await updateFunction({
         variables: {
@@ -119,7 +115,10 @@ export default function Department() {
     }
   }, [isSubmitSuccessful]);
 
-  if (loading) <LoadingPage></LoadingPage>;
+  if (loading)
+    <Layout role="ADMIN">
+      <LoadingPage></LoadingPage>
+    </Layout>;
 
   return (
     <Layout role="ADMIN">
@@ -150,7 +149,7 @@ export default function Department() {
             fullWidth
             sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
             onClick={() =>
-              router.push(`/admin/school/${schoolId}/${departmentId}/new}`)
+              router.push(`/admin/school/${schoolId}/${departmentId}/new`)
             }
           >
             Neue Schulklasse hinzufügen

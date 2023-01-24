@@ -34,9 +34,10 @@ const SCHOOL_QUERY = gql`
 export default function School() {
   const { data, loading } = useQuery(SCHOOL_QUERY);
 
-  if (loading) {
-    return <LoadingPage />;
-  }
+  if (loading)
+    <Layout role="ADMIN">
+      <LoadingPage></LoadingPage>
+    </Layout>;
 
   if (data === undefined)
     return (

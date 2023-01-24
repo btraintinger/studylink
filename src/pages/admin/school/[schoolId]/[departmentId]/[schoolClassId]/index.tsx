@@ -38,7 +38,9 @@ const UPDATE_SCHOOL_CLASS_MUTATION = gql`
 
 const schoolClassSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
-  grade: number().min(1, '* Bitte geben Sie eine Schulstufe an'),
+  grade: number()
+    .min(1, '* Bitte geben Sie eine Schulstufe zwischen 1 und 13 an')
+    .max(13, '* Bitte geben Sie eine Schulstufe zwischen 1 und 13 an'),
 });
 
 type SchoolClassInput = TypeOf<typeof schoolClassSchema>;
@@ -52,12 +54,6 @@ export default function SchoolClass() {
   const { schoolClassId, schoolId, departmentId } = router.query;
   let queryId: number | null = parseInt(schoolClassId as string, 10);
   if (schoolClassId === 'new') queryId = null;
-
-  useEffect(() => {
-    if (schoolId === undefined || departmentId === undefined) {
-      router.push('/404');
-    }
-  }, [schoolId, departmentId]);
 
   // graphql queries and mutations
   const [createFunction] = useMutation(CREATE_SCHOOL_CLASS_MUTATION);
@@ -97,7 +93,7 @@ export default function SchoolClass() {
     if (queryId === null) {
       const schoolClass = await createFunction({
         variables: {
-          schoolClassInput: {
+          schoolClassCreateInput: {
             name: values.name,
             departmentId: parseInt(departmentId as string, 10),
             grade: values.grade,
@@ -105,12 +101,12 @@ export default function SchoolClass() {
         },
       });
       router.push(
-        `/admin/schoolClass/${schoolClass.data.createSchoolClass.id}`
+        `/admin/school/${schoolId}/${departmentId}/${schoolClass.data.createSchoolClass.id}`
       );
     } else {
       await updateFunction({
         variables: {
-          schoolClassInput: {
+          schoolClassUpdateInput: {
             id: queryId,
             name: values.name,
             grade: values.grade,
@@ -127,7 +123,10 @@ export default function SchoolClass() {
     }
   }, [isSubmitSuccessful]);
 
-  if (loading) <LoadingPage></LoadingPage>;
+  if (loading)
+    <Layout role="ADMIN">
+      <LoadingPage></LoadingPage>
+    </Layout>;
 
   return (
     <Layout role="ADMIN">
@@ -155,7 +154,7 @@ export default function SchoolClass() {
             error={!!errors['grade']}
             helperText={errors['grade'] ? errors['grade'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
-            {...register('grade')}
+            {...register('grade', { valueAsNumber: true })}
           />
           <Button
             variant="contained"
