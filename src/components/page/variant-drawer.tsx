@@ -1,22 +1,22 @@
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import MuiDrawer from '@mui/material/Drawer';
-import { Icon, Link as MuiLink, SvgIcon } from '@mui/material';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
+import * as Muicon from '@mui/icons-material';
+import { Link as MuiLink } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import * as Muicon from '@mui/icons-material';
+import { CSSObject, styled, Theme, useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
-import Link from 'next/link';
 import { IMenuItem } from '../../types/iMenuItem';
-import { useSession } from 'next-auth/react';
 
 const drawerWidth = 240;
 
@@ -155,7 +155,7 @@ export default function MiniDrawer() {
       <Divider />
 
       <List>
-        {STUDENT_LINKS.map(({ text, route, icon }, id) => (
+        {myLinks.map(({ text, route, icon }, id) => (
           <ListItem
             key={id}
             disablePadding

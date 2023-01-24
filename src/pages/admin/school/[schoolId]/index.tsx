@@ -1,18 +1,17 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import {
+  useCreateSchoolMutation,
+  useGetSchoolByIdQuery,
+  useUpdateSchoolMutation,
+} from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
-import {
-  useGetSchoolByIdQuery,
-  useCreateSchoolMutation,
-  useUpdateSchoolMutation,
-} from '../../../../../generated/graphql';
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -130,8 +129,9 @@ export default function School() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
+            sx={{ mt: 1, mb: 2 }}
             onClick={() => router.push(`/admin/school/${schoolId}/new`)}
+            disabled={queryId === null}
           >
             Neue Abteilung hinzufügen
           </Button>
