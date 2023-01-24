@@ -1,5 +1,6 @@
 query GetCurrentUser {
   getCurrentUser {
+    id
     email
     name
     id
@@ -9,6 +10,7 @@ query GetCurrentUser {
 
 query GetUserName {
   getCurrentUser {
+    id
     name
   }
 }

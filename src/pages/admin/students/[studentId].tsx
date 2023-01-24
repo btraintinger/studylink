@@ -1,19 +1,18 @@
-import { useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
+import {
+  useCreateStudentMutation,
+  useGetSchoolClassesOfSchoolQuery,
+  useGetStudentByIdQuery,
+  useUpdateStudentMutation,
+} from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-import {
-  useGetStudentByIdQuery,
-  useGetSchoolClassesOfSchoolQuery,
-  useCreateStudentMutation,
-  useUpdateStudentMutation,
-} from '../../../../generated/graphql';
 
 const studentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),

@@ -1,23 +1,23 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Link as MuiLink,
-  Avatar,
-  Button,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  Link as MuiLink,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { MouseEvent, useEffect, useState } from 'react';
+import { useGetUserNameQuery } from '../../../generated/graphql';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { useState, MouseEvent, useEffect } from 'react';
-import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useGetUserNameQuery } from '../../../generated/graphql';
 
 function getInitials(name: string): string {
   if (name) {

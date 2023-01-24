@@ -383,7 +383,7 @@ export type GetDepartmentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetDepartmentByIdQuery = { __typename?: 'Query', getDepartmentById: { __typename?: 'Department', name: string } };
+export type GetDepartmentByIdQuery = { __typename?: 'Query', getDepartmentById: { __typename?: 'Department', id: number, name: string } };
 
 export type CreateDepartmentMutationVariables = Exact<{
   departmentInput: DepartmentCreateInput;
@@ -409,7 +409,7 @@ export type GetTutorOfferingByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetTutorOfferingByIdQuery = { __typename?: 'Query', getTutorOfferingById: { __typename?: 'TutorOffering', description: string, teacher: string, grade: number, schoolSubject: { __typename?: 'SchoolSubject', extendedName: string, name: string, id: number } } };
+export type GetTutorOfferingByIdQuery = { __typename?: 'Query', getTutorOfferingById: { __typename?: 'TutorOffering', id: number, description: string, teacher: string, grade: number, schoolSubject: { __typename?: 'SchoolSubject', extendedName: string, name: string, id: number } } };
 
 export type CreateTutorOfferingMutationVariables = Exact<{
   tutorOfferingInputCreation: TutorOfferingInputCreation;
@@ -435,7 +435,7 @@ export type GetTutorRequestByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetTutorRequestByIdQuery = { __typename?: 'Query', getTutorRequestById: { __typename?: 'TutorRequest', description: string, grade: number, teacher: string, schoolSubject: { __typename?: 'SchoolSubject', extendedName: string, id: number, name: string } } };
+export type GetTutorRequestByIdQuery = { __typename?: 'Query', getTutorRequestById: { __typename?: 'TutorRequest', id: number, description: string, grade: number, teacher: string, schoolSubject: { __typename?: 'SchoolSubject', extendedName: string, id: number, name: string } } };
 
 export type CreateTutorRequestMutationVariables = Exact<{
   tutorRequestCreationInput: TutorRequestCreationInput;
@@ -482,7 +482,7 @@ export type GetSchoolClassByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSchoolClassByIdQuery = { __typename?: 'Query', getSchoolClassById: { __typename?: 'SchoolClass', grade: number, name: string } };
+export type GetSchoolClassByIdQuery = { __typename?: 'Query', getSchoolClassById: { __typename?: 'SchoolClass', id: number, grade: number, name: string } };
 
 export type CreateSchoolClassMutationVariables = Exact<{
   schoolClassCreateInput: SchoolClassCreationInput;
@@ -527,12 +527,12 @@ export type GetSubjectsOfStudentQuery = { __typename?: 'Query', getSubjectsOfStu
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', email: string, name: string, id: number, role: string } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, email: string, name: string, role: string } };
 
 export type GetUserNameQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserNameQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', name: string } };
+export type GetUserNameQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, name: string } };
 
 export type UpdateUserMutationVariables = Exact<{
   userUpdateInput: UserUpdateInput;
@@ -545,6 +545,7 @@ export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __type
 export const GetDepartmentByIdDocument = gql`
     query getDepartmentById($getDepartmentByIdId: Float!) {
   getDepartmentById(id: $getDepartmentByIdId) {
+    id
     name
   }
 }
@@ -692,6 +693,7 @@ export type GetTutorOffersOfCurrentUserQueryResult = Apollo.QueryResult<GetTutor
 export const GetTutorOfferingByIdDocument = gql`
     query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {
+    id
     description
     teacher
     grade
@@ -860,6 +862,7 @@ export type GetTutorRequestsOfCurrentUserQueryResult = Apollo.QueryResult<GetTut
 export const GetTutorRequestByIdDocument = gql`
     query GetTutorRequestById($getTutorRequestByIdId: Float!) {
   getTutorRequestById(id: $getTutorRequestByIdId) {
+    id
     description
     grade
     teacher
@@ -1122,6 +1125,7 @@ export type GetSchoolClassesOfSchoolQueryResult = Apollo.QueryResult<GetSchoolCl
 export const GetSchoolClassByIdDocument = gql`
     query GetSchoolClassById($getSchoolClassByIdId: Float!) {
   getSchoolClassById(id: $getSchoolClassByIdId) {
+    id
     grade
     name
   }
@@ -1389,6 +1393,7 @@ export type GetSubjectsOfStudentQueryResult = Apollo.QueryResult<GetSubjectsOfSt
 export const GetCurrentUserDocument = gql`
     query GetCurrentUser {
   getCurrentUser {
+    id
     email
     name
     id
@@ -1426,6 +1431,7 @@ export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, 
 export const GetUserNameDocument = gql`
     query GetUserName {
   getCurrentUser {
+    id
     name
   }
 }

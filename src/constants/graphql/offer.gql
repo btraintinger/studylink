@@ -16,6 +16,7 @@ query GetTutorOffersOfCurrentUser {
 
 query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {
+    id
     description
     teacher
     grade

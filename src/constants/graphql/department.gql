@@ -1,5 +1,6 @@
 query getDepartmentById($getDepartmentByIdId: Float!) {
   getDepartmentById(id: $getDepartmentByIdId) {
+    id
     name
   }
 }
