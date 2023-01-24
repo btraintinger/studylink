@@ -28,7 +28,7 @@
     "@next/font": "^13.0.2",
     "@prisma/client": "^4.7.1",
     "bcrypt": "^5.1.0",
-    "class-validator": "^0.14.0",
+    "class-validator": "^0.13.2",
     "deepmerge": "^4.2.2",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
