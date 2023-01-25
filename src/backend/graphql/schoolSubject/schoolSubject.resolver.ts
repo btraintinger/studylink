@@ -75,7 +75,7 @@ export class SchoolSubjectResolver {
     const schoolSubject = await ctx.prisma.schoolSubject.create({
       data: {
         name: SchoolSubjectCreationInput.name,
-        extendedName: SchoolSubjectCreationInput.extendedName,
+        longName: SchoolSubjectCreationInput.longName,
       },
     });
 
@@ -104,7 +104,7 @@ export class SchoolSubjectResolver {
       },
       data: {
         name: SchoolSubjectUpdateInput.name,
-        extendedName: SchoolSubjectUpdateInput.extendedName,
+        longName: SchoolSubjectUpdateInput.longName,
       },
     });
 

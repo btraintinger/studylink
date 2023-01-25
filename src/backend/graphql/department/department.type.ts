@@ -11,6 +11,9 @@ export class Department {
   @Field()
   name!: string;
 
+  @Field()
+  longName!: string;
+
   @Field((type) => [SchoolClass])
   schoolClasses?: SchoolClass[];
 
@@ -23,6 +26,9 @@ export class DepartmentCreateInput {
   @Field()
   name!: string;
 
+  @Field()
+  longName!: string;
+
   @Field((type) => Int)
   schoolId!: number;
 }
@@ -34,4 +40,7 @@ export class DepartmentUpdateInput {
 
   @Field()
   name!: string;
+
+  @Field()
+  longName!: string;
 }

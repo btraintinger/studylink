@@ -12,7 +12,7 @@ export class SchoolClass {
   name!: string;
 
   @Field()
-  grade!: number;
+  longName!: string;
 
   @Field((type) => [SchoolSubject])
   schoolSubjects?: SchoolSubject[];
@@ -27,7 +27,7 @@ export class SchoolClassCreationInput {
   name!: string;
 
   @Field()
-  grade!: number;
+  longName!: string;
 
   @Field((type) => Int)
   departmentId!: number;
@@ -42,5 +42,5 @@ export class SchoolClassUpdateInput {
   name!: string;
 
   @Field()
-  grade!: number;
+  longName!: string;
 }

@@ -87,6 +87,7 @@ export class DepartmentResolver {
     const department = await ctx.prisma.department.create({
       data: {
         name: input.name,
+        longName: input.longName,
         schoolId: input.schoolId,
       },
     });
@@ -114,6 +115,7 @@ export class DepartmentResolver {
       },
       data: {
         name: input.name,
+        longName: input.longName,
       },
     });
 

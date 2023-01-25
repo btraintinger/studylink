@@ -11,7 +11,7 @@ export class SchoolSubject {
   name!: string;
 
   @Field()
-  extendedName!: string;
+  longName!: string;
 }
 
 @InputType()
@@ -20,7 +20,7 @@ export class SchoolSubjectCreationInput {
   name!: string;
 
   @Field()
-  extendedName!: string;
+  longName!: string;
 }
 
 @InputType()
@@ -32,5 +32,5 @@ export class SchoolSubjectUpdateInput {
   name!: string;
 
   @Field()
-  extendedName!: string;
+  longName!: string;
 }

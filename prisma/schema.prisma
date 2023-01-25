@@ -13,6 +13,8 @@ model School {
   name        String
   departments Department[]
   admins      Admin[]
+  Teacher     Teacher[]
+  Room        Room[]
 
   @@map("school")
 }
@@ -29,9 +31,22 @@ model ClassHasSubject {
   @@map("class_has_subject")
 }
 
+model RoomHasSubject {
+  roomId        Int           @map("room_id")
+  subjectId     Int           @map("subject_id")
+  room          Room          @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolSubject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([roomId, subjectId])
+  @@index([roomId])
+  @@index([subjectId])
+  @@map("room_has_subject")
+}
+
 model Department {
   id            Int           @id @unique() @default(autoincrement())
-  name          String        @unique @db.VarChar(50)
+  name          String        @db.VarChar(50)
+  longName      String        @unique @map("extended_name") @db.VarChar(100)
   schoolClasses SchoolClass[]
   school        School        @relation(fields: [schoolId], references: [id])
   schoolId      Int           @map("school_id")
@@ -42,8 +57,8 @@ model Department {
 
 model SchoolClass {
   id              Int               @id @unique() @default(autoincrement())
-  name            String            @unique @db.VarChar(50)
-  grade           Int
+  name            String            @db.VarChar(50)
+  longName        String            @unique @map("extended_name") @db.VarChar(100)
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
@@ -55,13 +70,35 @@ model SchoolClass {
 
 model SchoolSubject {
   id              Int               @id @unique() @default(autoincrement())
-  name            String            @unique() @db.VarChar(50)
-  extendedName    String            @unique() @map("extended_name") @db.VarChar(100)
+  name            String            @db.VarChar(50)
+  longName        String            @map("extended_name") @db.VarChar(100)
   classHasSubject ClassHasSubject[]
   tutor           TutorOffering[]
   tutorRequest    TutorRequest[]
+  RoomHasSubject  RoomHasSubject[]
 
   @@map("school_subject")
+}
+
+model Teacher {
+  id       Int    @id @unique() @default(autoincrement())
+  name     String @db.VarChar(50)
+  schoolId Int    @map("school_id")
+  school   School @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([schoolId])
+  @@map("teacher")
+}
+
+model Room {
+  id             Int              @id @unique() @default(autoincrement())
+  name           String           @db.VarChar(50)
+  schoolId       Int              @map("school_id")
+  school         School           @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  RoomHasSubject RoomHasSubject[]
+
+  @@index([schoolId])
+  @@map("room")
 }
 
 model TutorRequest {
@@ -126,6 +163,8 @@ model Student {
 model User {
   id            String    @id @unique @default(cuid())
   name          String?
+  firstName     String?   @map("first_name")
+  lastName      String?   @map("last_name")
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
   password      String

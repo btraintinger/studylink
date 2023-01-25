@@ -130,7 +130,7 @@ export class SchoolClassResolver {
     const schoolClass = await ctx.prisma.schoolClass.create({
       data: {
         name: SchoolClassCreationInput.name,
-        grade: SchoolClassCreationInput.grade,
+        longName: SchoolClassCreationInput.longName,
         department: {
           connect: {
             id: SchoolClassCreationInput.departmentId,
@@ -164,7 +164,6 @@ export class SchoolClassResolver {
       },
       data: {
         name: SchoolClassUpdateInput.name,
-        grade: SchoolClassUpdateInput.grade,
       },
     });
 
