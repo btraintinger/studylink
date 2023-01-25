@@ -1,11 +1,10 @@
-import { gql, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
+import { useGetTutorRequestsOfCurrentUserQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
-import { useGetTutorRequestsOfCurrentUserQuery } from '../../../../generated/graphql';
 
 export default function Requests() {
-  const { data, loading, error } = useGetTutorRequestsOfCurrentUserQuery();
+  const { loading } = useGetTutorRequestsOfCurrentUserQuery();
 
   if (loading)
     return (

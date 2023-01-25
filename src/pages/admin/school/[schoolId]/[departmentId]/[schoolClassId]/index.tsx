@@ -4,14 +4,14 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
+import {
+  useCreateSchoolClassMutation,
+  useGetSchoolClassByIdQuery,
+  useUpdateSchoolClassMutation,
+} from '../../../../../../../generated/graphql';
 import Layout from '../../../../../../components/page/layout';
 import FormWrapper from '../../../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../../../components/utils/loadingPage';
-import {
-  useGetSchoolClassByIdQuery,
-  useCreateSchoolClassMutation,
-  useUpdateSchoolClassMutation,
-} from '../../../../../../../generated/graphql';
 
 const schoolClassSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -49,7 +49,7 @@ export default function SchoolClass() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { data, loading, refetch } = useGetSchoolClassByIdQuery({
+  const { loading } = useGetSchoolClassByIdQuery({
     skip: queryId === null,
     variables: {
       getSchoolClassByIdId: queryId as number,

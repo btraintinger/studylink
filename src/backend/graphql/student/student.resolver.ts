@@ -1,10 +1,7 @@
 import { SchoolSubject } from './../schoolSubject/schoolSubject.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Student,
-  StudentCreationInput,
-  StudentUpdateInput,
-} from './student.type';
+import bcrypt from 'bcrypt';
 import {
   Arg,
   Authorized,
@@ -15,8 +12,12 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import bcrypt from 'bcrypt';
 import type { Context } from '../context';
+import {
+  Student,
+  StudentCreationInput,
+  StudentUpdateInput,
+} from './student.type';
 
 function generatePassword(
   length = 20,

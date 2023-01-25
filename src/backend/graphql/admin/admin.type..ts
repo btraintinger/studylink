@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ObjectType, InputType, ID, Int } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { User } from '../user/user.type';
-import { School } from '../school/school.type';
 
 @ObjectType()
 export class Admin {

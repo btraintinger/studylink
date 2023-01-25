@@ -5,13 +5,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
-import Layout from '../../components/page/layout';
-import FormWrapper from '../../components/utils/formWrapper';
-import LoadingPage from '../../components/utils/loadingPage';
 import {
   useGetCurrentUserQuery,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
+import Layout from '../../components/page/layout';
+import FormWrapper from '../../components/utils/formWrapper';
+import LoadingPage from '../../components/utils/loadingPage';
 
 const userSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -36,7 +36,7 @@ export default function User() {
     },
   });
 
-  const { data, loading, error, refetch } = useGetCurrentUserQuery({
+  const { loading } = useGetCurrentUserQuery({
     onCompleted: (data) => {
       if (data) reset(data.getCurrentUser);
     },
@@ -46,7 +46,7 @@ export default function User() {
     },
   });
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const {
     register,

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth from 'next-auth';
+import NextAuth, { SessionStrategy } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { signin, signup } from '../../../backend/auth';
-import { SessionStrategy } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
 
 export const authOptions = {
   session: {
@@ -19,7 +18,7 @@ export const authOptions = {
       },
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           return await signin(credentials);
         } catch (error: any) {
@@ -37,7 +36,7 @@ export const authOptions = {
       },
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           return await signup(credentials);
         } catch (error: any) {

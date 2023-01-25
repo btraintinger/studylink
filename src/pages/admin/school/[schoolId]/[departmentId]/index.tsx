@@ -46,7 +46,7 @@ export default function Department() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { data, loading, error, refetch } = useGetDepartmentByIdQuery({
+  const { loading } = useGetDepartmentByIdQuery({
     skip: queryId === null,
     variables: {
       getDepartmentByIdId: queryId as number,

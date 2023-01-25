@@ -56,7 +56,7 @@ export default function Offer() {
         setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
     },
   });
-  const { loading, error, refetch } = useGetTutorRequestByIdQuery({
+  const { loading } = useGetTutorRequestByIdQuery({
     skip: queryId === null,
     variables: {
       getTutorRequestByIdId: queryId as number,

@@ -46,7 +46,7 @@ export default function School() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { data, loading, error, refetch } = useGetSchoolByIdQuery({
+  const { loading } = useGetSchoolByIdQuery({
     skip: queryId === null,
     variables: {
       getSchoolByIdId: queryId as number,

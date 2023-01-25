@@ -8,7 +8,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { CSSObject, styled, Theme, useTheme } from '@mui/material/styles';
+import { CSSObject, styled, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -68,10 +68,9 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
-  const theme = useTheme();
   const { selectedItem, isDrawerOpen, setDrawerOpen, setSelectedItem } =
     useDrawerContext();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const userRole = session?.user?.role;
 

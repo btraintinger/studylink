@@ -3,17 +3,18 @@ import {
   TutorRequestCreationInput,
   TutorRequestUpdateInput,
 } from './tutorRequest.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
+  Arg,
   Authorized,
   Ctx,
   FieldResolver,
-  Query,
   Mutation,
+  Query,
   Resolver,
   Root,
-  Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
 

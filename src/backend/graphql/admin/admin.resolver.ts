@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { School } from './../school/school.type';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -6,7 +7,6 @@ import {
   Ctx,
   FieldResolver,
   Query,
-  Mutation,
   Resolver,
   Root,
 } from 'type-graphql';

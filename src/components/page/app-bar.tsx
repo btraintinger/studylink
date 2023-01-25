@@ -49,7 +49,7 @@ export default function NavBar() {
     setAnchorEl(null);
   };
 
-  const { data, loading, error } = useGetUserNameQuery();
+  const { data } = useGetUserNameQuery();
 
   useEffect(() => {
     if (data?.getCurrentUser.name)

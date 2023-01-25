@@ -1,11 +1,12 @@
-import { createContext, useContext, useState } from 'react';
-import { PropsWithChildren } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import * as items from '../constants/menu-items';
 
 type drawerState = {
   selectedItem: string;
   isDrawerOpen: boolean;
+  // eslint-disable-next-line no-unused-vars
   setDrawerOpen: (setTo: boolean) => void;
+  // eslint-disable-next-line no-unused-vars
   setSelectedItem: (setTo: string) => void;
 };
 

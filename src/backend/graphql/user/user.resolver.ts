@@ -1,16 +1,8 @@
 import { User, UserUpdateInput } from './user.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import {
-  Authorized,
-  Ctx,
-  FieldResolver,
-  Query,
-  Mutation,
-  Resolver,
-  Root,
-  Arg,
-} from 'type-graphql';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
 
 @Resolver((of) => User)
