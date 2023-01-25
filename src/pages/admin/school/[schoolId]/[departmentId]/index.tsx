@@ -47,6 +47,7 @@ export default function Department() {
     },
   });
   const { data, loading, error, refetch } = useGetDepartmentByIdQuery({
+    skip: queryId === null,
     variables: {
       getDepartmentByIdId: queryId as number,
     },

@@ -52,6 +52,7 @@ export default function Student() {
     },
   });
   const { loading } = useGetStudentByIdQuery({
+    skip: queryId === null,
     variables: {
       getStudentByIdId: queryId as number,
     },

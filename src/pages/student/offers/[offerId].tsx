@@ -1,19 +1,18 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
+import {
+  useCreateTutorOfferingMutation,
+  useGetSubjectsOfStudentQuery,
+  useGetTutorOfferingByIdQuery,
+  useUpdateTutorOfferingMutation,
+} from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-import {
-  useCreateTutorOfferingMutation,
-  useUpdateTutorOfferingMutation,
-  useGetTutorOfferingByIdQuery,
-  useGetSubjectsOfStudentQuery,
-} from '../../../../generated/graphql';
 
 const tutorOfferingSchema = object({
   description: string()
@@ -58,6 +57,7 @@ export default function Offer() {
     },
   });
   const { loading } = useGetTutorOfferingByIdQuery({
+    skip: queryId === null,
     variables: {
       getTutorOfferingByIdId: queryId as number,
     },

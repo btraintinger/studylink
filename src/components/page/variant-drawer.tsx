@@ -148,7 +148,10 @@ export default function MiniDrawer() {
             STUDYLINK
           </Typography>
         </MuiLink>
-        <IconButton onClick={toggleDrawerOpen}>
+        <IconButton
+          aria-label="open or close sidebar"
+          onClick={toggleDrawerOpen}
+        >
           {isDrawerOpen ? <Muicon.ChevronLeftRounded /> : <Muicon.Menu />}
         </IconButton>
       </DrawerHeader>

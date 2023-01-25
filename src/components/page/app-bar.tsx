@@ -90,7 +90,11 @@ export default function NavBar() {
             STUDYLINK
           </Typography>
         </MuiLink>
-        <Button sx={{ mr: 2 }} onClick={handleClick}>
+        <Button
+          sx={{ mr: 2 }}
+          aria-label="open profile menu"
+          onClick={handleClick}
+        >
           <Avatar sx={{ bgcolor: '#13cf6a', width: 32, height: 32 }}>
             {name}
           </Avatar>

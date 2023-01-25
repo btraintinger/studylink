@@ -47,6 +47,7 @@ export default function School() {
     },
   });
   const { data, loading, error, refetch } = useGetSchoolByIdQuery({
+    skip: queryId === null,
     variables: {
       getSchoolByIdId: queryId as number,
     },
