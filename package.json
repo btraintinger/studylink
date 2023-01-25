@@ -40,11 +40,13 @@
     "react-hook-form": "^7.39.4",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^2.0.0-beta.1",
+    "webuntis": "^2.0.3",
     "zod": "^3.19.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.16.4",
     "@graphql-codegen/client-preset": "1.2.6",
+    "@graphql-codegen/introspection": "2.2.3",
     "@graphql-codegen/typescript": "^2.8.7",
     "@graphql-codegen/typescript-operations": "^2.5.12",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
@@ -64,7 +66,6 @@
     "graphql-codegen-apollo-next-ssr": "^1.7.4",
     "prettier": "^2.7.1",
     "prisma": "^4.7.1",
-    "typescript": "4.8.4",
-    "@graphql-codegen/introspection": "2.2.3"
+    "typescript": "4.8.4"
   }
 }
