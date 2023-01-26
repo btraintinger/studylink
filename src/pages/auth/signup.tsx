@@ -1,22 +1,22 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Container,
   Grid,
+  Link as MuiLink,
   TextField,
   Typography,
-  Link as MuiLink,
-  Alert,
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { object, string, TypeOf } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { object, string, TypeOf } from 'zod';
 import LoadingPage from '../../components/utils/loadingPage';
 
 const signUpSchema = object({
@@ -156,11 +156,15 @@ export default function LoginPage() {
 
           <Grid container>
             <Grid item>
-              <Link href="/auth/signin" legacyBehavior>
-                <MuiLink component={Link} href="/auth/signup" passHref>
-                  {'Hast du schon einen Account? Logge dich ein'}
-                </MuiLink>
-              </Link>
+              <MuiLink
+                underline="none"
+                sx={{ fontSize: '14px', fontStyle: 'bold' }}
+                component={Link}
+                href="/auth/signin"
+                passHref
+              >
+                {'Hast du schon einen Account? Logge dich ein'}
+              </MuiLink>
             </Grid>
           </Grid>
           <Alert

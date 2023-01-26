@@ -79,6 +79,9 @@ export class SchoolResolver {
     @Arg('schoolCreationInput') schoolCreationInput: SchoolCreationInput,
     @Ctx() ctx: Context
   ) {
+    if (ctx.user?.admin?.schoolId)
+      throw new Error('AlreadyAdministratingSchoolError');
+
     const school = await ctx.prisma.school.create({
       data: {
         name: schoolCreationInput.name,

@@ -111,8 +111,8 @@ export default function NavBar() {
           <MenuItem onClick={() => router.push('/user')}>Account</MenuItem>
           <MenuItem
             onClick={() => {
+              signOut({ redirect: false });
               router.push('/');
-              signOut();
             }}
           >
             Ausloggen

@@ -42,6 +42,8 @@ export default function School() {
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
+      if (error.message === 'AlreadyAdministratingSchoolError')
+        setErrorMessage('Sie sind bereits für eine Schule verantwortlich');
     },
   });
   const [updateFunction] = useUpdateSchoolMutation({
@@ -120,7 +122,6 @@ export default function School() {
             label="Name"
             fullWidth
             required
-            type="text"
             error={!!errors['name']}
             helperText={errors['name'] ? errors['name'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
@@ -131,7 +132,6 @@ export default function School() {
             label="Domain"
             fullWidth
             required
-            type="text"
             error={!!errors['domain']}
             helperText={errors['domain'] ? errors['domain'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
