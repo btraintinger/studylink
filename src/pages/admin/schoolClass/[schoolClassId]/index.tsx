@@ -5,32 +5,33 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
-  useCreateDepartmentMutation,
-  useGetDepartmentByIdQuery,
-  useUpdateDepartmentMutation,
-} from '../../../../../../generated/graphql';
-import Layout from '../../../../../components/page/layout';
-import FormWrapper from '../../../../../components/utils/formWrapper';
-import LoadingPage from '../../../../../components/utils/loadingPage';
+  useCreateSchoolClassMutation,
+  useGetSchoolClassByIdQuery,
+  useUpdateSchoolClassMutation,
+} from '../../../../../generated/graphql';
+import Layout from '../../../../components/page/layout';
+import FormWrapper from '../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../components/utils/loadingPage';
 
-const departmentSchema = object({
+const schoolClassSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
+  longName: string().min(1, '* Bitte geben Sie erweiterten langen Namen an'),
 });
 
-type DepartmentInput = TypeOf<typeof departmentSchema>;
+type SchoolClassInput = TypeOf<typeof schoolClassSchema>;
 
-export default function Department() {
+export default function SchoolClass() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  // get departmentId from url
-  const { departmentId, schoolId } = router.query;
-  let queryId: number | null = parseInt(departmentId as string, 10);
-  if (departmentId === 'new') queryId = null;
+  // get schoolClassId from url
+  const { schoolClassId, schoolId, departmentId } = router.query;
+  let queryId: number | null = parseInt(schoolClassId as string, 10);
+  if (schoolClassId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useCreateDepartmentMutation({
+  const [createFunction] = useCreateSchoolClassMutation({
     onError: (error) => {
       if (error.message === 'CreationFailedError')
         setErrorMessage('Die Erstellung war nicht möglich');
@@ -38,25 +39,25 @@ export default function Department() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const [updateFunction] = useUpdateDepartmentMutation({
+  const [updateFunction] = useUpdateSchoolClassMutation({
     onError: (error) => {
       if (error.message === 'UpdateFailedError')
-        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+        setErrorMessage('Die Aktualisierung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { loading } = useGetDepartmentByIdQuery({
+  const { loading } = useGetSchoolClassByIdQuery({
     skip: queryId === null,
     variables: {
-      getDepartmentByIdId: queryId as number,
+      getSchoolClassByIdId: queryId as number,
     },
     onCompleted: (data) => {
-      if (data) reset(data.getDepartmentById);
+      reset(data.getSchoolClassById);
     },
     onError: (error) => {
-      if (error.message === 'DoesNotExistError') router.push('/404');
-      if (error.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
     },
   });
 
@@ -65,30 +66,32 @@ export default function Department() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<DepartmentInput>({
-    resolver: zodResolver(departmentSchema),
+  } = useForm<SchoolClassInput>({
+    resolver: zodResolver(schoolClassSchema),
     mode: 'onTouched',
   });
 
-  const onSubmitHandler: SubmitHandler<DepartmentInput> = async (values) => {
+  const onSubmitHandler: SubmitHandler<SchoolClassInput> = async (values) => {
     if (queryId === null) {
-      const department = await createFunction({
+      const schoolClass = await createFunction({
         variables: {
-          departmentInput: {
+          schoolClassCreateInput: {
             name: values.name,
-            schoolId: parseInt(schoolId as string, 10),
+            longName: values.longName,
+            departmentId: parseInt(departmentId as string, 10),
           },
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${department?.data?.createDepartment.id}`
+        `/admin/school/${schoolId}/${departmentId}/${schoolClass?.data?.createSchoolClass.id}`
       );
     } else {
       await updateFunction({
         variables: {
-          departmentInput: {
+          schoolClassUpdateInput: {
             id: queryId,
             name: values.name,
+            longName: values.longName,
           },
         },
       });
@@ -122,6 +125,18 @@ export default function Department() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('name')}
           />
+          <TextField
+            sx={{ mb: 2 }}
+            variant="standard"
+            label="Erweiterter Name"
+            fullWidth
+            required
+            type="text"
+            error={!!errors['longName']}
+            helperText={errors['longName'] ? errors['longName'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('longName')}
+          />
           <Button
             variant="contained"
             fullWidth
@@ -129,17 +144,6 @@ export default function Department() {
             sx={{ mt: 1, mb: 2 }}
           >
             Speichern
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ mt: 1, mb: 2 }}
-            onClick={() =>
-              router.push(`/admin/school/${schoolId}/${departmentId}/new`)
-            }
-            disabled={queryId === null}
-          >
-            Neue Schulklasse hinzufügen
           </Button>
           <Alert
             severity="error"

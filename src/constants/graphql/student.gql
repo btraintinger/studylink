@@ -43,7 +43,7 @@ mutation updateStudent($studentInput: StudentUpdateInput!) {
 query getSubjectsOfStudent {
   getSubjectsOfStudent {
     id
-    extendedName
+    longName
     name
   }
 }

@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+import CloudOffIcon from '@mui/icons-material/CloudOff';
+import { Box, Typography } from '@mui/material';
 
 export default function OfflinePage() {
   return (
@@ -9,11 +10,13 @@ export default function OfflinePage() {
         alignItems: 'center',
         flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: '#ebfff1',
       }}
     >
-      <h1>Offline</h1>
-      <p>Verbinde dich mit dem Internet um Studylink zu benutzen</p>
+      <CloudOffIcon sx={{ fontSize: 200 }} />
+      <Typography sx={{ fontSize: 40, fontStyle: 'bold' }}>Offline</Typography>
+      <Typography>
+        Verbinde dich mit dem Internet um Studylink zu benutzen
+      </Typography>
     </Box>
   );
 }

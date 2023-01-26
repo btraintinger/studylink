@@ -1,21 +1,21 @@
 query GetSchoolClassById($getSchoolClassByIdId: Float!) {
   getSchoolClassById(id: $getSchoolClassByIdId) {
     id
-    grade
     name
+    longName
   }
 }
 mutation CreateSchoolClass($schoolClassCreateInput: SchoolClassCreationInput!) {
   createSchoolClass(schoolClassCreateInput: $schoolClassCreateInput) {
     id
-    grade
     name
+    longName
   }
 }
 mutation UpdateSchoolClass($schoolClassUpdateInput: SchoolClassUpdateInput!) {
   updateSchoolClass(schoolClassUpdateInput: $schoolClassUpdateInput) {
     id
-    grade
     name
+    longName
   }
 }

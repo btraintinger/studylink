@@ -10,12 +10,17 @@ export default function Error() {
         alignItems: 'center',
         flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: 'background.default',
       }}
     >
       <Typography variant="h1">404</Typography>
-      <Typography variant="h6">Die gesuchte Seite existiert nicht.</Typography>
-      <Button component={Link} href="/" variant="contained" passHref>
+      <Typography variant="h5">Die gesuchte Seite existiert nicht.</Typography>
+      <Button
+        sx={{ marginTop: 1 }}
+        component={Link}
+        href="/"
+        variant="contained"
+        passHref
+      >
         Zurück auf die Startseite
       </Button>
     </Box>

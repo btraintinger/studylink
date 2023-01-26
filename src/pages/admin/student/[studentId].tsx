@@ -15,7 +15,10 @@ import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
 
 const studentSchema = object({
-  name: string().min(1, '* Bitte geben Sie einen Namen an'),
+  firstName: string().min(1, '* Bitte geben Sie einen Vornamen an'),
+  lastName: string().min(1, '* Bitte geben Sie einen Nachnamen an'),
+  birthday: string().min(1, '* Bitte geben Sie ein Geburtsdatum an'),
+  name: string(),
   email: string().email('* Bitte geben Sie eine gültige E-Mail-Adresse an'),
   studentClass: object({
     id: number().int().nonnegative('* Bitte wählen Sie eine Klasse aus'),
@@ -90,6 +93,9 @@ export default function Student() {
             name: values.name,
             email: values.email,
             schoolClassId: values.studentClass.id,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            birthday: values.birthday,
           },
         },
       });
@@ -102,6 +108,9 @@ export default function Student() {
             name: values.name,
             email: values.email,
             schoolClassId: values.studentClass.id,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            birthday: values.birthday,
           },
         },
       });
@@ -123,9 +132,32 @@ export default function Student() {
           <TextField
             sx={{ mb: 2 }}
             variant="standard"
-            label="Name"
+            label="Vorname"
             fullWidth
             required
+            type="text"
+            error={!!errors['firstName']}
+            helperText={errors['firstName'] ? errors['firstName'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('firstName')}
+          />
+          <TextField
+            sx={{ mb: 2 }}
+            variant="standard"
+            label="Nachname"
+            fullWidth
+            required
+            type="text"
+            error={!!errors['lastName']}
+            helperText={errors['lastName'] ? errors['lastName'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('lastName')}
+          />
+          <TextField
+            sx={{ mb: 2 }}
+            variant="standard"
+            label="Name"
+            fullWidth
             type="text"
             error={!!errors['name']}
             helperText={errors['name'] ? errors['name'].message : ''}

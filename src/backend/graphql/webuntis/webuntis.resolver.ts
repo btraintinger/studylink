@@ -1,4 +1,4 @@
-import { PersonType, SessionInformation } from 'webuntis';
+import { SessionInformation } from 'webuntis';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -9,15 +9,20 @@ import { WebUntisSecretAuth } from 'webuntis';
 import { sendPasswordToStudent } from '../../utils/mailer';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
-import { WebUntis } from './webuntis.type';
+import { WebUntis, WebUntisImportInput } from './webuntis.type';
+
+enum PersonType {
+  STUDENT = 5,
+  TEACHER = 2,
+}
 
 @Resolver((of) => WebUntis)
-export class UserResolver {
+export class WebUntisResolver {
   @Authorized('ADMIN')
   @Mutation((returns) => WebUntis)
   async updateSchoolData(
     @Ctx() ctx: Context,
-    @Arg('loginData') loginData: WebUntis
+    @Arg('loginData') loginData: WebUntisImportInput
   ) {
     const untis = new WebUntisSecretAuth(
       loginData.school,
@@ -89,15 +94,19 @@ export class UserResolver {
       },
     });
     schoolClasses.forEach(async (schoolClass) => {
+      const webUntisDepartmentId = schoolClass.did || schoolClass.departmentId;
+      if (!webUntisDepartmentId) return;
+
       const currentSchoolClass = schoolSchoolClasses.find(
         (schoolSchoolClass) => schoolSchoolClass.name === schoolClass.name
       );
       const correctDepartment = departments.find(
-        (department) => department.id === schoolClass.did
+        (department) => department.id === webUntisDepartmentId
       );
       const correctDepartmentDB = schoolDepartments.find(
         (schoolDepartment) => schoolDepartment.name === correctDepartment?.name
       );
+      if (!correctDepartmentDB) return;
 
       if (!currentSchoolClass) {
         await ctx.prisma.schoolClass.create({
@@ -106,7 +115,7 @@ export class UserResolver {
             longName: schoolClass.longName,
             department: {
               connect: {
-                id: correctDepartmentDB?.id,
+                id: correctDepartmentDB.id,
               },
             },
           },

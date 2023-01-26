@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { IsEmail, MaxLength } from 'class-validator';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { SchoolClass } from '../schoolClass/schoolClass.type';
 import { TutorOffering } from '../tutorOffering/tutorOffering.type';
@@ -22,18 +23,34 @@ export class Student {
 
   @Field()
   user!: User;
+
+  @Field()
+  birthday!: string;
 }
 
 @InputType()
 export class StudentCreationInput {
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
+  @Field()
+  firstName!: string;
+
+  @MaxLength(150)
+  @Field()
+  lastName!: string;
+
+  @IsEmail()
   @Field()
   email!: string;
 
   @Field()
   schoolClassId!: number;
+
+  @Field()
+  birthday!: string;
 }
 
 @InputType()
@@ -41,12 +58,25 @@ export class StudentUpdateInput {
   @Field((type) => Int)
   id!: number;
 
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
+  @Field()
+  firstName!: string;
+
+  @MaxLength(150)
+  @Field()
+  lastName!: string;
+
+  @IsEmail()
   @Field()
   email!: string;
 
   @Field()
   schoolClassId!: number;
+
+  @Field()
+  birthday!: string;
 }

@@ -101,7 +101,11 @@ export class TutorOfferingResolver {
             id: ctx.user?.student?.id,
           },
         },
-        teacher: TutorOfferingInputCreation.teacher,
+        teacher: {
+          connect: {
+            id: TutorOfferingInputCreation.teacherId,
+          },
+        },
         description: TutorOfferingInputCreation.description,
         grade: TutorOfferingInputCreation.grade,
       },
@@ -134,7 +138,11 @@ export class TutorOfferingResolver {
             id: TutorOfferingUpdateInput.schoolSubjectId,
           },
         },
-        teacher: TutorOfferingUpdateInput.teacher,
+        teacher: {
+          connect: {
+            id: TutorOfferingUpdateInput.teacherId,
+          },
+        },
         description: TutorOfferingUpdateInput.description,
         grade: TutorOfferingUpdateInput.grade,
       },

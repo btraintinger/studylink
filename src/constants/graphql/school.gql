@@ -1,7 +1,27 @@
 query GetSchoolById($getSchoolByIdId: Float!) {
   getSchoolById(id: $getSchoolByIdId) {
-    id
     name
+    domain
+    id
+    departments {
+      id
+      longName
+      name
+    }
+    admins {
+      id
+      user {
+        name
+        email
+        id
+      }
+    }
+  }
+}
+
+query GetAdministeredSchool {
+  getAdministeredSchool {
+    id
   }
 }
 
@@ -9,6 +29,7 @@ mutation CreateSchool($schoolCreationInput: SchoolCreationInput!) {
   createSchool(schoolCreationInput: $schoolCreationInput) {
     id
     name
+    domain
   }
 }
 
@@ -16,11 +37,13 @@ mutation UpdateSchool($schoolUpdateInput: SchoolUpdateInput!) {
   updateSchool(schoolUpdateInput: $schoolUpdateInput) {
     id
     name
+    domain
   }
 }
 
 query GetSchoolClassesOfSchool {
   getSchoolClassesOfSchool {
+    longName
     name
     id
   }

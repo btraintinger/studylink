@@ -9,7 +9,8 @@ declare module 'webuntis' {
     name: string;
     longName: string;
     active: boolean;
-    did: number;
+    did: number?;
+    departmentId: number?;
   }
 
   interface Student {
@@ -30,9 +31,4 @@ declare module 'webuntis' {
     personType?: number;
     jwt_token?: string;
   };
-
-  enum PersonType {
-    STUDENT = 5,
-    TEACHER = 2,
-  }
 }

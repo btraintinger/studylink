@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { IsFQDN, MaxLength } from 'class-validator';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { Admin } from '../admin/admin.type.';
 import { Department } from '../department/department.type';
@@ -24,8 +25,13 @@ export class School {
 
 @InputType()
 export class SchoolCreationInput {
+  @MaxLength(150)
   @Field()
   name!: string;
+
+  @IsFQDN()
+  @Field()
+  domain!: string;
 }
 
 @InputType()
@@ -33,6 +39,11 @@ export class SchoolUpdateInput {
   @Field((type) => Int)
   id!: number;
 
+  @MaxLength(150)
   @Field()
   name!: string;
+
+  @IsFQDN()
+  @Field()
+  domain!: string;
 }

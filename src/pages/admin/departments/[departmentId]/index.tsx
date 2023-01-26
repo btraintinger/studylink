@@ -3,37 +3,35 @@ import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { number, object, string, TypeOf } from 'zod';
+import { object, string, TypeOf } from 'zod';
 import {
-  useCreateSchoolClassMutation,
-  useGetSchoolClassByIdQuery,
-  useUpdateSchoolClassMutation,
-} from '../../../../../../../generated/graphql';
-import Layout from '../../../../../../components/page/layout';
-import FormWrapper from '../../../../../../components/utils/formWrapper';
-import LoadingPage from '../../../../../../components/utils/loadingPage';
+  useCreateDepartmentMutation,
+  useGetDepartmentByIdQuery,
+  useUpdateDepartmentMutation,
+} from '../../../../../generated/graphql';
+import Layout from '../../../../components/page/layout';
+import FormWrapper from '../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../components/utils/loadingPage';
 
-const schoolClassSchema = object({
+const departmentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
-  grade: number()
-    .min(1, '* Bitte geben Sie eine Schulstufe zwischen 1 und 13 an')
-    .max(13, '* Bitte geben Sie eine Schulstufe zwischen 1 und 13 an'),
+  longName: string().min(1, '* Bitte geben Sie erweiterten langen Namen an'),
 });
 
-type SchoolClassInput = TypeOf<typeof schoolClassSchema>;
+type DepartmentInput = TypeOf<typeof departmentSchema>;
 
-export default function SchoolClass() {
+export default function Department() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  // get schoolClassId from url
-  const { schoolClassId, schoolId, departmentId } = router.query;
-  let queryId: number | null = parseInt(schoolClassId as string, 10);
-  if (schoolClassId === 'new') queryId = null;
+  // get departmentId from url
+  const { departmentId, schoolId } = router.query;
+  let queryId: number | null = parseInt(departmentId as string, 10);
+  if (departmentId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useCreateSchoolClassMutation({
+  const [createFunction] = useCreateDepartmentMutation({
     onError: (error) => {
       if (error.message === 'CreationFailedError')
         setErrorMessage('Die Erstellung war nicht möglich');
@@ -41,25 +39,25 @@ export default function SchoolClass() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const [updateFunction] = useUpdateSchoolClassMutation({
+  const [updateFunction] = useUpdateDepartmentMutation({
     onError: (error) => {
       if (error.message === 'UpdateFailedError')
-        setErrorMessage('Die Aktualisierung war nicht möglich');
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { loading } = useGetSchoolClassByIdQuery({
+  const { loading } = useGetDepartmentByIdQuery({
     skip: queryId === null,
     variables: {
-      getSchoolClassByIdId: queryId as number,
+      getDepartmentByIdId: queryId as number,
     },
     onCompleted: (data) => {
-      reset(data.getSchoolClassById);
+      if (data) reset(data.getDepartmentById);
     },
     onError: (error) => {
-      if (error?.message === 'DoesNotExistError') router.push('/404');
-      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
 
@@ -68,32 +66,32 @@ export default function SchoolClass() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<SchoolClassInput>({
-    resolver: zodResolver(schoolClassSchema),
+  } = useForm<DepartmentInput>({
+    resolver: zodResolver(departmentSchema),
     mode: 'onTouched',
   });
 
-  const onSubmitHandler: SubmitHandler<SchoolClassInput> = async (values) => {
+  const onSubmitHandler: SubmitHandler<DepartmentInput> = async (values) => {
     if (queryId === null) {
-      const schoolClass = await createFunction({
+      const department = await createFunction({
         variables: {
-          schoolClassCreateInput: {
+          departmentInput: {
             name: values.name,
-            departmentId: parseInt(departmentId as string, 10),
-            grade: values.grade,
+            schoolId: parseInt(schoolId as string, 10),
+            longName: values.longName,
           },
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${departmentId}/${schoolClass?.data?.createSchoolClass.id}`
+        `/admin/school/${schoolId}/${department?.data?.createDepartment.id}`
       );
     } else {
       await updateFunction({
         variables: {
-          schoolClassUpdateInput: {
+          departmentInput: {
             id: queryId,
             name: values.name,
-            grade: values.grade,
+            longName: values.longName,
           },
         },
       });
@@ -130,14 +128,14 @@ export default function SchoolClass() {
           <TextField
             sx={{ mb: 2 }}
             variant="standard"
-            label="Schulstufe"
+            label="Erweiterter Name"
             fullWidth
             required
-            type="number"
-            error={!!errors['grade']}
-            helperText={errors['grade'] ? errors['grade'].message : ''}
-            defaultValue={queryId === null ? '' : '0'} // formatting
-            {...register('grade', { valueAsNumber: true })}
+            type="text"
+            error={!!errors['longName']}
+            helperText={errors['longName'] ? errors['longName'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('longName')}
           />
           <Button
             variant="contained"
@@ -146,6 +144,17 @@ export default function SchoolClass() {
             sx={{ mt: 1, mb: 2 }}
           >
             Speichern
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1, mb: 2 }}
+            onClick={() =>
+              router.push(`/admin/school/${schoolId}/${departmentId}/new`)
+            }
+            disabled={queryId === null}
+          >
+            Neue Schulklasse hinzufügen
           </Button>
           <Alert
             severity="error"

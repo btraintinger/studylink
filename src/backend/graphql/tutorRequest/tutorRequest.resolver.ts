@@ -95,7 +95,11 @@ export class TutorRequestResolver {
             id: TutorRequestCreationInput.schoolSubjectId,
           },
         },
-        teacher: TutorRequestCreationInput.teacher,
+        teacher: {
+          connect: {
+            id: TutorRequestCreationInput.teacherId,
+          },
+        },
         description: TutorRequestCreationInput.description,
         student: {
           connect: {
@@ -133,7 +137,11 @@ export class TutorRequestResolver {
             id: TutorRequestUpdateInput.schoolSubjectId,
           },
         },
-        teacher: TutorRequestUpdateInput.teacher,
+        teacher: {
+          connect: {
+            id: TutorRequestUpdateInput.teacherId,
+          },
+        },
         description: TutorRequestUpdateInput.description,
       },
     });

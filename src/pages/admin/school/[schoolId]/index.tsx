@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
+import { isFQDN } from 'class-validator';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -15,6 +16,11 @@ import LoadingPage from '../../../../components/utils/loadingPage';
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
+  domain: string()
+    .min(1, '* Bitte geben Sie eine Domain an')
+    .refine((value) => {
+      return isFQDN(value);
+    }, '* Bitte geben Sie eine gültige Domain an'),
 });
 
 type SchoolInput = TypeOf<typeof schoolSchema>;
@@ -76,6 +82,7 @@ export default function School() {
         variables: {
           schoolCreationInput: {
             name: values.name,
+            domain: values.domain,
           },
         },
       });
@@ -86,6 +93,7 @@ export default function School() {
           schoolUpdateInput: {
             id: queryId,
             name: values.name,
+            domain: values.domain,
           },
         },
       });
@@ -109,7 +117,6 @@ export default function School() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             required
@@ -118,6 +125,17 @@ export default function School() {
             helperText={errors['name'] ? errors['name'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('name')}
+          />
+          <TextField
+            sx={{ mb: 2 }}
+            label="Domain"
+            fullWidth
+            required
+            type="text"
+            error={!!errors['domain']}
+            helperText={errors['domain'] ? errors['domain'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('domain')}
           />
           <Button
             variant="contained"
@@ -131,7 +149,7 @@ export default function School() {
             variant="contained"
             fullWidth
             sx={{ mt: 1, mb: 2 }}
-            onClick={() => router.push(`/admin/school/${schoolId}/new`)}
+            onClick={() => router.push(`/admin/department/${schoolId}/new`)}
             disabled={queryId === null}
           >
             Neue Abteilung hinzufügen

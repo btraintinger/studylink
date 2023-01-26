@@ -165,6 +165,8 @@ export class StudentResolver {
         email: studentInput.email,
         password: hashedPassword,
         name: studentInput.name,
+        firstName: studentInput.firstName,
+        lastName: studentInput.lastName,
         role: 'STUDENT',
       },
     });
@@ -173,6 +175,7 @@ export class StudentResolver {
 
     const student = await ctx.prisma.student.create({
       data: {
+        birthday: studentInput.birthday,
         user: {
           connect: {
             id: studentUser.id,

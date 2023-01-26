@@ -6,7 +6,7 @@ query GetTutorRequestsOfCurrentUser {
       id
       teacher
       schoolSubject {
-        extendedName
+        longName
         name
         id
       }
@@ -21,7 +21,7 @@ query GetTutorRequestById($getTutorRequestByIdId: Float!) {
     grade
     teacher
     schoolSubject {
-      extendedName
+      longName
       id
       name
     }
@@ -37,7 +37,7 @@ mutation CreateTutorRequest(
     grade
     teacher
     schoolSubject {
-      extendedName
+      longName
       id
       name
     }
@@ -52,7 +52,7 @@ mutation UpdateTutorRequest(
     grade
     teacher
     schoolSubject {
-      extendedName
+      longName
       id
       name
     }
