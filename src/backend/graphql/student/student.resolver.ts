@@ -12,29 +12,14 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
+import { sendPasswordToStudent } from '../../utils/mailer';
+import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import {
   Student,
   StudentCreationInput,
   StudentUpdateInput,
 } from './student.type';
-
-function generatePassword(
-  length = 20,
-  passwordChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
-): string {
-  return Array.from(crypto.getRandomValues(new Uint32Array(length)))
-    .map((x) => passwordChars[x % passwordChars.length])
-    .join('');
-}
-
-function sendPasswordToStudent(
-  ctx: Context,
-  studentId: number,
-  password: string
-) {
-  console.log('TODO');
-}
 
 async function isStudentExistent(
   ctx: Context,
@@ -210,7 +195,7 @@ export class StudentResolver {
       throw new Error('CreationFailedError');
     }
 
-    sendPasswordToStudent(ctx, student.id, password);
+    sendPasswordToStudent(student.id, password);
     return student;
   }
 

@@ -8,7 +8,6 @@ declare module 'webuntis' {
     id: number;
     name: string;
     longName: string;
-    departmentId: number;
     active: boolean;
     did: number;
   }
@@ -20,7 +19,8 @@ declare module 'webuntis' {
     foreName: string;
     longName: string;
     gender: string;
-    cid: number;
+    klasseId: number;
+    birthday: string;
   }
 
   type SessionInformation = {

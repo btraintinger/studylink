@@ -82,6 +82,7 @@ export class SchoolResolver {
     const school = await ctx.prisma.school.create({
       data: {
         name: schoolCreationInput.name,
+        domain: schoolCreationInput.name,
         admins: {
           connect: {
             id: ctx.user?.admin?.id,

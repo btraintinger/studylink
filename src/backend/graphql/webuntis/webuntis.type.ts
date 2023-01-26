@@ -17,4 +17,7 @@ export class WebUntis {
 
   @Field()
   username!: string;
+
+  @Field()
+  useBirthYearInStudentMail!: boolean;
 }

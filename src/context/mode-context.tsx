@@ -1,4 +1,9 @@
-import { PaletteMode, ThemeProvider, createTheme } from '@mui/material';
+import {
+  createTheme,
+  PaletteMode,
+  ThemeProvider,
+  useMediaQuery,
+} from '@mui/material';
 import React, { PropsWithChildren, useContext } from 'react';
 import { getDesignTokens } from '../utils/theme';
 
@@ -14,7 +19,11 @@ const ThemeModeContext = React.createContext<modeType | undefined>(undefined);
 export default function ThemeModeContextProvider({
   children,
 }: PropsWithChildren<unknown>) {
-  const [mode, setMode] = React.useState<PaletteMode>('light');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const [mode, setMode] = React.useState<PaletteMode>(
+    prefersDarkMode ? 'dark' : 'light'
+  );
 
   const colorMode = React.useMemo(
     () => ({

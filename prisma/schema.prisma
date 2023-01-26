@@ -11,6 +11,7 @@ generator client {
 model School {
   id          Int          @id @unique @default(autoincrement())
   name        String
+  domain      String
   departments Department[]
   admins      Admin[]
   Teacher     Teacher[]
@@ -148,6 +149,7 @@ model Admin {
 
 model Student {
   id            Int             @id @unique() @default(autoincrement())
+  birthday      DateTime        @map("birth_date") @db.Date()
   schoolClassId Int?            @map("school_class_id")
   schoolClass   SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId        String          @unique() @map("user_id")

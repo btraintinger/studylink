@@ -2,9 +2,12 @@ import { PersonType, SessionInformation } from 'webuntis';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import bcrypt from 'bcrypt';
 import { authenticator as Authenticator } from 'otplib';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 import { WebUntisSecretAuth } from 'webuntis';
+import { sendPasswordToStudent } from '../../utils/mailer';
+import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis } from './webuntis.type';
 
@@ -29,16 +32,16 @@ export class UserResolver {
     try {
       loginInfo = await untis.login();
     } catch (error) {
-      throw new Error('Login failed');
+      throw new Error('WebUntisNotAuthenticatedError');
     }
 
-    if (!ctx.user?.admin?.schoolId) throw new Error('School ID not found');
+    if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolFoundError');
     const currentSchool = await ctx.prisma.school.findUnique({
       where: {
         id: ctx.user.admin.schoolId,
       },
     });
-    if (!currentSchool) throw new Error('School not found');
+    if (!currentSchool) throw new Error('NoSchoolFoundError');
 
     const latestSchoolYear = await untis.getLatestSchoolyear();
 
@@ -57,7 +60,11 @@ export class UserResolver {
           data: {
             name: department.name,
             longName: department.longName,
-            schoolId: currentSchool.id,
+            school: {
+              connect: {
+                id: currentSchool.id,
+              },
+            },
           },
         });
       } else {
@@ -68,7 +75,6 @@ export class UserResolver {
           data: {
             name: department.name,
             longName: department.longName,
-            schoolId: currentSchool.id,
           },
         });
       }
@@ -86,12 +92,23 @@ export class UserResolver {
       const currentSchoolClass = schoolSchoolClasses.find(
         (schoolSchoolClass) => schoolSchoolClass.name === schoolClass.name
       );
+      const correctDepartment = departments.find(
+        (department) => department.id === schoolClass.did
+      );
+      const correctDepartmentDB = schoolDepartments.find(
+        (schoolDepartment) => schoolDepartment.name === correctDepartment?.name
+      );
+
       if (!currentSchoolClass) {
         await ctx.prisma.schoolClass.create({
           data: {
             name: schoolClass.name,
             longName: schoolClass.longName,
-            departmentId: schoolClass.departmentId,
+            department: {
+              connect: {
+                id: correctDepartmentDB?.id,
+              },
+            },
           },
         });
       } else {
@@ -102,7 +119,7 @@ export class UserResolver {
           data: {
             name: schoolClass.name,
             longName: schoolClass.longName,
-            departmentId: schoolClass.departmentId,
+            department: { connect: { id: correctDepartmentDB?.id } },
           },
         });
       }
@@ -165,18 +182,24 @@ export class UserResolver {
           (schoolStudent) => schoolStudent.user.name === student.name
         );
         if (!currentStudent) {
+          const generatedPassword = generatePassword();
+          const passWordHash = await bcrypt.hash(generatedPassword, 10);
+          const lastTwoDigits = student.birthday.split('.')[2].split('');
           const createdUser = await ctx.prisma.user.create({
             data: {
-              email: '',
-              password: '',
+              email: `${student.foreName}.${student.longName}${
+                loginData.useBirthYearInStudentMail ? lastTwoDigits : ''
+              }@${currentSchool.domain}`,
+              password: passWordHash,
               name: student.name,
               firstName: student.foreName,
               lastName: student.longName,
               role: 'STUDENT',
             },
           });
-          await ctx.prisma.student.create({
+          const createdStudent = await ctx.prisma.student.create({
             data: {
+              birthday: new Date(student.birthday),
               user: {
                 connect: {
                   id: createdUser.id,
@@ -184,11 +207,12 @@ export class UserResolver {
               },
               schoolClass: {
                 connect: {
-                  id: student.cid,
+                  id: student.klasseId,
                 },
               },
             },
           });
+          sendPasswordToStudent(createdStudent.id, generatedPassword);
         } else {
           await ctx.prisma.user.update({
             where: {
@@ -205,9 +229,10 @@ export class UserResolver {
               id: currentStudent.id,
             },
             data: {
+              birthday: new Date(student.birthday),
               schoolClass: {
                 connect: {
-                  id: student.cid,
+                  id: student.klasseId,
                 },
               },
             },

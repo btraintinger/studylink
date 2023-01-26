@@ -12,6 +12,9 @@ export class School {
   @Field()
   name!: string;
 
+  @Field()
+  domain!: string;
+
   @Field((type) => [Department])
   departments?: Department[];
 
