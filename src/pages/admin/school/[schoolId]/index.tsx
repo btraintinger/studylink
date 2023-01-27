@@ -8,11 +8,12 @@ import { object, string, TypeOf } from 'zod';
 import {
   useCreateSchoolMutation,
   useGetSchoolByIdQuery,
-  useUpdateSchoolMutation,
+  useUpdateSchoolMutation
 } from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
+import Link from 'next/link'
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -149,7 +150,9 @@ export default function School() {
             variant="contained"
             fullWidth
             sx={{ mt: 1, mb: 2 }}
-            onClick={() => router.push(`/admin/department/${schoolId}/new`)}
+            component={Link}
+            href={{pathname: '/admin/departments/new', query: {schoolId: queryId}}}
+            passHref
             disabled={queryId === null}
           >
             Neue Abteilung hinzufügen

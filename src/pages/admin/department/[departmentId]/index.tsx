@@ -12,6 +12,7 @@ import {
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
+import Link from 'next/link';
 
 const departmentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -83,7 +84,7 @@ export default function Department() {
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${department?.data?.createDepartment.id}`
+        `/admin/departments/${department?.data?.createDepartment.id}`
       );
     } else {
       await updateFunction({
@@ -149,9 +150,12 @@ export default function Department() {
             variant="contained"
             fullWidth
             sx={{ mt: 1, mb: 2 }}
-            onClick={() =>
-              router.push(`/admin/school/${schoolId}/${departmentId}/new`)
-            }
+            component={Link}
+            href={{
+              pathname: '/admin/schoolClass/new',
+              query: { departmentId: queryId },
+            }}
+            passHref
             disabled={queryId === null}
           >
             Neue Schulklasse hinzufügen

@@ -83,7 +83,7 @@ export default function SchoolClass() {
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${departmentId}/${schoolClass?.data?.createSchoolClass.id}`
+        `/admin/schoolClass/${schoolClass?.data?.createSchoolClass.id}`
       );
     } else {
       await updateFunction({
