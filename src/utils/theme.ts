@@ -1,7 +1,7 @@
 import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
-import { green, grey, orange } from '@mui/material/colors';
+import { green, grey, orange, red } from '@mui/material/colors';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -18,9 +18,15 @@ export const getDesignTokens = (mode: PaletteMode) => ({
       ? {
           // palette values for light mode
           primary: green,
-          secondary: orange,
+          secondary: {
+            main: green[500],
+          },
           divider: green[500],
           border: grey[400],
+          background: {
+            default: grey[100],
+            paper: grey[200],
+          },
           text: {
             primary: grey[800],
             secondary: grey[800],
@@ -29,12 +35,15 @@ export const getDesignTokens = (mode: PaletteMode) => ({
       : {
           // palette values for dark mode
           primary: green,
-          secondary: orange,
+          secondary: {
+            main: green[800],
+          },
           divider: green[500],
           border: grey[100],
+          listHeader: green[400],
           background: {
             default: grey[900],
-            paper: grey[900],
+            paper: grey[800],
           },
           text: {
             primary: '#fffff',

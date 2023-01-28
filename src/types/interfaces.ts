@@ -12,7 +12,6 @@ export interface ISchoolSubject {
 
 export interface IOffer {
   id: number;
-  baseRoute: string;
   schoolSubject: ISchoolSubject;
   teacher: string;
   grade: number;

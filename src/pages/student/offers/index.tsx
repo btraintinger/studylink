@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import List from '@mui/material/List';
 import { useState } from 'react';
 import type { TutorOffering } from '../../../../generated/graphql';
@@ -6,6 +6,22 @@ import { useGetTutorOffersOfCurrentUserQuery } from '../../../../generated/graph
 import Layout from '../../../components/page/layout';
 import ItemRequestOffer from '../../../components/student/itemRequestOffer';
 import LoadingPage from '../../../components/utils/loadingPage';
+
+const STUDENT_QUERY = gql`
+  query GetStudentOfCurrentUser($getStudentByIdId: Float!) {
+    getStudentById(id: $getStudentByIdId) {
+      user {
+        name
+        email
+      }
+      schoolClass {
+        departmentId
+        grade
+        name
+      }
+    }
+  }
+`;
 
 export default function Offers() {
   const [array, setArray] = useState<TutorOffering[]>([]);
@@ -27,11 +43,10 @@ export default function Offers() {
 
   return (
     <Layout role="STUDENT">
-      <Box>
-        <Typography>Offers</Typography>
-
-        <List sx={{ width: 500 }}>
-          {array.map((offer: IOffer) => (
+      <Typography>Offers</Typography>
+      <List>
+        {array.map((offer: TutorOffering) => {
+          return (
             <ItemRequestOffer
               baseRoute="/student/offers"
               id={offer.id}
@@ -39,12 +54,12 @@ export default function Offers() {
               description={offer.description}
               grade={offer.grade}
               schoolSubjectNameAbbr={offer.schoolSubject.name}
-              schoolSubjectNameFull={offer.schoolSubject.extendedName}
+              schoolSubjectNameFull="jodl"
               displayWidth={500}
             />
-          ))}
-        </List>
-      </Box>
+          );
+        })}
+      </List>
     </Layout>
   );
 }
