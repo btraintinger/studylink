@@ -20,6 +20,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           primary: green,
           secondary: orange,
           divider: green[500],
+          border: grey[400],
           text: {
             primary: grey[800],
             secondary: grey[800],
@@ -30,6 +31,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           primary: green,
           secondary: orange,
           divider: green[500],
+          border: grey[100],
           background: {
             default: grey[900],
             paper: grey[900],

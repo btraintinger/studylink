@@ -67,7 +67,7 @@ model SchoolSubject {
 model TutorRequest {
   id Int @id @unique() @default(autoincrement())
 
-  studentId       Int           @unique() @map("student_id")
+  studentId       Int           @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
   schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -83,7 +83,7 @@ model TutorRequest {
 
 model TutorOffering {
   id              Int           @id @unique() @default(autoincrement())
-  studentId       Int           @unique() @map("student_id")
+  studentId       Int           @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   schoolSubjectId Int           @map("school_subject_id")
   schoolSubject   SchoolSubject @relation(fields: [schoolSubjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)

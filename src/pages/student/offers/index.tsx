@@ -15,6 +15,7 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import { useEffect, useState } from 'react';
 import ItemRequestOffer from '../../../components/student/itemRequestOffer';
 import type { TutorOfferingInput } from './[offerId]';
+import { IOffer } from '../../../types/interfaces';
 
 const OFFERS_QUERY = gql`
   query GetStudentOfCurrentUser {
@@ -24,6 +25,7 @@ const OFFERS_QUERY = gql`
         grade
         id
         teacher
+        studentId
         schoolSubject {
           extendedName
           name
@@ -34,11 +36,28 @@ const OFFERS_QUERY = gql`
   }
 `;
 
+const STUDENT_QUERY = gql`
+  query GetStudentOfCurrentUser($getStudentByIdId: Float!) {
+    getStudentById(id: $getStudentByIdId) {
+      user {
+        name
+        email
+      }
+      schoolClass {
+        departmentId
+        grade
+        name
+      }
+    }
+  }
+`;
+
 export default function Offers() {
   const { data, loading, error } = useQuery(OFFERS_QUERY);
   const [array, setArray] = useState([]);
 
   useEffect(() => {
+    console.log(data);
     if (data) setArray(data.getStudentOfCurrentUser.tutorOfferings);
   }, [data]);
 
@@ -51,21 +70,24 @@ export default function Offers() {
 
   return (
     <Layout role="STUDENT">
-      <Typography>Offers</Typography>
-      <List>
-        {array.map((offer: any) => {
-          return (
+      <Box>
+        <Typography>Offers</Typography>
+
+        <List sx={{ width: 500 }}>
+          {array.map((offer: IOffer) => (
             <ItemRequestOffer
               baseRoute="/student/offers"
               id={offer.id}
               teacher={offer.teacher}
               description={offer.description}
               grade={offer.grade}
-              schoolSubject={`${offer.schoolSubject.name} (${offer.schoolSubject.extendedName})`}
-            ></ItemRequestOffer>
-          );
-        })}
-      </List>
+              schoolSubjectNameAbbr={offer.schoolSubject.name}
+              schoolSubjectNameFull={offer.schoolSubject.extendedName}
+              displayWidth={500}
+            />
+          ))}
+        </List>
+      </Box>
     </Layout>
   );
 }

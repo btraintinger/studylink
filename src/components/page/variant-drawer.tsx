@@ -15,7 +15,7 @@ import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
 import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
 import Link from 'next/link';
-import { IMenuItem } from '../../types/iMenuItem';
+import { IMenuItem } from '../../types/interfaces';
 import { useSession } from 'next-auth/react';
 
 const drawerWidth = 240;
@@ -163,6 +163,7 @@ export default function MiniDrawer() {
             component={Link}
             href={route}
             onClick={() => setSelectedItem(route)}
+            borderColor="#000000"
           >
             <ListItemButton
               sx={{
