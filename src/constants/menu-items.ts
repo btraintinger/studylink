@@ -8,6 +8,7 @@ export const SCHOOL_ADMIN = '/admin/school';
 export const SCHOOL_SUBJECTS_ADMIN = '/admin/schoolSubjects';
 export const STUDENTS_ADMIN = '/admin/students';
 
+// student
 export const MATCHES_STUDENT = '/student/matches';
 export const OFFERS_STUDENT = '/student/offers';
 export const REQUESTS_STUDENT = '/student/requests';

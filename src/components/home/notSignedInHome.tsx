@@ -1,4 +1,7 @@
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import LoginIcon from '@mui/icons-material/Login';
 import { Box, Button, Typography } from '@mui/material';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Footer } from '../page/footer';
 
@@ -12,36 +15,39 @@ export default function NotSignedInHome() {
           alignItems: 'center',
           flexDirection: 'column',
           minHeight: '100vh',
-          backgroundColor: '#ebfff1',
         }}
       >
-        <Typography variant="h5">
-          Studylink ist eine Plattform, die es Schülern innerhalb der Schule
-          ermöglicht sich Nachhilfe anzubieten.
-        </Typography>
-        <Typography variant="h6" sx={{ m: 1 }}>
-          Anmelden oder Registrieren um fortzufahren.
+        <Image height={150} width={150} src="/favicon.ico" alt="logo" />
+        <Typography variant="h2">Studylink</Typography>
+        <Typography variant="h5" sx={{ m: 1, fontStyle: 'bold' }}>
+          Willkommen zurück! Bitte melde dich an
         </Typography>
         <Button
           variant="contained"
           sx={{ m: 1 }}
+          size="large"
           component={Link}
           href="/auth/signin"
           passHref
+          endIcon={<LoginIcon />}
         >
           Anmelden
         </Button>
+
         <Button
-          variant="contained"
-          sx={{ m: 1 }}
+          sx={{ mt: 10 }}
           component={Link}
-          href="/auth/signup"
+          href="/info"
           passHref
+          variant="contained"
+          size="large"
+          endIcon={<ArrowForwardIosIcon />}
         >
-          Registrieren als Admin um eine Schule zu organisieren
+          Du willst mehr über Studylink erfahren oder selbst eine Schule
+          administrieren?
         </Button>
+        <Footer />
       </Box>
-      <Footer />
     </>
   );
 }

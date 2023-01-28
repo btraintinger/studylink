@@ -1,16 +1,17 @@
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
-import { customAuthChecker } from './authChecker';
-import { SchoolClassResolver } from './schoolClass/schoolClass.resolver';
-import { UserResolver } from './user/user.resolver';
-import { TutorRequestResolver } from './tutorRequest/tutorRequest.resolver';
-import { TutorOfferingResolver } from './tutorOffering/tutorOffering.resolver';
-import { StudentResolver } from './student/student.resolver';
-import { SchoolSubjectResolver } from './schoolSubject/schoolSubject.resolver';
-import { SchoolResolver } from './school/school.resolver';
-import { MatchResolver } from './match/match.resolver';
-import { DepartmentResolver } from './department/department.resolver';
 import { AdminResolver } from './admin/admin.resolver';
+import { customAuthChecker } from './authChecker';
+import { DepartmentResolver } from './department/department.resolver';
+import { MatchResolver } from './match/match.resolver';
+import { SchoolResolver } from './school/school.resolver';
+import { SchoolClassResolver } from './schoolClass/schoolClass.resolver';
+import { SchoolSubjectResolver } from './schoolSubject/schoolSubject.resolver';
+import { StudentResolver } from './student/student.resolver';
+import { TutorOfferingResolver } from './tutorOffering/tutorOffering.resolver';
+import { TutorRequestResolver } from './tutorRequest/tutorRequest.resolver';
+import { UserResolver } from './user/user.resolver';
+import { WebUntisResolver } from './webuntis/webuntis.resolver';
 
 export default async function createSchema() {
   const schema = await buildSchema({
@@ -25,6 +26,7 @@ export default async function createSchema() {
       TutorOfferingResolver,
       TutorRequestResolver,
       UserResolver,
+      WebUntisResolver,
     ],
     authChecker: customAuthChecker,
   });

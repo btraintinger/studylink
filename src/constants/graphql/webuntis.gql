@@ -1,0 +1,5 @@
+mutation UpdateSchoolData($loginData: WebUntisImportInput!) {
+  updateSchoolData(loginData: $loginData) {
+    username
+  }
+}

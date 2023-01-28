@@ -1,41 +1,27 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
+import { isFQDN } from 'class-validator';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import {
+  useCreateSchoolMutation,
+  useGetSchoolByIdQuery,
+  useUpdateSchoolMutation
+} from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
-
-const SCHOOL_QUERY = gql`
-  query GetSchoolById($getSchoolByIdId: Float!) {
-    getSchoolById(id: $getSchoolByIdId) {
-      id
-      name
-    }
-  }
-`;
-
-const CREATE_SCHOOL_MUTATION = gql`
-  mutation CreateSchool($schoolCreationInput: SchoolCreationInput!) {
-    createSchool(schoolCreationInput: $schoolCreationInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_SCHOOL_MUTATION = gql`
-  mutation UpdateSchool($schoolUpdateInput: SchoolUpdateInput!) {
-    updateSchool(schoolUpdateInput: $schoolUpdateInput) {
-      id
-    }
-  }
-`;
+import Link from 'next/link'
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
+  domain: string()
+    .min(1, '* Bitte geben Sie eine Domain an')
+    .refine((value) => {
+      return isFQDN(value);
+    }, '* Bitte geben Sie eine gültige Domain an'),
 });
 
 type SchoolInput = TypeOf<typeof schoolSchema>;
@@ -51,11 +37,35 @@ export default function School() {
   if (schoolId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_SCHOOL_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_SCHOOL_MUTATION);
-  const { data, loading, error, refetch } = useQuery(SCHOOL_QUERY, {
+  const [createFunction] = useCreateSchoolMutation({
+    onError: (error) => {
+      if (error.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+      if (error.message === 'AlreadyAdministratingSchoolError')
+        setErrorMessage('Sie sind bereits für eine Schule verantwortlich');
+    },
+  });
+  const [updateFunction] = useUpdateSchoolMutation({
+    onError: (error) => {
+      if (error.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+  });
+  const { loading } = useGetSchoolByIdQuery({
+    skip: queryId === null,
     variables: {
-      getSchoolByIdId: queryId,
+      getSchoolByIdId: queryId as number,
+    },
+    onError: (error) => {
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    onCompleted: (data) => {
+      if (data) reset(data.getSchoolById);
     },
   });
 
@@ -69,41 +79,27 @@ export default function School() {
     mode: 'onTouched',
   });
 
-  useEffect(() => {
-    if (data) {
-      reset(data.getSchoolById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
-
   const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
     if (queryId === null) {
       const school = await createFunction({
         variables: {
           schoolCreationInput: {
             name: values.name,
+            domain: values.domain,
           },
         },
       });
-      router.push(`/admin/school/${school.data.createSchool.id}`);
+      router.push(`/admin/school/${school?.data?.createSchool.id}`);
     } else {
       await updateFunction({
         variables: {
           schoolUpdateInput: {
             id: queryId,
             name: values.name,
+            domain: values.domain,
           },
         },
       });
-      refetch();
     }
   };
 
@@ -113,7 +109,10 @@ export default function School() {
     }
   }, [isSubmitSuccessful]);
 
-  if (loading) <LoadingPage></LoadingPage>;
+  if (loading)
+    <Layout role="ADMIN">
+      <LoadingPage></LoadingPage>
+    </Layout>;
 
   return (
     <Layout role="ADMIN">
@@ -121,15 +120,23 @@ export default function School() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             required
-            type="text"
             error={!!errors['name']}
             helperText={errors['name'] ? errors['name'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('name')}
+          />
+          <TextField
+            sx={{ mb: 2 }}
+            label="Domain"
+            fullWidth
+            required
+            error={!!errors['domain']}
+            helperText={errors['domain'] ? errors['domain'].message : ''}
+            defaultValue={queryId === null ? '' : ' '} // formatting
+            {...register('domain')}
           />
           <Button
             variant="contained"
@@ -142,8 +149,11 @@ export default function School() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 1, mb: 2, display: queryId === null ? 'none' : null }}
-            onClick={() => router.push(`/admin/school/${schoolId}/new`)}
+            sx={{ mt: 1, mb: 2 }}
+            component={Link}
+            href={{pathname: '/admin/departments/new', query: {schoolId: queryId}}}
+            passHref
+            disabled={queryId === null}
           >
             Neue Abteilung hinzufügen
           </Button>

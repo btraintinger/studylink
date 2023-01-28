@@ -1,19 +1,20 @@
-import Head from 'next/head';
-import type { AppProps } from 'next/app';
-import { CssBaseline } from '@mui/material';
-import { CacheProvider, EmotionCache } from '@emotion/react';
-import { SessionProvider } from 'next-auth/react';
 import { ApolloProvider } from '@apollo/client';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import { CssBaseline } from '@mui/material';
+import type { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { DrawerContextProvider } from '../context/app-context';
+import ThemeModeContextProvider from '../context/mode-context';
 import { useApollo } from '../utils/apolloClient';
 import createEmotionCache from '../utils/createEmotionCache';
-import ThemeModeContextProvider from '../context/mode-context';
-import { DrawerContextProvider } from '../context/app-context';
 
 const clientSideEmotionCache = createEmotionCache();
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
-  session: any;
+  session: Session;
 }
 
 export default function MyApp(props: MyAppProps) {
@@ -31,7 +32,7 @@ export default function MyApp(props: MyAppProps) {
         <title>Studylink</title>
         <meta
           name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no viewport-fit=cover"
         />
       </Head>
 

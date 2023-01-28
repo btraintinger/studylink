@@ -1,19 +1,20 @@
 import {
   SchoolClass,
-  SchoolClassUpdateInput,
   SchoolClassCreationInput,
+  SchoolClassUpdateInput,
 } from './schoolClass.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
+  Arg,
   Authorized,
   Ctx,
   FieldResolver,
-  Query,
   Mutation,
+  Query,
   Resolver,
   Root,
-  Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
 
@@ -21,7 +22,24 @@ async function isUserAdministratingSchoolClass(
   ctx: Context,
   schoolClassId: number
 ): Promise<boolean> {
-  return ctx.user?.admin?.schoolId === schoolClassId;
+  const schoolClass = await ctx.prisma.schoolClass.findUnique({
+    where: {
+      id: schoolClassId,
+    },
+    select: {
+      department: {
+        select: {
+          school: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return ctx.user?.admin?.schoolId === schoolClass?.department?.school?.id;
 }
 
 async function isSchoolClassExistent(
@@ -112,7 +130,7 @@ export class SchoolClassResolver {
     const schoolClass = await ctx.prisma.schoolClass.create({
       data: {
         name: SchoolClassCreationInput.name,
-        grade: SchoolClassCreationInput.grade,
+        longName: SchoolClassCreationInput.longName,
         department: {
           connect: {
             id: SchoolClassCreationInput.departmentId,
@@ -146,7 +164,6 @@ export class SchoolClassResolver {
       },
       data: {
         name: SchoolClassUpdateInput.name,
-        grade: SchoolClassUpdateInput.grade,
       },
     });
 

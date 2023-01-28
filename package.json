@@ -10,7 +10,7 @@
     "style:prettier": "prettier --check .",
     "style:format": "eslint --fix . && prettier --write .",
     "style:check": "tsc --noEmit && npm run style:lint && npm run style:prettier",
-    "dev-setup": "prisma generate"
+    "generate": "prisma generate && graphql-codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.7.3",
@@ -28,7 +28,7 @@
     "@next/font": "^13.0.2",
     "@prisma/client": "^4.7.1",
     "bcrypt": "^5.1.0",
-    "class-validator": "^0.14.0",
+    "class-validator": "^0.13.2",
     "deepmerge": "^4.2.2",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
@@ -40,9 +40,16 @@
     "react-hook-form": "^7.39.4",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^2.0.0-beta.1",
+    "webuntis": "^2.0.3",
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.16.4",
+    "@graphql-codegen/client-preset": "1.2.6",
+    "@graphql-codegen/introspection": "2.2.3",
+    "@graphql-codegen/typescript": "^2.8.7",
+    "@graphql-codegen/typescript-operations": "^2.5.12",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "@types/bcrypt": "^5.0.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "18.11.4",
@@ -56,6 +63,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "graphql-codegen-apollo-next-ssr": "^1.7.4",
     "prettier": "^2.7.1",
     "prisma": "^4.7.1",
     "typescript": "4.8.4"

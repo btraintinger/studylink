@@ -1,0 +1,25 @@
+query GetCurrentUser {
+  getCurrentUser {
+    id
+    email
+    name
+    id
+    role
+  }
+}
+
+query GetUserName {
+  getCurrentUser {
+    id
+    name
+  }
+}
+
+mutation UpdateUser($userUpdateInput: UserUpdateInput!) {
+  updateUser(userUpdateInput: $userUpdateInput) {
+    email
+    name
+    id
+    role
+  }
+}

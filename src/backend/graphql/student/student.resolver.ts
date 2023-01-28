@@ -1,10 +1,7 @@
 import { SchoolSubject } from './../schoolSubject/schoolSubject.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Student,
-  StudentCreationInput,
-  StudentUpdateInput,
-} from './student.type';
+import bcrypt from 'bcrypt';
 import {
   Arg,
   Authorized,
@@ -15,25 +12,14 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import bcrypt from 'bcrypt';
+import { sendPasswordToStudent } from '../../utils/mailer';
+import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
-
-function generatePassword(
-  length = 20,
-  passwordChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
-): string {
-  return Array.from(crypto.getRandomValues(new Uint32Array(length)))
-    .map((x) => passwordChars[x % passwordChars.length])
-    .join('');
-}
-
-function sendPasswordToStudent(
-  ctx: Context,
-  studentId: number,
-  password: string
-) {
-  console.log('TODO');
-}
+import {
+  Student,
+  StudentCreationInput,
+  StudentUpdateInput,
+} from './student.type';
 
 async function isStudentExistent(
   ctx: Context,
@@ -179,6 +165,8 @@ export class StudentResolver {
         email: studentInput.email,
         password: hashedPassword,
         name: studentInput.name,
+        firstName: studentInput.firstName,
+        lastName: studentInput.lastName,
         role: 'STUDENT',
       },
     });
@@ -187,6 +175,7 @@ export class StudentResolver {
 
     const student = await ctx.prisma.student.create({
       data: {
+        birthday: studentInput.birthday,
         user: {
           connect: {
             id: studentUser.id,
@@ -209,7 +198,7 @@ export class StudentResolver {
       throw new Error('CreationFailedError');
     }
 
-    sendPasswordToStudent(ctx, student.id, password);
+    sendPasswordToStudent(student.id, password);
     return student;
   }
 

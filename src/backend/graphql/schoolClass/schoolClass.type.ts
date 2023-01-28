@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ObjectType, InputType, ID, Int } from 'type-graphql';
+import { MaxLength } from 'class-validator';
+import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { SchoolSubject } from '../schoolSubject/schoolSubject.type';
-import { Student } from '../student/student.type';
-import { Department } from '../department/department.type';
 
 @ObjectType()
 export class SchoolClass {
@@ -13,7 +13,7 @@ export class SchoolClass {
   name!: string;
 
   @Field()
-  grade!: number;
+  longName!: string;
 
   @Field((type) => [SchoolSubject])
   schoolSubjects?: SchoolSubject[];
@@ -24,11 +24,13 @@ export class SchoolClass {
 
 @InputType()
 export class SchoolClassCreationInput {
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
   @Field()
-  grade!: number;
+  longName!: string;
 
   @Field((type) => Int)
   departmentId!: number;
@@ -39,9 +41,11 @@ export class SchoolClassUpdateInput {
   @Field((type) => Int)
   id!: number;
 
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
   @Field()
-  grade!: number;
+  longName!: string;
 }

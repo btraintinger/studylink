@@ -15,6 +15,7 @@ const nextConfig = {
     config.experiments.topLevelAwait = true;
     return config;
   },
+  productionBrowserSourceMaps: true,
 };
 
 module.exports = withPWA(nextConfig);

@@ -1,15 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import {
-  Authorized,
-  Ctx,
-  FieldResolver,
-  Query,
-  Mutation,
-  Resolver,
-  Root,
-  Arg,
-} from 'type-graphql';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
 import {
   SchoolSubject,
@@ -83,7 +75,7 @@ export class SchoolSubjectResolver {
     const schoolSubject = await ctx.prisma.schoolSubject.create({
       data: {
         name: SchoolSubjectCreationInput.name,
-        extendedName: SchoolSubjectCreationInput.extendedName,
+        longName: SchoolSubjectCreationInput.longName,
       },
     });
 
@@ -112,7 +104,7 @@ export class SchoolSubjectResolver {
       },
       data: {
         name: SchoolSubjectUpdateInput.name,
-        extendedName: SchoolSubjectUpdateInput.extendedName,
+        longName: SchoolSubjectUpdateInput.longName,
       },
     });
 

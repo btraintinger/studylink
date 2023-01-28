@@ -1,28 +1,10 @@
-import { gql, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
+import { useGetTutorRequestsOfCurrentUserQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
 
-const OFFERS_QUERY = gql`
-  query GetSchoolClassesOfSchool {
-    getStudentOfCurrentUser {
-      tutorOfferings {
-        description
-        grade
-        id
-        teacher
-        schoolSubject {
-          extendedName
-          name
-          id
-        }
-      }
-    }
-  }
-`;
-
 export default function Requests() {
-  const { data, loading, error } = useQuery(OFFERS_QUERY);
+  const { loading } = useGetTutorRequestsOfCurrentUserQuery();
 
   if (loading)
     return (

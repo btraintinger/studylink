@@ -1,22 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Container,
-  Grid,
+  Link as MuiLink,
   TextField,
   Typography,
-  Link as MuiLink,
-  Alert,
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { object, string, TypeOf } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { object, string, TypeOf } from 'zod';
 import LoadingPage from '../../components/utils/loadingPage';
 
 const loginSchema = object({
@@ -66,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="md">
       <Box
         sx={{
           display: 'flex',
@@ -75,7 +74,6 @@ export default function LoginPage() {
           border: '1px solid #ccc',
           borderRadius: '5px',
           padding: '40px',
-          backgroundColor: 'background.default',
 
           position: 'absolute',
           top: '50%',
@@ -125,18 +123,17 @@ export default function LoginPage() {
           >
             Bestätigen
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <MuiLink component={Link} href="#" passHref>
-                {'Passwort vergessen?'}
-              </MuiLink>
-            </Grid>
-            <Grid item>
-              <MuiLink component={Link} href="/auth/signup" passHref>
-                {'Hast du noch keinen Account? Registrieren'}
-              </MuiLink>
-            </Grid>
-          </Grid>
+
+          <MuiLink
+            sx={{ fontSize: '14px', fontStyle: 'bold' }}
+            underline="none"
+            component={Link}
+            href="#"
+            passHref
+          >
+            {'Passwort vergessen?'}
+          </MuiLink>
+
           <Alert
             severity="error"
             sx={{

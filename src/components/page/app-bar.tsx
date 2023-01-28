@@ -1,32 +1,24 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Link as MuiLink,
-  Avatar,
-  Button,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  Link as MuiLink,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { MouseEvent, useEffect, useState } from 'react';
+import { useGetUserNameQuery } from '../../../generated/graphql';
 import { useDrawerContext } from '../../context/app-context';
 import { useThemeModeContext } from '../../context/mode-context';
-import { useState, MouseEvent, useEffect, useMemo } from 'react';
-import { signOut, useSession } from 'next-auth/react';
-import { gql, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 
-const USER_QUERY = gql`
-  query GetCurrentUser {
-    getCurrentUser {
-      name
-    }
-  }
-`;
 function getInitials(name: string): string {
   if (name) {
     const nameArray = name.split(' ');
@@ -57,13 +49,12 @@ export default function NavBar() {
     setAnchorEl(null);
   };
 
-  const { data, loading, error } = useQuery(USER_QUERY);
+  const { data } = useGetUserNameQuery();
 
   useEffect(() => {
-    if (data) {
-      setName(getInitials(data.getCurrentUser.name).toUpperCase());
-    }
-  }, [data]);
+    if (data?.getCurrentUser.name)
+      setName(getInitials(data.getCurrentUser.name));
+  });
 
   const router = useRouter();
 
@@ -99,7 +90,11 @@ export default function NavBar() {
             STUDYLINK
           </Typography>
         </MuiLink>
-        <Button sx={{ mr: 2 }} onClick={handleClick}>
+        <Button
+          sx={{ mr: 2 }}
+          aria-label="open profile menu"
+          onClick={handleClick}
+        >
           <Avatar sx={{ bgcolor: '#13cf6a', width: 32, height: 32 }}>
             {name}
           </Avatar>
@@ -116,8 +111,8 @@ export default function NavBar() {
           <MenuItem onClick={() => router.push('/user')}>Account</MenuItem>
           <MenuItem
             onClick={() => {
+              signOut({ redirect: false });
               router.push('/');
-              signOut();
             }}
           >
             Ausloggen

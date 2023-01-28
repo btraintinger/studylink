@@ -1,0 +1,23 @@
+query getDepartmentById($getDepartmentByIdId: Float!) {
+  getDepartmentById(id: $getDepartmentByIdId) {
+    id
+    name
+    longName
+  }
+}
+
+mutation CreateDepartment($departmentInput: DepartmentCreateInput!) {
+  createDepartment(departmentInput: $departmentInput) {
+    id
+    name
+    longName
+  }
+}
+
+mutation UpdateDepartment($departmentInput: DepartmentUpdateInput!) {
+  updateDepartment(departmentInput: $departmentInput) {
+    id
+    name
+    longName
+  }
+}

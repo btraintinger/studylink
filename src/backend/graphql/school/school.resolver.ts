@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
+  Arg,
   Authorized,
   Ctx,
   FieldResolver,
-  Query,
   Mutation,
+  Query,
   Resolver,
   Root,
-  Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
 import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
@@ -78,9 +79,13 @@ export class SchoolResolver {
     @Arg('schoolCreationInput') schoolCreationInput: SchoolCreationInput,
     @Ctx() ctx: Context
   ) {
+    if (ctx.user?.admin?.schoolId)
+      throw new Error('AlreadyAdministratingSchoolError');
+
     const school = await ctx.prisma.school.create({
       data: {
         name: schoolCreationInput.name,
+        domain: schoolCreationInput.domain,
         admins: {
           connect: {
             id: ctx.user?.admin?.id,
@@ -109,6 +114,7 @@ export class SchoolResolver {
         id: schoolUpdateInput.id,
       },
       data: {
+        domain: schoolUpdateInput.domain,
         name: schoolUpdateInput.name,
       },
     });

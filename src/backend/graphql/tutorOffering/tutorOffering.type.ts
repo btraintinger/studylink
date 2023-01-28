@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ObjectType, InputType, ID, Int } from 'type-graphql';
-import { SchoolClass } from '../schoolClass/schoolClass.type';
+import { Max, MaxLength, Min } from 'class-validator';
+import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { SchoolSubject } from '../schoolSubject/schoolSubject.type';
-import { Student } from '../student/student.type';
 
 @ObjectType()
 export class TutorOffering {
@@ -31,11 +31,14 @@ export class TutorOfferingInputCreation {
   schoolSubjectId!: number;
 
   @Field()
-  teacher!: string;
+  teacherId!: number;
 
+  @MaxLength(1000)
   @Field()
   description!: string;
 
+  @Min(1)
+  @Max(13)
   @Field()
   grade!: number;
 }
@@ -49,11 +52,13 @@ export class TutorOfferingUpdateInput {
   schoolSubjectId!: number;
 
   @Field()
-  teacher!: string;
+  teacherId!: number;
 
   @Field()
   description!: string;
 
+  @Min(1)
+  @Max(13)
   @Field()
   grade!: number;
 }

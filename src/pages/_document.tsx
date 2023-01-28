@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 import createEmotionCache from '../utils/createEmotionCache';
 import { roboto } from '../utils/theme';
 export default class MyDocument extends Document {
@@ -11,16 +11,8 @@ export default class MyDocument extends Document {
           <meta name="robots" content="index, follow" />
 
           <link rel="manifest" href="/manifest.webmanifest" />
-
           <meta name="theme-color" content="#4caf50" />
-
           <meta name="application-name" content="Studylink" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta
-            name="apple-mobile-web-app-status-bar-style"
-            content="default"
-          />
-          <meta name="apple-mobile-web-app-title" content="Studylink" />
           <meta
             name="description"
             content="Studylink: Die schulinterne Nachhilfeplattform"
@@ -29,6 +21,7 @@ export default class MyDocument extends Document {
             name="keywords"
             content="Studylink student school Schule Nachhilfe Tutoring"
           />
+
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Studylink" />
           <meta
@@ -46,60 +39,6 @@ export default class MyDocument extends Document {
           <meta name="mobile-web-app-capable" content="yes" />
 
           <link rel="shortcut icon" href="/favicon.ico" />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/icons/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/icons/favicon-16x16.png"
-          />
-
-          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-          <link
-            rel="apple-touch-icon"
-            sizes="57x57"
-            href="/icons/apple-touch-icon-57x57.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="72x72"
-            href="/icons/apple-touch-icon-72x72.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="76x76"
-            href="/icons/apple-touch-icon-76x76.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="114x114"
-            href="/icons/apple-touch-icon-114x114.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="120x120"
-            href="/icons/apple-touch-icon-120x120.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="144x144"
-            href="/icons/apple-touch-icon-144x144.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="152x152"
-            href="/icons/apple-touch-icon-152x152.png"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/icons/apple-touch-icon-180x180.png"
-          />
 
           <link
             rel="apple-touch-startup-image"

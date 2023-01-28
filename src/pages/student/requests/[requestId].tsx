@@ -1,60 +1,25 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
+import {
+  useCreateTutorRequestMutation,
+  useGetSubjectsOfStudentQuery,
+  useGetTutorRequestByIdQuery,
+  useUpdateTutorRequestMutation,
+} from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
-
-const TUTOR_REQUEST_QUERY = gql`
-  query GetTutorRequestById($getTutorRequestByIdId: Float!) {
-    getTutorRequestById(id: $getTutorRequestByIdId) {
-      description
-      grade
-      teacher
-      schoolSubject {
-        extendedName
-        id
-        name
-      }
-    }
-    getSubjectsOfStudent {
-      id
-      extendedName
-      name
-    }
-  }
-`;
-
-const CREATE_TUTOR_REQUEST_MUTATION = gql`
-  mutation CreateTutorRequest(
-    $tutorRequestCreationInput: TutorRequestCreationInput!
-  ) {
-    createTutorRequest(TutorRequestCreationInput: $tutorRequestCreationInput) {
-      id
-    }
-  }
-`;
-
-const UPDATE_TUTOR_REQUEST_MUTATION = gql`
-  mutation UpdateTutorRequest(
-    $tutorRequestUpdateInput: TutorRequestUpdateInput!
-  ) {
-    updateTutorRequest(TutorRequestUpdateInput: $tutorRequestUpdateInput) {
-      id
-    }
-  }
-`;
 
 const tutorRequestSchema = object({
   description: string()
     .min(1, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an')
     .max(1000, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an'),
   teacher: string().min(1, '* Bitte gib einen Lehrer an'),
-  grade: number('* Bitte gib eine Schulstufe an')
+  grade: number()
     .min(1, '* Bitte gib eine Schulstufe an')
     .max(13, '* Bitte gib eine Schulstufe an'),
   schoolSubject: object({
@@ -75,13 +40,43 @@ export default function Offer() {
   if (tutorRequestId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useMutation(CREATE_TUTOR_REQUEST_MUTATION);
-  const [updateFunction] = useMutation(UPDATE_TUTOR_REQUEST_MUTATION);
-  const { data, loading, error, refetch } = useQuery(TUTOR_REQUEST_QUERY, {
-    variables: {
-      getTutorRequestByIdId: queryId,
+  const [createFunction] = useCreateTutorRequestMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
     },
   });
+  const [updateFunction] = useUpdateTutorRequestMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+  const { loading } = useGetTutorRequestByIdQuery({
+    skip: queryId === null,
+    variables: {
+      getTutorRequestByIdId: queryId as number,
+    },
+    onCompleted: (data) => {
+      if (data) {
+        reset(data.getTutorRequestById);
+      }
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'CreationFailedError')
+        setErrorMessage('Die Erstellung war nicht möglich');
+      if (error?.message === 'UpdateFailedError')
+        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+    },
+  });
+
+  const { data } = useGetSubjectsOfStudentQuery();
 
   const {
     register,
@@ -92,21 +87,6 @@ export default function Offer() {
     resolver: zodResolver(tutorRequestSchema),
     mode: 'onTouched',
   });
-
-  useEffect(() => {
-    if (data) {
-      reset(data.getTutorRequestById);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error?.message === 'DoesNotExistError') router.push('/404');
-    if (error?.message === 'NotAuthorizedError') router.push('/401');
-    if (error?.message === 'CreationFailedError')
-      setErrorMessage('Die Erstellung war nicht möglich');
-    if (error?.message === 'UpdateFailedError')
-      setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
-  }, [error]);
 
   const onSubmitHandler: SubmitHandler<TutorRequestInput> = async (values) => {
     if (queryId === null) {
@@ -121,7 +101,7 @@ export default function Offer() {
         },
       });
       router.push(
-        `/admin/tutorRequest/${tutorRequest.data.createTutorRequest.id}`
+        `/admin/tutorRequest/${tutorRequest?.data?.createTutorRequest.id}`
       );
     } else {
       await updateFunction({
@@ -135,7 +115,6 @@ export default function Offer() {
           },
         },
       });
-      refetch();
     }
   };
 
@@ -154,7 +133,6 @@ export default function Offer() {
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
-            label="Schulfach"
             options={data?.getSubjectsOfStudent || []}
             getOptionLabel={(option: {
               id: number;

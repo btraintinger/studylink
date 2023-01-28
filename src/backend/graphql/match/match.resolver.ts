@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Match } from './match.type';
+import { TutorOffering, TutorRequest } from '@prisma/client';
 import { Ctx, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
-import { TutorOffering, TutorRequest } from '@prisma/client';
+import { Match } from './match.type';
 
 function matchRating(request: TutorRequest, offering: TutorOffering): number {
   let rating = 0;

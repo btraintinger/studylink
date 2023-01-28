@@ -3,17 +3,18 @@ import {
   TutorOfferingInputCreation,
   TutorOfferingUpdateInput,
 } from './tutorOffering.type';
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
+  Arg,
   Authorized,
   Ctx,
   FieldResolver,
-  Query,
   Mutation,
+  Query,
   Resolver,
   Root,
-  Arg,
 } from 'type-graphql';
 import type { Context } from '../context';
 
@@ -100,7 +101,11 @@ export class TutorOfferingResolver {
             id: ctx.user?.student?.id,
           },
         },
-        teacher: TutorOfferingInputCreation.teacher,
+        teacher: {
+          connect: {
+            id: TutorOfferingInputCreation.teacherId,
+          },
+        },
         description: TutorOfferingInputCreation.description,
         grade: TutorOfferingInputCreation.grade,
       },
@@ -133,7 +138,11 @@ export class TutorOfferingResolver {
             id: TutorOfferingUpdateInput.schoolSubjectId,
           },
         },
-        teacher: TutorOfferingUpdateInput.teacher,
+        teacher: {
+          connect: {
+            id: TutorOfferingUpdateInput.teacherId,
+          },
+        },
         description: TutorOfferingUpdateInput.description,
         grade: TutorOfferingUpdateInput.grade,
       },
