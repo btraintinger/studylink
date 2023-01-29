@@ -13,6 +13,7 @@ import {
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
+import Link from 'next/link';
 import {
   DEPARTMENTS_ADMIN,
   SCHOOL_ADMIN,

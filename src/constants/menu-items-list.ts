@@ -1,4 +1,4 @@
-import { IMenuItem } from '../types/iMenuItem';
+import { IMenuItem } from '../types/interfaces';
 import * as items from './menu-items';
 
 export const STUDENT_LINKS: IMenuItem[] = [
