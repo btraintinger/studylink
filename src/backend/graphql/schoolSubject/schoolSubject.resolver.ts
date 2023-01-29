@@ -72,10 +72,17 @@ export class SchoolSubjectResolver {
     SchoolSubjectCreationInput: SchoolSubjectCreationInput,
     @Ctx() ctx: Context
   ) {
+    if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolError');
+
     const schoolSubject = await ctx.prisma.schoolSubject.create({
       data: {
         name: SchoolSubjectCreationInput.name,
         longName: SchoolSubjectCreationInput.longName,
+        school: {
+          connect: {
+            id: ctx.user.admin.schoolId,
+          },
+        },
       },
     });
 
@@ -87,20 +94,24 @@ export class SchoolSubjectResolver {
   @Authorized('ADMIN')
   @Mutation((returns) => SchoolSubject)
   async updateSchoolSubject(
-    @Arg('id') id: number,
     @Arg('SchoolSubjectUpdateInput')
     SchoolSubjectUpdateInput: SchoolSubjectUpdateInput,
     @Ctx() ctx: Context
   ) {
-    if (!(await isSchoolSubjectExistent(ctx, id)))
+    if (!(await isSchoolSubjectExistent(ctx, SchoolSubjectUpdateInput.id)))
       throw new Error('DoesNotExistError');
 
-    if (!(await isUserAdministratingSchoolSubject(ctx, id)))
+    if (
+      !(await isUserAdministratingSchoolSubject(
+        ctx,
+        SchoolSubjectUpdateInput.id
+      ))
+    )
       throw new Error('NotAuthorizedError');
 
     const schoolSubject = await ctx.prisma.schoolSubject.update({
       where: {
-        id,
+        id: SchoolSubjectUpdateInput.id,
       },
       data: {
         name: SchoolSubjectUpdateInput.name,

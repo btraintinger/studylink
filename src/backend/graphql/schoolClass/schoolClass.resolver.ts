@@ -164,6 +164,7 @@ export class SchoolClassResolver {
       },
       data: {
         name: SchoolClassUpdateInput.name,
+        longName: SchoolClassUpdateInput.longName,
       },
     });
 

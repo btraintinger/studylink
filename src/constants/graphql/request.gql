@@ -4,9 +4,13 @@ query GetTutorRequestsOfCurrentUser {
       description
       grade
       id
-      teacher
       schoolSubject {
+        name
         longName
+        id
+      }
+      teacher {
+        schoolId
         name
         id
       }
@@ -16,14 +20,18 @@ query GetTutorRequestsOfCurrentUser {
 
 query GetTutorRequestById($getTutorRequestByIdId: Float!) {
   getTutorRequestById(id: $getTutorRequestByIdId) {
-    id
     description
     grade
-    teacher
+    id
     schoolSubject {
+      name
       longName
       id
+    }
+    teacher {
+      schoolId
       name
+      id
     }
   }
 }
@@ -32,14 +40,18 @@ mutation CreateTutorRequest(
   $tutorRequestCreationInput: TutorRequestCreationInput!
 ) {
   createTutorRequest(TutorRequestCreationInput: $tutorRequestCreationInput) {
-    id
     description
     grade
-    teacher
+    id
     schoolSubject {
+      name
       longName
       id
+    }
+    teacher {
+      schoolId
       name
+      id
     }
   }
 }
@@ -50,11 +62,16 @@ mutation UpdateTutorRequest(
   updateTutorRequest(TutorRequestUpdateInput: $tutorRequestUpdateInput) {
     description
     grade
-    teacher
+    id
     schoolSubject {
+      name
       longName
       id
+    }
+    teacher {
+      schoolId
       name
+      id
     }
   }
 }

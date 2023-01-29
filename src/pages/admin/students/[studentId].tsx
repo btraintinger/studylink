@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
+import { Moment } from 'moment';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -13,6 +14,7 @@ import {
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';
 import LoadingPage from '../../../components/utils/loadingPage';
+import { STUDENTS_ADMIN } from '../../../constants/menu-items';
 
 const studentSchema = object({
   firstName: string().min(1, '* Bitte geben Sie einen Vornamen an'),
@@ -31,6 +33,7 @@ export default function Student() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [birthday, setBirthday] = useState<Moment | null>(null);
 
   // get studentId from url
   const { studentId } = router.query;
@@ -99,7 +102,7 @@ export default function Student() {
           },
         },
       });
-      router.push(`/admin/student/${student?.data?.createStudent.id}`);
+      router.push(`${STUDENTS_ADMIN}/${student?.data?.createStudent.id}`);
     } else {
       await updateFunction({
         variables: {
@@ -131,7 +134,6 @@ export default function Student() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Vorname"
             fullWidth
             required
@@ -143,7 +145,6 @@ export default function Student() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Nachname"
             fullWidth
             required
@@ -155,7 +156,6 @@ export default function Student() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             type="text"
@@ -166,7 +166,6 @@ export default function Student() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="E-Mail"
             fullWidth
             required
@@ -176,6 +175,7 @@ export default function Student() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('email')}
           />
+
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal

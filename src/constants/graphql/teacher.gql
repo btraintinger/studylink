@@ -1,0 +1,35 @@
+query GetTeacherById($getTeacherByIdId: Float!) {
+  getTeacherById(id: $getTeacherByIdId) {
+    id
+    name
+    longName
+    schoolId
+  }
+}
+
+mutation CreateTeacher($teacherCreationInput: TeacherCreationInput!) {
+  createTeacher(teacherCreationInput: $teacherCreationInput) {
+    id
+    name
+    longName
+    schoolId
+  }
+}
+
+mutation UpdateTeacher($teacherUpdateInput: TeacherUpdateInput!) {
+  updateTeacher(teacherUpdateInput: $teacherUpdateInput) {
+    id
+    name
+    longName
+    schoolId
+  }
+}
+
+mutation DeleteTeacher($deleteTeacherId: Float!) {
+  deleteTeacher(id: $deleteTeacherId) {
+    id
+    name
+    longName
+    schoolId
+  }
+}

@@ -65,6 +65,17 @@ export class TutorOfferingResolver {
       .schoolSubject();
   }
 
+  @FieldResolver()
+  async teacher(@Root() tutorOffering: TutorOffering, @Ctx() ctx: Context) {
+    return await ctx.prisma.tutorOffering
+      .findUnique({
+        where: {
+          id: tutorOffering.id,
+        },
+      })
+      .teacher();
+  }
+
   @Authorized('STUDENT')
   @Query((returns) => TutorOffering)
   async getTutorOfferingById(@Arg('id') id: number, @Ctx() ctx: Context) {

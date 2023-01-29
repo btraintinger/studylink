@@ -5,41 +5,43 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
-  useCreateSchoolClassMutation,
-  useGetSchoolClassByIdQuery,
-  useUpdateSchoolClassMutation,
+  useCreateTeacherMutation,
+  useGetTeacherByIdQuery,
+  useUpdateTeacherMutation,
 } from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
+import { TEACHERS_ADMIN } from '../../../../constants/menu-items';
 
-const schoolClassSchema = object({
+const teacherSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
   longName: string().min(1, '* Bitte geben Sie erweiterten langen Namen an'),
 });
 
-type SchoolClassInput = TypeOf<typeof schoolClassSchema>;
+type TeacherInput = TypeOf<typeof teacherSchema>;
 
-export default function SchoolClass() {
+export default function Teacher() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  // get schoolClassId from url
-  const { schoolClassId, schoolId, departmentId } = router.query;
-  let queryId: number | null = parseInt(schoolClassId as string, 10);
-  if (schoolClassId === 'new') queryId = null;
+  // get teacherId from url
+  const { teacherId } = router.query;
+  let queryId: number | null = parseInt(teacherId as string, 10);
+  if (teacherId === 'new') queryId = null;
 
   // graphql queries and mutations
-  const [createFunction] = useCreateSchoolClassMutation({
+  const [createFunction] = useCreateTeacherMutation({
     onError: (error) => {
       if (error.message === 'CreationFailedError')
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
+      if (error.message === 'NoSchoolError') router.push('/admin/school');
     },
   });
-  const [updateFunction] = useUpdateSchoolClassMutation({
+  const [updateFunction] = useUpdateTeacherMutation({
     onError: (error) => {
       if (error.message === 'UpdateFailedError')
         setErrorMessage('Die Aktualisierung war nicht möglich');
@@ -47,13 +49,13 @@ export default function SchoolClass() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { loading } = useGetSchoolClassByIdQuery({
+  const { loading } = useGetTeacherByIdQuery({
     skip: queryId === null,
     variables: {
-      getSchoolClassByIdId: queryId as number,
+      getTeacherByIdId: queryId as number,
     },
     onCompleted: (data) => {
-      reset(data.getSchoolClassById);
+      reset(data.getTeacherById);
     },
     onError: (error) => {
       if (error?.message === 'DoesNotExistError') router.push('/404');
@@ -66,29 +68,26 @@ export default function SchoolClass() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<SchoolClassInput>({
-    resolver: zodResolver(schoolClassSchema),
+  } = useForm<TeacherInput>({
+    resolver: zodResolver(teacherSchema),
     mode: 'onTouched',
   });
 
-  const onSubmitHandler: SubmitHandler<SchoolClassInput> = async (values) => {
+  const onSubmitHandler: SubmitHandler<TeacherInput> = async (values) => {
     if (queryId === null) {
-      const schoolClass = await createFunction({
+      const teacher = await createFunction({
         variables: {
-          schoolClassCreateInput: {
+          teacherCreationInput: {
             name: values.name,
             longName: values.longName,
-            departmentId: parseInt(departmentId as string, 10),
           },
         },
       });
-      router.push(
-        `/admin/school/${schoolId}/${departmentId}/${schoolClass?.data?.createSchoolClass.id}`
-      );
+      router.push(`${TEACHERS_ADMIN}/${teacher?.data?.createTeacher.id}`);
     } else {
       await updateFunction({
         variables: {
-          schoolClassUpdateInput: {
+          teacherUpdateInput: {
             id: queryId,
             name: values.name,
             longName: values.longName,
@@ -115,7 +114,6 @@ export default function SchoolClass() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             required
@@ -127,7 +125,6 @@ export default function SchoolClass() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Erweiterter Name"
             fullWidth
             required

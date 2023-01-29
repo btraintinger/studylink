@@ -1,10 +1,8 @@
 import { Typography } from '@mui/material';
-import List from '@mui/material/List';
 import { useState } from 'react';
 import type { TutorOffering } from '../../../../generated/graphql';
 import { useGetTutorOffersOfCurrentUserQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
-import ItemRequestOffer from '../../../components/student/itemRequestOffer';
 import LoadingPage from '../../../components/utils/loadingPage';
 
 export default function Offers() {
@@ -28,20 +26,6 @@ export default function Offers() {
   return (
     <Layout role="STUDENT">
       <Typography>Offers</Typography>
-      <List>
-        {array.map((offer: TutorOffering) => {
-          return (
-            <ItemRequestOffer
-              baseRoute="/student/offers"
-              id={offer.id}
-              teacher={offer.teacher}
-              description={offer.description}
-              grade={offer.grade}
-              schoolSubject={`${offer.schoolSubject.name} (${offer.schoolSubject.extendedName})`}
-            ></ItemRequestOffer>
-          );
-        })}
-      </List>
     </Layout>
   );
 }

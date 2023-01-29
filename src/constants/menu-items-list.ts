@@ -9,6 +9,8 @@ export const STUDENT_LINKS: IMenuItem[] = [
 export const ADMIN_LINKS: IMenuItem[] = [
   { text: 'Matches', route: items.MATCHES_ADMIN, icon: 'CompareArrows' },
   { text: 'Schule', route: items.SCHOOL_ADMIN, icon: 'Business' },
-  { text: 'Schulklassen', route: items.SCHOOL_SUBJECTS_ADMIN, icon: 'Groups' },
-  { text: 'Schüler', route: items.STUDENTS_ADMIN, icon: 'People' },
+  { text: 'Fächer', route: items.SCHOOL_SUBJECTS_ADMIN, icon: 'LibraryBooks' },
+  { text: 'Lehrer', route: items.TEACHERS_ADMIN, icon: 'People' },
+  { text: 'Schüler', route: items.STUDENTS_ADMIN, icon: 'School' },
+  { text: 'WebUntis', route: items.WEBUNTIS_ADMIN, icon: 'AccessTime' },
 ];

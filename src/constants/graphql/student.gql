@@ -47,3 +47,11 @@ query getSubjectsOfStudent {
     name
   }
 }
+
+query GetTeachersOfStudent {
+  getTeachersOfStudent {
+    name
+    schoolId
+    id
+  }
+}

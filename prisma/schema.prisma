@@ -9,13 +9,14 @@ generator client {
 }
 
 model School {
-  id          Int          @id @unique @default(autoincrement())
-  name        String
-  domain      String
-  departments Department[]
-  admins      Admin[]
-  Teacher     Teacher[]
-  Room        Room[]
+  id            Int             @id @unique @default(autoincrement())
+  name          String
+  domain        String
+  departments   Department[]
+  admins        Admin[]
+  teachers      Teacher[]
+  rooms         Room[]
+  SchoolSubject SchoolSubject[]
 
   @@map("school")
 }
@@ -47,7 +48,7 @@ model RoomHasSubject {
 model Department {
   id            Int           @id @unique() @default(autoincrement())
   name          String
-  longName      String        @map("extended_name")
+  longName      String        @map("long_name")
   schoolClasses SchoolClass[]
   school        School        @relation(fields: [schoolId], references: [id])
   schoolId      Int           @map("school_id")
@@ -59,7 +60,7 @@ model Department {
 model SchoolClass {
   id              Int               @id @unique() @default(autoincrement())
   name            String
-  longName        String            @map("extended_name")
+  longName        String            @map("long_name")
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
@@ -72,18 +73,22 @@ model SchoolClass {
 model SchoolSubject {
   id              Int               @id @unique() @default(autoincrement())
   name            String
-  longName        String            @map("extended_name")
+  longName        String            @map("long_name")
+  schoolId        Int               @map("school_id")
+  school          School            @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
   tutor           TutorOffering[]
   tutorRequest    TutorRequest[]
   RoomHasSubject  RoomHasSubject[]
 
+  @@index([schoolId])
   @@map("school_subject")
 }
 
 model Teacher {
   id            Int             @id @unique() @default(autoincrement())
   name          String
+  longName      String          @map("long_name")
   schoolId      Int             @map("school_id")
   school        School          @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TutorOffering TutorOffering[]

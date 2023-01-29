@@ -1,4 +1,5 @@
 import { SchoolSubject } from './../schoolSubject/schoolSubject.type';
+import { Teacher } from './../teacher/teacher.type';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import bcrypt from 'bcrypt';
@@ -149,6 +150,31 @@ export class StudentResolver {
     return dbQuery?.schoolClass?.classHasSubject.map(
       (classHasSubject) => classHasSubject.schoolSubject as SchoolSubject
     );
+  }
+
+  @Authorized('STUDENT')
+  @Query((returns) => [Teacher])
+  async getTeachersOfStudent(@Ctx() ctx: Context) {
+    const dbQuery = await ctx.prisma.student.findUnique({
+      where: { userId: ctx.user?.id },
+      select: {
+        schoolClass: {
+          include: {
+            department: {
+              include: {
+                school: {
+                  include: {
+                    teachers: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return dbQuery?.schoolClass?.department.school.teachers;
   }
 
   @Authorized('ADMIN')

@@ -12,6 +12,11 @@ import {
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
+import {
+  DEPARTMENTS_ADMIN,
+  SCHOOL_ADMIN,
+  SCHOOL_CLASSES_ADMIN,
+} from '../../../../constants/menu-items';
 
 const departmentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -29,6 +34,8 @@ export default function Department() {
   const { departmentId, schoolId } = router.query;
   let queryId: number | null = parseInt(departmentId as string, 10);
   if (departmentId === 'new') queryId = null;
+
+  if (queryId === null && schoolId === undefined) router.push(SCHOOL_ADMIN);
 
   // graphql queries and mutations
   const [createFunction] = useCreateDepartmentMutation({
@@ -83,7 +90,7 @@ export default function Department() {
         },
       });
       router.push(
-        `/admin/school/${schoolId}/${department?.data?.createDepartment.id}`
+        `${DEPARTMENTS_ADMIN}/${department?.data?.createDepartment.id}`
       );
     } else {
       await updateFunction({
@@ -115,7 +122,6 @@ export default function Department() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             required
@@ -127,7 +133,6 @@ export default function Department() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Erweiterter Name"
             fullWidth
             required
@@ -150,7 +155,10 @@ export default function Department() {
             fullWidth
             sx={{ mt: 1, mb: 2 }}
             onClick={() =>
-              router.push(`/admin/school/${schoolId}/${departmentId}/new`)
+              router.push({
+                pathname: `${SCHOOL_CLASSES_ADMIN}/new`,
+                query: { departmentId: queryId },
+              })
             }
             disabled={queryId === null}
           >

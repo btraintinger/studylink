@@ -1,0 +1,27 @@
+query GetSchoolSubjectById($getSchoolSubjectByIdId: Float!) {
+  getSchoolSubjectById(id: $getSchoolSubjectByIdId) {
+    id
+    longName
+    name
+  }
+}
+
+mutation CreateSchoolSubject(
+  $schoolSubjectCreationInput: SchoolSubjectCreationInput!
+) {
+  createSchoolSubject(SchoolSubjectCreationInput: $schoolSubjectCreationInput) {
+    id
+    longName
+    name
+  }
+}
+
+mutation UpdateSchoolSubject(
+  $schoolSubjectUpdateInput: SchoolSubjectUpdateInput!
+) {
+  updateSchoolSubject(SchoolSubjectUpdateInput: $schoolSubjectUpdateInput) {
+    id
+    longName
+    name
+  }
+}

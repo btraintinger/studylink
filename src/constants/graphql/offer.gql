@@ -4,11 +4,15 @@ query GetTutorOffersOfCurrentUser {
       description
       grade
       id
-      teacher
       schoolSubject {
+        id
         longName
         name
+      }
+      teacher {
+        schoolId
         id
+        name
       }
     }
   }
@@ -16,14 +20,19 @@ query GetTutorOffersOfCurrentUser {
 
 query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {
-    id
     description
-    teacher
     grade
+    id
+    studentId
     schoolSubject {
-      longName
       name
+      longName
       id
+    }
+    teacher {
+      id
+      name
+      schoolId
     }
   }
 }
@@ -32,14 +41,18 @@ mutation CreateTutorOffering(
   $tutorOfferingInputCreation: TutorOfferingInputCreation!
 ) {
   createTutorOffering(TutorOfferingInputCreation: $tutorOfferingInputCreation) {
-    id
     description
-    teacher
     grade
+    id
     schoolSubject {
+      id
       longName
       name
+    }
+    teacher {
+      schoolId
       id
+      name
     }
   }
 }
@@ -48,14 +61,18 @@ mutation UpdateTutorOffering(
   $tutorOfferingUpdateInput: TutorOfferingUpdateInput!
 ) {
   updateTutorOffering(TutorOfferingUpdateInput: $tutorOfferingUpdateInput) {
-    id
     description
-    teacher
     grade
+    id
     schoolSubject {
+      id
       longName
       name
+    }
+    teacher {
+      schoolId
       id
+      name
     }
   }
 }

@@ -54,13 +54,23 @@ export class TutorRequestResolver {
   @FieldResolver()
   async schoolSubject(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
     return await ctx.prisma.tutorRequest
-
       .findUnique({
         where: {
           id: tutorRequest.id,
         },
       })
       .schoolSubject();
+  }
+
+  @FieldResolver()
+  async teacher(@Root() tutorRequest: TutorRequest, @Ctx() ctx: Context) {
+    return await ctx.prisma.tutorRequest
+      .findUnique({
+        where: {
+          id: tutorRequest.id,
+        },
+      })
+      .teacher();
   }
 
   @Authorized('STUDENT')

@@ -8,6 +8,7 @@ import { SchoolResolver } from './school/school.resolver';
 import { SchoolClassResolver } from './schoolClass/schoolClass.resolver';
 import { SchoolSubjectResolver } from './schoolSubject/schoolSubject.resolver';
 import { StudentResolver } from './student/student.resolver';
+import { TeacherResolver } from './teacher/teacher.resolver';
 import { TutorOfferingResolver } from './tutorOffering/tutorOffering.resolver';
 import { TutorRequestResolver } from './tutorRequest/tutorRequest.resolver';
 import { UserResolver } from './user/user.resolver';
@@ -25,6 +26,7 @@ export default async function createSchema() {
       StudentResolver,
       TutorOfferingResolver,
       TutorRequestResolver,
+      TeacherResolver,
       UserResolver,
       WebUntisResolver,
     ],

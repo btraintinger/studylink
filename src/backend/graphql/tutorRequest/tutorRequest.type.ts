@@ -1,3 +1,4 @@
+import { Teacher } from './../teacher/teacher.type';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Max, MaxLength, Min } from 'class-validator';
@@ -17,7 +18,7 @@ export class TutorRequest {
   schoolSubject!: SchoolSubject;
 
   @Field()
-  teacher!: string;
+  teacher!: Teacher;
 
   @Field()
   description!: string;

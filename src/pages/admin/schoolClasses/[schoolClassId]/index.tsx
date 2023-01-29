@@ -1,74 +1,70 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
-import { isFQDN } from 'class-validator';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
-  useCreateSchoolMutation,
-  useGetSchoolByIdQuery,
-  useUpdateSchoolMutation,
+  useCreateSchoolClassMutation,
+  useGetSchoolClassByIdQuery,
+  useUpdateSchoolClassMutation,
 } from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
 import {
   DEPARTMENTS_ADMIN,
-  SCHOOL_ADMIN,
+  SCHOOL_CLASSES_ADMIN,
 } from '../../../../constants/menu-items';
 
-const schoolSchema = object({
+const schoolClassSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
-  domain: string()
-    .min(1, '* Bitte geben Sie eine Domain an')
-    .refine((value) => {
-      return isFQDN(value);
-    }, '* Bitte geben Sie eine gültige Domain an'),
+  longName: string().min(1, '* Bitte geben Sie erweiterten langen Namen an'),
 });
 
-type SchoolInput = TypeOf<typeof schoolSchema>;
+type SchoolClassInput = TypeOf<typeof schoolClassSchema>;
 
-export default function School() {
+export default function SchoolClass() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  // get schoolId from url
-  const { schoolId } = router.query;
-  let queryId: number | null = parseInt(schoolId as string, 10);
-  if (schoolId === 'new') queryId = null;
+  // get schoolClassId from url
+  const { schoolClassId, departmentId } = router.query;
+  let queryId: number | null = parseInt(schoolClassId as string, 10);
+  if (schoolClassId === 'new') queryId = null;
+
+  if (queryId === null && departmentId === undefined)
+    router.push(DEPARTMENTS_ADMIN);
 
   // graphql queries and mutations
-  const [createFunction] = useCreateSchoolMutation({
+  const [createFunction] = useCreateSchoolClassMutation({
     onError: (error) => {
       if (error.message === 'CreationFailedError')
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
-      if (error.message === 'AlreadyAdministratingSchoolError')
-        setErrorMessage('Sie sind bereits für eine Schule verantwortlich');
     },
   });
-  const [updateFunction] = useUpdateSchoolMutation({
+  const [updateFunction] = useUpdateSchoolClassMutation({
     onError: (error) => {
       if (error.message === 'UpdateFailedError')
-        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
+        setErrorMessage('Die Aktualisierung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { loading } = useGetSchoolByIdQuery({
+  const { loading } = useGetSchoolClassByIdQuery({
     skip: queryId === null,
     variables: {
-      getSchoolByIdId: queryId as number,
-    },
-    onError: (error) => {
-      if (error.message === 'DoesNotExistError') router.push('/404');
-      if (error.message === 'NotAuthorizedError') router.push('/401');
+      getSchoolClassByIdId: queryId as number,
     },
     onCompleted: (data) => {
-      if (data) reset(data.getSchoolById);
+      reset(data.getSchoolClassById);
+    },
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
     },
   });
 
@@ -77,29 +73,32 @@ export default function School() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<SchoolInput>({
-    resolver: zodResolver(schoolSchema),
+  } = useForm<SchoolClassInput>({
+    resolver: zodResolver(schoolClassSchema),
     mode: 'onTouched',
   });
 
-  const onSubmitHandler: SubmitHandler<SchoolInput> = async (values) => {
+  const onSubmitHandler: SubmitHandler<SchoolClassInput> = async (values) => {
     if (queryId === null) {
-      const school = await createFunction({
+      const schoolClass = await createFunction({
         variables: {
-          schoolCreationInput: {
+          schoolClassCreateInput: {
             name: values.name,
-            domain: values.domain,
+            longName: values.longName,
+            departmentId: parseInt(departmentId as string, 10),
           },
         },
       });
-      router.push(`${SCHOOL_ADMIN}/${school?.data?.createSchool.id}`);
+      router.push(
+        `${SCHOOL_CLASSES_ADMIN}/${schoolClass?.data?.createSchoolClass.id}`
+      );
     } else {
       await updateFunction({
         variables: {
-          schoolUpdateInput: {
+          schoolClassUpdateInput: {
             id: queryId,
             name: values.name,
-            domain: values.domain,
+            longName: values.longName,
           },
         },
       });
@@ -126,6 +125,7 @@ export default function School() {
             label="Name"
             fullWidth
             required
+            type="text"
             error={!!errors['name']}
             helperText={errors['name'] ? errors['name'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
@@ -133,13 +133,14 @@ export default function School() {
           />
           <TextField
             sx={{ mb: 2 }}
-            label="Domain"
+            label="Erweiterter Name"
             fullWidth
             required
-            error={!!errors['domain']}
-            helperText={errors['domain'] ? errors['domain'].message : ''}
+            type="text"
+            error={!!errors['longName']}
+            helperText={errors['longName'] ? errors['longName'].message : ''}
             defaultValue={queryId === null ? '' : ' '} // formatting
-            {...register('domain')}
+            {...register('longName')}
           />
           <Button
             variant="contained"
@@ -148,20 +149,6 @@ export default function School() {
             sx={{ mt: 1, mb: 2 }}
           >
             Speichern
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ mt: 1, mb: 2 }}
-            onClick={() =>
-              router.push({
-                pathname: `${DEPARTMENTS_ADMIN}/new`,
-                query: { schoolId: queryId },
-              })
-            }
-            disabled={queryId === null}
-          >
-            Neue Abteilung hinzufügen
           </Button>
           <Alert
             severity="error"

@@ -1,6 +1,8 @@
 import { ApolloProvider } from '@apollo/client';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
@@ -37,15 +39,17 @@ export default function MyApp(props: MyAppProps) {
       </Head>
 
       <ThemeModeContextProvider>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline enableColorScheme />
-        <ApolloProvider client={apolloClient}>
-          <SessionProvider session={session}>
-            <DrawerContextProvider>
-              <Component {...pageProps} />
-            </DrawerContextProvider>
-          </SessionProvider>
-        </ApolloProvider>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline enableColorScheme />
+          <ApolloProvider client={apolloClient}>
+            <SessionProvider session={session}>
+              <DrawerContextProvider>
+                <Component {...pageProps} />
+              </DrawerContextProvider>
+            </SessionProvider>
+          </ApolloProvider>
+        </LocalizationProvider>
       </ThemeModeContextProvider>
     </CacheProvider>
   );

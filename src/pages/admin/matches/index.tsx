@@ -1,10 +1,12 @@
 import Layout from '../../../components/page/layout';
-import { Typography } from '@mui/material';
+import FormWrapper from '../../../components/utils/formWrapper';
 
 export default function Matches() {
   return (
     <Layout role="ADMIN">
-      <Typography>Matches</Typography>
+      <FormWrapper>
+        <h1>Matches</h1>
+      </FormWrapper>
     </Layout>
   );
 }

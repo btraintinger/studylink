@@ -7,6 +7,7 @@ import { number, object, string, TypeOf } from 'zod';
 import {
   useCreateTutorOfferingMutation,
   useGetSubjectsOfStudentQuery,
+  useGetTeachersOfStudentQuery,
   useGetTutorOfferingByIdQuery,
   useUpdateTutorOfferingMutation,
 } from '../../../../generated/graphql';
@@ -18,7 +19,9 @@ const tutorOfferingSchema = object({
   description: string()
     .min(1, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an')
     .max(1000, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an'),
-  teacher: string().min(1, '* Bitte gib einen Lehrer an'),
+  teacher: object({
+    id: number().int().nonnegative('* Bitte wähle einen Lehrer aus'),
+  }),
   grade: number()
     .min(1, '* Bitte gib eine Schulstufe an')
     .max(13, '* Bitte gib eine Schulstufe an'),
@@ -69,7 +72,9 @@ export default function Offer() {
       if (error?.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { data: subjects } = useGetSubjectsOfStudentQuery();
+
+  const { data: schoolSubjects } = useGetSubjectsOfStudentQuery();
+  const { data: teachers } = useGetTeachersOfStudentQuery();
 
   const {
     register,
@@ -87,7 +92,7 @@ export default function Offer() {
         variables: {
           tutorOfferingInputCreation: {
             description: values.description,
-            teacher: values.teacher,
+            teacherId: values.teacher.id,
             grade: values.grade,
             schoolSubjectId: values.schoolSubject.id,
           },
@@ -102,7 +107,7 @@ export default function Offer() {
           tutorOfferingUpdateInput: {
             id: queryId,
             description: values.description,
-            teacher: values.teacher,
+            teacherId: values.teacher.id,
             grade: values.grade,
             schoolSubjectId: values.schoolSubject.id,
           },
@@ -126,12 +131,12 @@ export default function Offer() {
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
-            options={subjects?.getSubjectsOfStudent || []}
+            options={schoolSubjects?.getSubjectsOfStudent || []}
             getOptionLabel={(option: {
               id: number;
               name: string;
-              extendedName: string;
-            }) => `${option.name} (${option.extendedName})`}
+              longName: string;
+            }) => `${option.name} (${option.longName})`}
             fullWidth
             renderInput={(params) => (
               <TextField {...params} label="Schulfach" />
@@ -153,16 +158,15 @@ export default function Offer() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('description')}
           />
-          <TextField
+          <Autocomplete
             sx={{ mb: 2 }}
-            variant="standard"
-            label="Lehrer"
+            disablePortal
+            options={teachers?.getTeachersOfStudent || []}
+            getOptionLabel={(option: { id: number; name: string }) =>
+              option.name
+            }
             fullWidth
-            required
-            type="text"
-            error={!!errors['teacher']}
-            helperText={errors['teacher'] ? errors['teacher'].message : ''}
-            defaultValue={queryId === null ? '' : ' '} // formatting
+            renderInput={(params) => <TextField {...params} label="LehrerIn" />}
             {...register('teacher')}
           />
           <TextField
