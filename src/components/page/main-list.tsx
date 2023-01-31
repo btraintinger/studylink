@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { styled } from '@mui/material/styles';
+import { TutorOffering } from '../../../generated/graphql';
 
 const STableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,10 +50,9 @@ function createData(
     lehrer,
     grade,
     info: {
-      date: '2020-01-05',
+      date: '29.01.2023',
       description:
-        'dspjfölksajfölksajdfölkjsadfölsajfdölksajdfölkjsadölkfjasöldfjaölds',
-      aboutMe: 'dsjfölsajfdölsajdfölsajdfölsajdflksajfölsajfösaljdfölksa',
+        'Ich liebe Mathematik und möchte Dir gerne helfen, deine Noten zu verbessern. Wir haben den gleichen Lehrer, also weiß ich welchen Lernstoff du gerade absolviertst. Schreib mir einfach',
     },
   };
 }

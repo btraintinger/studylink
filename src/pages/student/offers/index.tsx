@@ -4,6 +4,7 @@ import type { TutorOffering } from '../../../../generated/graphql';
 import { useGetTutorOffersOfCurrentUserQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
+import XTable from '../../../components/page/x-table';
 
 export default function Offers() {
   const [array, setArray] = useState<TutorOffering[]>([]);
@@ -25,7 +26,7 @@ export default function Offers() {
 
   return (
     <Layout role="STUDENT">
-      <Typography>Offers</Typography>
+      <XTable {...array} />
     </Layout>
   );
 }
