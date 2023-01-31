@@ -15,7 +15,6 @@ export default function NotSignedInHome() {
         alignItems: 'center',
         flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: '#3e3a',
       }}
     >
       <Image height={150} width={150} src="/favicon.ico" alt="logo" />

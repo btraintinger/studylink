@@ -84,7 +84,6 @@ export default function User() {
           <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
             <TextField
               sx={{ mb: 2 }}
-              variant="standard"
               label="Name"
               fullWidth
               required
@@ -96,7 +95,6 @@ export default function User() {
             />
             <TextField
               sx={{ mb: 2 }}
-              variant="standard"
               label="E-Mail"
               fullWidth
               required
@@ -108,7 +106,6 @@ export default function User() {
             />
             <TextField
               sx={{ mb: 2 }}
-              variant="standard"
               label="Rolle"
               fullWidth
               required
