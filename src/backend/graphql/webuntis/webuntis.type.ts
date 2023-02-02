@@ -18,7 +18,7 @@ export class WebUntis {
   username!: string;
 
   @Field()
-  useBirthYearInStudentMail!: boolean;
+  importStudents!: boolean;
 }
 
 @InputType()
@@ -36,5 +36,5 @@ export class WebUntisImportInput {
   username!: string;
 
   @Field()
-  useBirthYearInStudentMail!: boolean;
+  importStudents!: boolean;
 }

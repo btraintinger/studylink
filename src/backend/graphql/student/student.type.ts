@@ -48,9 +48,6 @@ export class StudentCreationInput {
 
   @Field()
   schoolClassId!: number;
-
-  @Field()
-  birthday!: string;
 }
 
 @InputType()
@@ -76,7 +73,4 @@ export class StudentUpdateInput {
 
   @Field()
   schoolClassId!: number;
-
-  @Field()
-  birthday!: string;
 }

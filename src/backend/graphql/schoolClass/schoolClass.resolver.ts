@@ -18,7 +18,7 @@ import {
 } from 'type-graphql';
 import type { Context } from '../context';
 
-async function isUserAdministratingSchoolClass(
+export async function isUserAdministratingSchoolClass(
   ctx: Context,
   schoolClassId: number
 ): Promise<boolean> {

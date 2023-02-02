@@ -29,7 +29,7 @@ const webUntisSchema = object({
     1,
     '* Bitte geben Sie ihren WebUntis Schlüssel an (zu unter "Profil" -> "Freigaben" -> "Anzeigen")'
   ),
-  useBirthYearInStudentMail: boolean(),
+  importStudents: boolean(),
 });
 
 type WebUntisInput = TypeOf<typeof webUntisSchema>;
@@ -61,6 +61,7 @@ export default function WebUntis() {
   });
 
   const onSubmitHandler: SubmitHandler<WebUntisInput> = async (values) => {
+    setErrorMessage('');
     updateFunction({
       variables: {
         loginData: {
@@ -122,8 +123,8 @@ export default function WebUntis() {
           />
           <FormControlLabel
             control={<Checkbox defaultChecked />}
-            label="Am Ende der E-Mail Adresse des Schülers die letzten zwei Ziffern des Geburtsjahrs anhängen"
-            {...register('useBirthYearInStudentMail')}
+            label="Schüler im Format Vorname.Nachname@Schuldomain importieren"
+            {...register('importStudents')}
           />
 
           <Button

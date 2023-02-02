@@ -340,7 +340,6 @@ export type Student = {
 };
 
 export type StudentCreationInput = {
-  birthday: Scalars['String'];
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
@@ -349,7 +348,6 @@ export type StudentCreationInput = {
 };
 
 export type StudentUpdateInput = {
-  birthday: Scalars['String'];
   email: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['Int'];
@@ -442,18 +440,18 @@ export type UserUpdateInput = {
 
 export type WebUntis = {
   __typename?: 'WebUntis';
+  importStudents: Scalars['Boolean'];
   school: Scalars['String'];
   secret: Scalars['String'];
   server: Scalars['String'];
-  useBirthYearInStudentMail: Scalars['Boolean'];
   username: Scalars['String'];
 };
 
 export type WebUntisImportInput = {
+  importStudents: Scalars['Boolean'];
   school: Scalars['String'];
   secret: Scalars['String'];
   server: Scalars['String'];
-  useBirthYearInStudentMail: Scalars['Boolean'];
   username: Scalars['String'];
 };
 
