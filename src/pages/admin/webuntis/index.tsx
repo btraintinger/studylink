@@ -29,7 +29,6 @@ const webUntisSchema = object({
     1,
     '* Bitte geben Sie ihren WebUntis Schlüssel an (zu unter "Profil" -> "Freigaben" -> "Anzeigen")'
   ),
-  importStudents: boolean(),
 });
 
 type WebUntisInput = TypeOf<typeof webUntisSchema>;
@@ -121,12 +120,6 @@ export default function WebUntis() {
             helperText={errors['secret'] ? errors['secret'].message : ''}
             {...register('secret')}
           />
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Schüler im Format Vorname.Nachname@Schuldomain importieren"
-            {...register('importStudents')}
-          />
-
           <Button
             variant="contained"
             fullWidth

@@ -9,14 +9,14 @@ generator client {
 }
 
 model School {
-  id            Int             @id @unique @default(autoincrement())
-  name          String
-  domain        String
-  departments   Department[]
-  admins        Admin[]
-  teachers      Teacher[]
-  rooms         Room[]
-  SchoolSubject SchoolSubject[]
+  id             Int             @id @unique @default(autoincrement())
+  name           String
+  domain         String
+  departments    Department[]
+  admins         Admin[]
+  teachers       Teacher[]
+  rooms          Room[]
+  schoolSubjects SchoolSubject[]
 
   @@map("school")
 }

@@ -277,6 +277,8 @@ export type School = {
   domain: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  schoolSubjects: Array<SchoolSubject>;
+  teachers: Array<Teacher>;
 };
 
 export type SchoolClass = {
@@ -331,7 +333,6 @@ export type SchoolUpdateInput = {
 
 export type Student = {
   __typename?: 'Student';
-  birthday: Scalars['String'];
   id: Scalars['ID'];
   schoolClass: SchoolClass;
   tutorOfferings: Array<TutorOffering>;
@@ -406,7 +407,7 @@ export type TutorRequest = {
   grade: Scalars['Float'];
   id: Scalars['ID'];
   schoolSubject: SchoolSubject;
-  student: Student;
+  studentId: Scalars['Float'];
   teacher: Teacher;
 };
 
@@ -440,7 +441,6 @@ export type UserUpdateInput = {
 
 export type WebUntis = {
   __typename?: 'WebUntis';
-  importStudents: Scalars['Boolean'];
   school: Scalars['String'];
   secret: Scalars['String'];
   server: Scalars['String'];
@@ -448,7 +448,6 @@ export type WebUntis = {
 };
 
 export type WebUntisImportInput = {
-  importStudents: Scalars['Boolean'];
   school: Scalars['String'];
   secret: Scalars['String'];
   server: Scalars['String'];
@@ -460,7 +459,7 @@ export type GetDepartmentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetDepartmentByIdQuery = { __typename?: 'Query', getDepartmentById: { __typename?: 'Department', id: number, name: string, longName: string } };
+export type GetDepartmentByIdQuery = { __typename?: 'Query', getDepartmentById: { __typename?: 'Department', id: number, longName: string, name: string, schoolClasses: Array<{ __typename?: 'SchoolClass', longName: string, name: string, id: number }> } };
 
 export type CreateDepartmentMutationVariables = Exact<{
   departmentInput: DepartmentCreateInput;
@@ -686,11 +685,16 @@ export type UpdateSchoolDataMutation = { __typename?: 'Mutation', updateSchoolDa
 
 
 export const GetDepartmentByIdDocument = gql`
-    query getDepartmentById($getDepartmentByIdId: Float!) {
+    query GetDepartmentById($getDepartmentByIdId: Float!) {
   getDepartmentById(id: $getDepartmentByIdId) {
     id
-    name
     longName
+    name
+    schoolClasses {
+      longName
+      name
+      id
+    }
   }
 }
     `;

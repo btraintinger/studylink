@@ -12,7 +12,7 @@ export class TutorRequest {
   id!: number;
 
   @Field()
-  student!: Student;
+  studentId!: number;
 
   @Field()
   schoolSubject!: SchoolSubject;

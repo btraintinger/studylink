@@ -1,8 +1,13 @@
-query getDepartmentById($getDepartmentByIdId: Float!) {
+query GetDepartmentById($getDepartmentByIdId: Float!) {
   getDepartmentById(id: $getDepartmentByIdId) {
     id
-    name
     longName
+    name
+    schoolClasses {
+      longName
+      name
+      id
+    }
   }
 }
 

@@ -13,17 +13,6 @@ declare module 'webuntis' {
     departmentId: number?;
   }
 
-  interface Student {
-    id: number;
-    key: number;
-    name: string;
-    foreName: string;
-    longName: string;
-    gender: string;
-    klasseId: number;
-    birthday: string;
-  }
-
   type SessionInformation = {
     klasseId?: number;
     personId?: number;
