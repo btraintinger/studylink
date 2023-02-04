@@ -17,16 +17,19 @@ export default function Offers() {
     },
   });
 
-  if (loading)
+  if (loading) {
     return (
       <Layout role="STUDENT">
         <LoadingPage></LoadingPage>
       </Layout>
     );
-
-  return (
-    <Layout role="STUDENT">
-      <XTable {...array} />
-    </Layout>
-  );
+  } else if (!loading) {
+    console.log(loading);
+    console.log(array);
+    return (
+      <Layout role="STUDENT">
+        <XTable {...array} />
+      </Layout>
+    );
+  }
 }

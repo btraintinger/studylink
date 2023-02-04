@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   TutorOffering,
+  SchoolClass,
   useGetTutorOffersOfCurrentUserQuery,
 } from '../../../generated/graphql';
 import { IOffer } from '../../types/interfaces';
@@ -53,18 +54,22 @@ const rows = [
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
-function DataRow(data: TutorOffering[]) {
-  const dataRow = data.map((offer) => {
+function DataRow(data: SchoolClass[]) {
+  if (data.length === 0) return [];
+  if (data[0] === undefined) return [];
+  const dataRow = data.map(function (c) {
     return {
-      id: offer.id,
-      schoolSubject: offer.schoolSubject,
-      teacher: offer.teacher,
-      grade: offer.grade,
-      description: offer.description,
+      departmentId: c.departmentId,
+      id: c.id,
+      longName: c.longName,
+      name: c.name,
+      schoolSubjects: c.schoolSubjects,
     };
+  });
+  return dataRow;
 }
 
-export default function XTable(data: TutorOffering[]) {
+export default function XTable(data: SchoolClass[]) {
   return (
     <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid
