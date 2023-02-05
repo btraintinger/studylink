@@ -4,9 +4,20 @@ import { useRouter } from 'next/router';
 import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
+import XTable from '../../../components/page/x-table';
 
 export default function School() {
   const { data, loading } = useGetAdministeredSchoolQuery();
+
+  // const [array, setArray] = useState<School[]>([]);
+  // const { loading } = useGetTutorOffersOfCurrentUserQuery({
+  // onCompleted: (data) => {
+  //    if (data)
+  //      setArray(
+  //        data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
+  //      );
+  //  },
+  // });
 
   const router = useRouter();
 
@@ -40,6 +51,9 @@ export default function School() {
         >
           Neue Schule erstellen
         </Button>
+      </Box>
+      <Box>
+        <XTable {...data} />
       </Box>
     </Layout>
   );

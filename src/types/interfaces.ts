@@ -1,5 +1,13 @@
-import type { TutorOffering } from '../../generated/graphql';
-import type { TutorRequest } from '../../generated/graphql';
+import {
+  TutorOffering,
+  TutorRequest,
+  School,
+  SchoolClass,
+  SchoolSubject,
+  Department,
+  Teacher,
+  Student,
+} from '../../generated/graphql';
 
 export interface IMenuItem {
   text: string;
@@ -19,11 +27,28 @@ export interface ISchoolSubject {
   name: string;
 }
 
+export interface ISchoolClass {
+  id: number;
+  name: string;
+  longName: string;
+}
+
 export interface IOffer {
   id: number;
-  schoolSubject: ISchoolSubject;
-  teacher: ITeacher;
+  schoolSubject: SchoolSubject;
+  teacher: Teacher;
   grade: number;
   description: string;
 }
-export type TListTableItem = TutorOffering[] | TutorOffering[];
+
+export type TTableItem =
+  | TutorOffering[]
+  | TutorRequest[]
+  | School[]
+  | Department[]
+  | SchoolClass[]
+  | SchoolSubject[]
+  | Teacher[]
+  | Student[];
+
+export type TRow = IOffer[] | ISchoolClass[] | ISchoolSubject[] | ITeacher[];

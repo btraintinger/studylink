@@ -1,11 +1,24 @@
 import { Typography } from '@mui/material';
-import { useGetTutorRequestsOfCurrentUserQuery } from '../../../../generated/graphql';
+import {
+  useGetTutorRequestsOfCurrentUserQuery,
+  TutorRequest,
+} from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
 import MainList from '../../../components/page/main-list';
+import { useState } from 'react';
+import XTable from '../../../components/page/x-table';
 
 export default function Requests() {
+  const [array, setArray] = useState<TutorRequest[]>([]);
   const { loading } = useGetTutorRequestsOfCurrentUserQuery();
+  // const { loading } = useGetTutorRequestsOfCurrentUserQuery({
+  //  onCompleted: (data) => {
+  //    if (data)
+  //      setArray(data.getStudentOfCurrentUser.tutorRequests as TutorRequest[]);
+  //  },
+  // });
+  // .tutorRequest aktuell noch nicht in getStudentOfCurrentUser vorhanden
 
   if (loading)
     return (
@@ -17,9 +30,7 @@ export default function Requests() {
   return (
     <Layout role="STUDENT">
       <Typography>
-        <MainList
-          columnNames={['Fach', ' ', 'Angebot von', 'Klasse', 'Note']}
-        />
+        <XTable {...array} />
       </Typography>
     </Layout>
   );
