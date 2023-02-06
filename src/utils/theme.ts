@@ -1,7 +1,7 @@
 import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
-import { green, grey, orange, red } from '@mui/material/colors';
+import { green, grey } from '@mui/material/colors';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -44,7 +44,6 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           background: {
             default: grey[900],
             paper: grey[800],
-            
           },
           text: {
             primary: '#fffff',

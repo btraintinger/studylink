@@ -8,7 +8,7 @@ import { Match } from './match.type';
 function matchRating(request: TutorRequest, offering: TutorOffering): number {
   let rating = 0;
   if (request.grade === offering.grade) rating += 2;
-  if (request.teacher === offering.teacher) rating += 1;
+  if (request.teacherId === offering.teacherId) rating += 1;
   return rating;
 }
 

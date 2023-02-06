@@ -53,12 +53,6 @@ query GetAdministeredSchool {
   }
 }
 
-query GetAdministeredSchool {
-  getAdministeredSchool {
-    id
-  }
-}
-
 mutation CreateSchool($schoolCreationInput: SchoolCreationInput!) {
   createSchool(schoolCreationInput: $schoolCreationInput) {
     id

@@ -1,9 +1,6 @@
 import 'webuntis';
 
 declare module 'webuntis' {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Klasse {
     id: number;
     name: string;

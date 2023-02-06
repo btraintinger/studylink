@@ -537,7 +537,7 @@ export type GetSchoolByIdQuery = { __typename?: 'Query', getSchoolById: { __type
 export type GetAdministeredSchoolQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAdministeredSchoolQuery = { __typename?: 'Query', getAdministeredSchool: { __typename?: 'School', id: number } };
+export type GetAdministeredSchoolQuery = { __typename?: 'Query', getAdministeredSchool: { __typename?: 'School', domain: string, id: number, name: string, admins: Array<{ __typename?: 'Admin', id: number, schoolId: number, user: { __typename?: 'User', email: string, id: number, name: string } }>, departments: Array<{ __typename?: 'Department', id: number, longName: string, name: string, schoolId: number }>, schoolSubjects: Array<{ __typename?: 'SchoolSubject', id: number, name: string, longName: string }>, teachers: Array<{ __typename?: 'Teacher', schoolId: number, name: string, longName: string, id: number }> } };
 
 export type CreateSchoolMutationVariables = Exact<{
   schoolCreationInput: SchoolCreationInput;
@@ -605,21 +605,26 @@ export type GetStudentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetStudentByIdQuery = { __typename?: 'Query', getStudentById: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string } } };
+export type GetStudentByIdQuery = { __typename?: 'Query', getStudentById: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string, longName: string } } };
 
 export type CreateStudentMutationVariables = Exact<{
   studentInput: StudentCreationInput;
 }>;
 
 
-export type CreateStudentMutation = { __typename?: 'Mutation', createStudent: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string } } };
+export type CreateStudentMutation = { __typename?: 'Mutation', createStudent: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string, longName: string } } };
+
+export type GetStudentOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetStudentOfCurrentUserQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', id: number, tutorOfferings: Array<{ __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', name: string, longName: string, id: number } }>, tutorRequests: Array<{ __typename?: 'TutorRequest', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', schoolId: number, name: string, longName: string, id: number } }>, user: { __typename?: 'User', email: string, id: number, name: string }, schoolClass: { __typename?: 'SchoolClass', departmentId: number, id: number, longName: string, name: string } } };
 
 export type UpdateStudentMutationVariables = Exact<{
   studentInput: StudentUpdateInput;
 }>;
 
 
-export type UpdateStudentMutation = { __typename?: 'Mutation', updateStudent: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string } } };
+export type UpdateStudentMutation = { __typename?: 'Mutation', updateStudent: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, name: string }, schoolClass: { __typename?: 'SchoolClass', id: number, name: string, longName: string } } };
 
 export type GetSubjectsOfStudentQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1220,7 +1225,35 @@ export type GetSchoolByIdQueryResult = Apollo.QueryResult<GetSchoolByIdQuery, Ge
 export const GetAdministeredSchoolDocument = gql`
     query GetAdministeredSchool {
   getAdministeredSchool {
+    admins {
+      id
+      schoolId
+      user {
+        email
+        id
+        name
+      }
+    }
+    departments {
+      id
+      longName
+      name
+      schoolId
+    }
+    domain
     id
+    name
+    schoolSubjects {
+      id
+      name
+      longName
+    }
+    teachers {
+      schoolId
+      name
+      longName
+      id
+    }
   }
 }
     `;
@@ -1582,6 +1615,7 @@ export const GetStudentByIdDocument = gql`
     schoolClass {
       id
       name
+      longName
     }
   }
 }
@@ -1625,6 +1659,7 @@ export const CreateStudentDocument = gql`
     schoolClass {
       id
       name
+      longName
     }
   }
 }
@@ -1655,6 +1690,82 @@ export function useCreateStudentMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateStudentMutationHookResult = ReturnType<typeof useCreateStudentMutation>;
 export type CreateStudentMutationResult = Apollo.MutationResult<CreateStudentMutation>;
 export type CreateStudentMutationOptions = Apollo.BaseMutationOptions<CreateStudentMutation, CreateStudentMutationVariables>;
+export const GetStudentOfCurrentUserDocument = gql`
+    query GetStudentOfCurrentUser {
+  getStudentOfCurrentUser {
+    tutorOfferings {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+    tutorRequests {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        schoolId
+        name
+        longName
+        id
+      }
+    }
+    id
+    user {
+      email
+      id
+      name
+    }
+    schoolClass {
+      departmentId
+      id
+      longName
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetStudentOfCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useGetStudentOfCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStudentOfCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStudentOfCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetStudentOfCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<GetStudentOfCurrentUserQuery, GetStudentOfCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStudentOfCurrentUserQuery, GetStudentOfCurrentUserQueryVariables>(GetStudentOfCurrentUserDocument, options);
+      }
+export function useGetStudentOfCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStudentOfCurrentUserQuery, GetStudentOfCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStudentOfCurrentUserQuery, GetStudentOfCurrentUserQueryVariables>(GetStudentOfCurrentUserDocument, options);
+        }
+export type GetStudentOfCurrentUserQueryHookResult = ReturnType<typeof useGetStudentOfCurrentUserQuery>;
+export type GetStudentOfCurrentUserLazyQueryHookResult = ReturnType<typeof useGetStudentOfCurrentUserLazyQuery>;
+export type GetStudentOfCurrentUserQueryResult = Apollo.QueryResult<GetStudentOfCurrentUserQuery, GetStudentOfCurrentUserQueryVariables>;
 export const UpdateStudentDocument = gql`
     mutation updateStudent($studentInput: StudentUpdateInput!) {
   updateStudent(studentInput: $studentInput) {
@@ -1666,6 +1777,7 @@ export const UpdateStudentDocument = gql`
     schoolClass {
       id
       name
+      longName
     }
   }
 }

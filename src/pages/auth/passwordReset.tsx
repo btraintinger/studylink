@@ -18,14 +18,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import LoadingPage from '../../components/utils/loadingPage';
 
-const loginSchema = object({
+const resetSchema = object({
   email: string().email('* Email must be a valid email address'),
-  password: string(),
 });
 
-type LoginInput = TypeOf<typeof loginSchema>;
+type ResetInput = TypeOf<typeof resetSchema>;
 
-export default function LoginPage() {
+export default function ResetPage() {
   const router = useRouter();
 
   const { data: session, status } = useSession();
@@ -37,8 +36,8 @@ export default function LoginPage() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ResetInput>({
+    resolver: zodResolver(resetSchema),
   });
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export default function LoginPage() {
   if (status === 'loading') return <LoadingPage />;
   if (session) router.push('/');
 
-  const onSubmitHandler: SubmitHandler<LoginInput> = async (values) => {
+  const onSubmitHandler: SubmitHandler<ResetInput> = async (values) => {
     const response = await signIn('signin', {
       email: values.email,
       password: values.password,
@@ -128,7 +127,7 @@ export default function LoginPage() {
             sx={{ fontSize: '14px', fontStyle: 'bold' }}
             underline="none"
             component={Link}
-            href="/auth/passwordReset"
+            href="#"
             passHref
           >
             {'Passwort vergessen?'}

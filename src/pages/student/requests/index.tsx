@@ -5,7 +5,6 @@ import {
 } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
-import MainList from '../../../components/page/main-list';
 import { useState } from 'react';
 import XTable from '../../../components/page/x-table';
 
