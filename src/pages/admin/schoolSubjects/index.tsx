@@ -71,6 +71,9 @@ export default function SchoolSubjects() {
               backgroundColor: 'primary.main',
               fontSize: '1.2rem',
             },
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
           }}
         ></DataGrid>
       </Box>
