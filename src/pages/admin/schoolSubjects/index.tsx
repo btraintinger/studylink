@@ -1,20 +1,22 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import XTable from '../../../components/page/x-table';
 import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { SchoolSubject } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
+import { useRouter } from 'next/router';
+import { SCHOOL_SUBJECTS_ADMIN } from '../../../constants/menu-items';
 
 export default function SchoolSubjects() {
-  const [pageSize, setPageSize] = useState(50);
+  const router = useRouter();
   const [array, setArray] = useState<SchoolSubject[]>([]);
 
   const { loading } = useGetAdministeredSchoolQuery({
     onCompleted: (data) => {
       if (data)
         setArray(data.getAdministeredSchool.schoolSubjects as SchoolSubject[]);
+      console.log(array);
     },
   });
 
@@ -22,12 +24,18 @@ export default function SchoolSubjects() {
     {
       field: 'name',
       headerName: 'Kürzel',
+      flex: 0.3,
     },
     {
       field: 'longName',
       headerName: 'Name',
+      flex: 1,
     },
   ];
+
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    router.push(`${SCHOOL_SUBJECTS_ADMIN}/${params.row.id}`);
+  };
 
   if (loading)
     return (
@@ -38,15 +46,32 @@ export default function SchoolSubjects() {
 
   return (
     <Layout role="ADMIN">
-      <Box sx={{ height: '700', width: '100%' }}>
+      <Box sx={{ height: '80vh', width: '100%' }}>
+        <Button
+          variant="contained"
+          sx={{ mb: 2 }}
+          fullWidth
+          onClick={() => {
+            router.push(`${SCHOOL_SUBJECTS_ADMIN}/new`);
+          }}
+        >
+          Neues Fach anlegen
+        </Button>
         <DataGrid
           rows={array}
           columns={columns}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[50, 100, 500]}
+          autoPageSize
           pagination
           disableSelectionOnClick
+          onRowClick={handleRowClick}
+          sx={{
+            border: 1,
+            borderColor: 'primary.main',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'primary.main',
+              fontSize: '1.2rem',
+            },
+          }}
         ></DataGrid>
       </Box>
     </Layout>
