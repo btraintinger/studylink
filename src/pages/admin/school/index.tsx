@@ -52,9 +52,6 @@ export default function School() {
           Neue Schule erstellen
         </Button>
       </Box>
-      <Box>
-        <XTable {...data} />
-      </Box>
     </Layout>
   );
 }

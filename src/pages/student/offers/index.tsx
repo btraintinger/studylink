@@ -30,7 +30,7 @@ export default function Offers() {'
     console.log(array);
     return (
       <Layout role="STUDENT">
-        <XTable {...array} />
+        <XTable data = {array}/>
       </Layout>
     );
   }

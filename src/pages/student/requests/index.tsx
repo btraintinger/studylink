@@ -29,7 +29,7 @@ export default function Requests() {
   return (
     <Layout role="STUDENT">
       <Typography>
-        <XTable {...array} />
+        <XTable data={array}/>
       </Typography>
     </Layout>
   );

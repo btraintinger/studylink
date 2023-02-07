@@ -8,7 +8,7 @@ import {
   TRow,
 } from '../../types/interfaces';
 import Box from '@mui/material/Box';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridEventListener, GridValueGetterParams } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 import { Grade } from '@mui/icons-material';
 import type {
@@ -21,6 +21,7 @@ import type {
   Student,
   SchoolClass,
 } from '../../../generated/graphql';
+import { useState } from 'react';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -28,14 +29,14 @@ const columns: GridColDef[] = [
     field: 'name',
     headerName: 'Short',
     width: 150,
-    editable: true,
+    editable: false,
   },
   {
     field: 'longName',
     headerName: 'Name',
     type: 'number',
     width: 110,
-    editable: true,
+    editable: false,
   },
   {
     field: 'else',
@@ -43,10 +44,11 @@ const columns: GridColDef[] = [
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
 ];
+
+
+
 
 function ClassRow(data: SchoolClass[]): ISchoolClass[] {
   const dataRow = data.map(function (c) {
@@ -88,9 +90,9 @@ function SubjectRow(data: SchoolSubject[]): ISchoolSubject[] {
   return dataRow;
 }
 
-export default function XTable({data}: {data:TTableItem}) {
-  console.log('XTable');
-  console.log();
+export default function XTable({data, handleEvent}: {data:TTableItem, handleEvent: GridEventListener<'rowClick'>} ) {
+  const [pageSize, setPageSize] = useState(50);
+
   if (data.length === 0)
     return (
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -123,9 +125,12 @@ export default function XTable({data}: {data:TTableItem}) {
     <Box sx={{ height: 700, width: '100%' }}>
       <DataGrid
         rows={dataRow}
+        onRowClick={handleEvent}
         columns={columns}
-        pageSize={50}
-        rowsPerPageOptions={[50]}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20]}
+        pagination
         checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
