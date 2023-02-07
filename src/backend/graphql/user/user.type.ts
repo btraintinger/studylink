@@ -28,3 +28,10 @@ export class UserUpdateInput {
   @Field()
   name!: string;
 }
+
+@InputType()
+export class ResetPasswordInput {
+  @IsEmail()
+  @Field()
+  email!: string;
+}

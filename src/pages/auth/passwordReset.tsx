@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import { useResetPasswordMutation } from '../../../generated/graphql';
 import LoadingPage from '../../components/utils/loadingPage';
 
 const resetSchema = object({
@@ -25,10 +26,6 @@ const resetSchema = object({
 type ResetInput = TypeOf<typeof resetSchema>;
 
 export default function ResetPage() {
-  const router = useRouter();
-
-  const { data: session, status } = useSession();
-
   const [error, setError] = useState('');
 
   const {
@@ -46,21 +43,18 @@ export default function ResetPage() {
     }
   }, [isSubmitSuccessful]);
 
-  if (status === 'loading') return <LoadingPage />;
-  if (session) router.push('/');
+  const [resetFunction, { loading }] = useResetPasswordMutation();
+
+  if (loading) return <LoadingPage />;
 
   const onSubmitHandler: SubmitHandler<ResetInput> = async (values) => {
-    const response = await signIn('signin', {
-      email: values.email,
-      password: values.password,
-      redirect: false,
+    resetFunction({
+      variables: {
+        resetPasswordInput: {
+          email: values.email,
+        },
+      },
     });
-    if (response === undefined) return;
-    if (response.ok) {
-      router.push('/');
-      return;
-    }
-    if (response.error) setError(response.error);
   };
 
   return (
@@ -84,7 +78,11 @@ export default function ResetPage() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Anmelden
+          Passwort Zurücksetzen
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          Sie erhalten eine E-Mail mit einem Link zum Zurücksetzen Ihres
+          Passworts.
         </Typography>
         <Box
           component="form"
@@ -103,17 +101,6 @@ export default function ResetPage() {
             helperText={errors['email'] ? errors['email'].message : ''}
             {...register('email')}
           />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Password"
-            fullWidth
-            required
-            type="password"
-            error={!!errors['password']}
-            helperText={errors['password'] ? errors['password'].message : ''}
-            {...register('password')}
-          />
-
           <Button
             variant="contained"
             fullWidth
@@ -127,10 +114,10 @@ export default function ResetPage() {
             sx={{ fontSize: '14px', fontStyle: 'bold' }}
             underline="none"
             component={Link}
-            href="#"
+            href="/"
             passHref
           >
-            {'Passwort vergessen?'}
+            {'Zurück auf die Startseite'}
           </MuiLink>
 
           <Alert

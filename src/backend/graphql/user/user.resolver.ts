@@ -1,4 +1,4 @@
-import { User, UserUpdateInput } from './user.type';
+import { User, UserUpdateInput, ResetPasswordInput } from './user.type';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -30,6 +30,22 @@ export class UserResolver {
       data: {
         name: userUpdateInput.name,
         email: userUpdateInput.email,
+      },
+    });
+  }
+
+  @Authorized('ADMIN', 'STUDENT')
+  @Mutation((returns) => User)
+  async resetPassword(
+    @Ctx() ctx: Context,
+    @Arg('resetPasswordInput') resetPasswordInput: ResetPasswordInput
+  ) {
+    if (!ctx.user) throw new Error('NotAuthorizedError');
+
+    return await ctx.prisma.user.update({
+      where: { id: ctx.user.id },
+      data: {
+        password: resetPasswordInput.email,
       },
     });
   }
