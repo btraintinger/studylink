@@ -157,6 +157,11 @@ export class WebUntisResolver {
           data: {
             name: subject.name,
             longName: subject.longName,
+            school: {
+              connect: {
+                id: currentSchool.id,
+              },
+            },
           },
         });
       } else {
@@ -263,6 +268,7 @@ export class WebUntisResolver {
           await ctx.prisma.teacher.create({
             data: {
               name: teacher.name,
+              longName: teacher.longName,
               school: {
                 connect: {
                   id: currentSchool.id,
