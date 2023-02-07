@@ -6,11 +6,13 @@ import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
 import XTable from '../../../components/page/x-table';
 
-export default function Offers() {
+export default function Offers() {'
   const [array, setArray] = useState<TutorOffering[]>([]);
   const { loading } = useGetTutorOffersOfCurrentUserQuery({
     onCompleted: (data) => {
       if (data)
+        console.log('conv');
+        console.log(data);
         setArray(
           data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
         );

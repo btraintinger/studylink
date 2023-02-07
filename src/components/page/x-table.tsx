@@ -25,19 +25,13 @@ import type {
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'id',
-    headerName: 'ID',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'short',
+    field: 'name',
     headerName: 'Short',
     width: 150,
     editable: true,
   },
   {
-    field: 'name',
+    field: 'longName',
     headerName: 'Name',
     type: 'number',
     width: 110,
@@ -80,30 +74,23 @@ function OfferRow(data: TutorOffering[]): IOffer[] {
   return dataRow;
 }
 
+
 function SubjectRow(data: SchoolSubject[]): ISchoolSubject[] {
+  console.log('SubjectRow');
+  console.log(data);
   const dataRow = data.map(function (s) {
     return {
       id: s.id,
       longName: s.longName,
-      name: s.name,
+      name : s.name,
     };
   });
   return dataRow;
 }
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
-
-export default function XTable(data: TTableItem) {
+export default function XTable({data}: {data:TTableItem}) {
+  console.log('XTable');
+  console.log();
   if (data.length === 0)
     return (
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -133,12 +120,12 @@ export default function XTable(data: TTableItem) {
       break;
   }
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: 700, width: '100%' }}>
       <DataGrid
         rows={dataRow}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSize={50}
+        rowsPerPageOptions={[50]}
         checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
