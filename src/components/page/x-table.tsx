@@ -8,7 +8,12 @@ import {
   TRow,
 } from '../../types/interfaces';
 import Box from '@mui/material/Box';
-import { DataGrid, GridColDef, GridEventListener, GridValueGetterParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridEventListener,
+  GridValueGetterParams,
+} from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 import { Grade } from '@mui/icons-material';
 import type {
@@ -22,6 +27,7 @@ import type {
   SchoolClass,
 } from '../../../generated/graphql';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -38,17 +44,7 @@ const columns: GridColDef[] = [
     width: 110,
     editable: false,
   },
-  {
-    field: 'else',
-    headerName: 'Else',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-  },
 ];
-
-
-
 
 function ClassRow(data: SchoolClass[]): ISchoolClass[] {
   const dataRow = data.map(function (c) {
@@ -76,7 +72,6 @@ function OfferRow(data: TutorOffering[]): IOffer[] {
   return dataRow;
 }
 
-
 function SubjectRow(data: SchoolSubject[]): ISchoolSubject[] {
   console.log('SubjectRow');
   console.log(data);
@@ -84,13 +79,13 @@ function SubjectRow(data: SchoolSubject[]): ISchoolSubject[] {
     return {
       id: s.id,
       longName: s.longName,
-      name : s.name,
+      name: s.name,
     };
   });
   return dataRow;
 }
 
-export default function XTable({data, handleEvent}: {data:TTableItem, handleEvent: GridEventListener<'rowClick'>} ) {
+export default function XTable({ data }: { data: TTableItem }) {
   const [pageSize, setPageSize] = useState(50);
 
   if (data.length === 0)
@@ -125,7 +120,6 @@ export default function XTable({data, handleEvent}: {data:TTableItem, handleEven
     <Box sx={{ height: 700, width: '100%' }}>
       <DataGrid
         rows={dataRow}
-        onRowClick={handleEvent}
         columns={columns}
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

@@ -2,6 +2,8 @@ import { Roboto } from '@next/font/google';
 
 import { PaletteMode } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
+import { deDE } from '@mui/x-data-grid';
+import { deDE as coreDeDE } from '@mui/material/locale';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -14,6 +16,8 @@ export const roboto = Roboto({
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
+    deDE,
+    coreDeDE,
     ...(mode === 'light'
       ? {
           // palette values for light mode
