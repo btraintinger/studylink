@@ -57,6 +57,24 @@ export class SchoolResolver {
       .departments();
   }
 
+  @FieldResolver()
+  async teachers(@Root() school: School, @Ctx() ctx: Context) {
+    return await ctx.prisma.school
+      .findUnique({
+        where: { id: school.id },
+      })
+      .teachers();
+  }
+
+  @FieldResolver()
+  async schoolSubjects(@Root() school: School, @Ctx() ctx: Context) {
+    return await ctx.prisma.school
+      .findUnique({
+        where: { id: school.id },
+      })
+      .schoolSubjects();
+  }
+
   @Authorized('ADMIN')
   @Query((returns) => School)
   async getSchoolById(@Arg('id') id: number, @Ctx() ctx: Context) {

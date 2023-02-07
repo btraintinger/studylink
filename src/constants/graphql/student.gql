@@ -8,6 +8,7 @@ query getStudentById($getStudentByIdId: Float!) {
     schoolClass {
       id
       name
+      longName
     }
   }
 }
@@ -21,6 +22,55 @@ mutation createStudent($studentInput: StudentCreationInput!) {
     }
     schoolClass {
       id
+      name
+      longName
+    }
+  }
+}
+
+query GetStudentOfCurrentUser {
+  getStudentOfCurrentUser {
+    tutorOfferings {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+    tutorRequests {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        schoolId
+        name
+        longName
+        id
+      }
+    }
+    id
+    user {
+      email
+      id
+      name
+    }
+    schoolClass {
+      departmentId
+      id
+      longName
       name
     }
   }
@@ -36,6 +86,7 @@ mutation updateStudent($studentInput: StudentUpdateInput!) {
     schoolClass {
       id
       name
+      longName
     }
   }
 }

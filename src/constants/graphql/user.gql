@@ -23,3 +23,9 @@ mutation UpdateUser($userUpdateInput: UserUpdateInput!) {
     role
   }
 }
+
+mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {
+  resetPassword(resetPasswordInput: $resetPasswordInput) {
+    id
+  }
+}

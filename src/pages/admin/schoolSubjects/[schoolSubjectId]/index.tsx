@@ -7,7 +7,7 @@ import { object, string, TypeOf } from 'zod';
 import {
   useCreateSchoolSubjectMutation,
   useGetSchoolSubjectByIdQuery,
-  useUpdateSchoolSubjectMutation
+  useUpdateSchoolSubjectMutation,
 } from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';

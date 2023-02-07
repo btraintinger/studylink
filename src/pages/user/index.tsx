@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
   useGetCurrentUserQuery,
+  useResetPasswordMutation,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
 import Layout from '../../components/page/layout';
@@ -45,6 +46,8 @@ export default function User() {
       if (error?.message === 'NotAuthorizedError') router.push('/401');
     },
   });
+
+  const [resetFunction] = useResetPasswordMutation();
 
   const { data: session } = useSession();
 
@@ -121,6 +124,23 @@ export default function User() {
               sx={{ mt: 1, mb: 2 }}
             >
               Speichern
+            </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                if (!session.user.email) return;
+                resetFunction({
+                  variables: {
+                    resetPasswordInput: {
+                      email: session.user.email,
+                    },
+                  },
+                });
+              }}
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Passwort per E-Mail zurücksetzen
             </Button>
             <Alert
               severity="error"

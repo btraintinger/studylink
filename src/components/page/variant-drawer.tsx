@@ -161,11 +161,8 @@ export default function MiniDrawer() {
           <ListItem
             key={id}
             disablePadding
-            sx={{ display: 'block' }}
-            component={Link}
-            href={route}
+            sx={{ display: 'block', borderColor: '#000000' }}
             onClick={() => setSelectedItem(route)}
-            borderColor="#000000"
           >
             <ListItemButton
               sx={{
@@ -173,6 +170,9 @@ export default function MiniDrawer() {
                 justifyContent: isDrawerOpen ? 'initial' : 'center',
                 px: 2.5,
               }}
+              component={Link}
+              href={route}
+              passHref
             >
               <ListItemIcon
                 sx={{

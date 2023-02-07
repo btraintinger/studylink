@@ -21,6 +21,7 @@ import {
   StudentCreationInput,
   StudentUpdateInput,
 } from './student.type';
+import { isUserAdministratingSchoolClass } from '../schoolClass/schoolClass.resolver';
 
 async function isStudentExistent(
   ctx: Context,
@@ -183,6 +184,11 @@ export class StudentResolver {
     @Ctx() ctx: Context,
     @Arg('studentInput') studentInput: StudentCreationInput
   ) {
+    if (
+      !(await isUserAdministratingSchoolClass(ctx, studentInput.schoolClassId))
+    )
+      throw new Error('NotAuthorizedError');
+
     const password = generatePassword();
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -201,7 +207,6 @@ export class StudentResolver {
 
     const student = await ctx.prisma.student.create({
       data: {
-        birthday: studentInput.birthday,
         user: {
           connect: {
             id: studentUser.id,
@@ -238,6 +243,11 @@ export class StudentResolver {
       throw new Error('DoesNotExistError');
 
     if (!(await isUserAdministratingStudent(ctx, StudentInput.id)))
+      throw new Error('NotAuthorizedError');
+
+    if (
+      !(await isUserAdministratingSchoolClass(ctx, StudentInput.schoolClassId))
+    )
       throw new Error('NotAuthorizedError');
 
     const student = await ctx.prisma.student.update({

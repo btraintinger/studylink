@@ -51,7 +51,7 @@ export class WebUntisResolver {
     const latestSchoolYear = await untis.getLatestSchoolyear();
 
     const departments = await untis.getDepartments();
-    const schoolDepartments = await ctx.prisma.department.findMany({
+    let schoolDepartments = await ctx.prisma.department.findMany({
       where: {
         schoolId: currentSchool.id,
       },
@@ -103,6 +103,11 @@ export class WebUntisResolver {
       const correctDepartment = departments.find(
         (department) => department.id === webUntisDepartmentId
       );
+      schoolDepartments = await ctx.prisma.department.findMany({
+        where: {
+          schoolId: currentSchool.id,
+        },
+      });
       const correctDepartmentDB = schoolDepartments.find(
         (schoolDepartment) => schoolDepartment.name === correctDepartment?.name
       );
@@ -178,82 +183,6 @@ export class WebUntisResolver {
     });
 
     if (loginInfo.personType === PersonType.TEACHER) {
-      const students = await untis.getStudents();
-      const schoolStudents = await ctx.prisma.student.findMany({
-        where: {
-          schoolClass: {
-            department: {
-              schoolId: currentSchool.id,
-            },
-          },
-        },
-        include: {
-          user: true,
-        },
-      });
-      students.forEach(async (student) => {
-        const currentStudent = schoolStudents.find(
-          (schoolStudent) => schoolStudent.user.name === student.name
-        );
-        if (!currentStudent) {
-          const generatedPassword = generatePassword();
-          const passWordHash = await bcrypt.hash(generatedPassword, 10);
-          const lastTwoDigits = student.birthday.split('.')[2].split('');
-          const createdUser = await ctx.prisma.user.create({
-            data: {
-              email: `${student.foreName}.${student.longName}${
-                loginData.useBirthYearInStudentMail ? lastTwoDigits : ''
-              }@${currentSchool.domain}`,
-              password: passWordHash,
-              name: student.name,
-              firstName: student.foreName,
-              lastName: student.longName,
-              role: 'STUDENT',
-            },
-          });
-          const createdStudent = await ctx.prisma.student.create({
-            data: {
-              birthday: new Date(student.birthday),
-              user: {
-                connect: {
-                  id: createdUser.id,
-                },
-              },
-              schoolClass: {
-                connect: {
-                  id: student.klasseId,
-                },
-              },
-            },
-          });
-          sendPasswordToStudent(createdStudent.id, generatedPassword);
-        } else {
-          await ctx.prisma.user.update({
-            where: {
-              id: currentStudent.user.id,
-            },
-            data: {
-              name: student.name,
-              firstName: student.foreName,
-              lastName: student.longName,
-            },
-          });
-          await ctx.prisma.student.update({
-            where: {
-              id: currentStudent.id,
-            },
-            data: {
-              birthday: new Date(student.birthday),
-              schoolClass: {
-                connect: {
-                  id: student.klasseId,
-                },
-              },
-            },
-          });
-        }
-      });
-
       const teachers = await untis.getTeachers();
       const schoolTeachers = await ctx.prisma.teacher.findMany({
         where: {
@@ -268,7 +197,7 @@ export class WebUntisResolver {
           await ctx.prisma.teacher.create({
             data: {
               name: teacher.name,
-              longName: teacher.longName,
+              longName: `${teacher.foreName} ${teacher.longName}`,
               school: {
                 connect: {
                   id: currentSchool.id,
@@ -283,6 +212,7 @@ export class WebUntisResolver {
             },
             data: {
               name: teacher.name,
+              longName: `${teacher.foreName} ${teacher.longName}`,
             },
           });
         }

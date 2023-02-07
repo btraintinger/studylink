@@ -13,19 +13,16 @@ export class Student {
   id!: number;
 
   @Field((type) => [TutorOffering])
-  tutorOfferings?: TutorOffering[];
+  tutorOfferings!: TutorOffering[];
 
   @Field((type) => [TutorRequest])
-  tutorRequests?: TutorRequest[];
+  tutorRequests!: TutorRequest[];
 
   @Field()
-  schoolClass?: SchoolClass;
+  schoolClass!: SchoolClass;
 
   @Field()
   user!: User;
-
-  @Field()
-  birthday!: string;
 }
 
 @InputType()
@@ -48,9 +45,6 @@ export class StudentCreationInput {
 
   @Field()
   schoolClassId!: number;
-
-  @Field()
-  birthday!: string;
 }
 
 @InputType()
@@ -76,7 +70,4 @@ export class StudentUpdateInput {
 
   @Field()
   schoolClassId!: number;
-
-  @Field()
-  birthday!: string;
 }

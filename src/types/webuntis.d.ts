@@ -1,9 +1,6 @@
 import 'webuntis';
 
 declare module 'webuntis' {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Klasse {
     id: number;
     name: string;
@@ -11,17 +8,6 @@ declare module 'webuntis' {
     active: boolean;
     did: number?;
     departmentId: number?;
-  }
-
-  interface Student {
-    id: number;
-    key: number;
-    name: string;
-    foreName: string;
-    longName: string;
-    gender: string;
-    klasseId: number;
-    birthday: string;
   }
 
   type SessionInformation = {

@@ -4,6 +4,9 @@ import { IsFQDN, MaxLength } from 'class-validator';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { Admin } from '../admin/admin.type.';
 import { Department } from '../department/department.type';
+import { SchoolSubject } from '../schoolSubject/schoolSubject.type';
+import { Student } from '../student/student.type';
+import { Teacher } from '../teacher/teacher.type';
 
 @ObjectType()
 export class School {
@@ -21,6 +24,12 @@ export class School {
 
   @Field((type) => [Admin])
   admins!: Admin[];
+
+  @Field((type) => [SchoolSubject])
+  schoolSubjects!: SchoolSubject[];
+
+  @Field((type) => [Teacher])
+  teachers!: Teacher[];
 }
 
 @InputType()

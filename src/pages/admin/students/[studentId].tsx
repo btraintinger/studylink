@@ -19,7 +19,6 @@ import { STUDENTS_ADMIN } from '../../../constants/menu-items';
 const studentSchema = object({
   firstName: string().min(1, '* Bitte geben Sie einen Vornamen an'),
   lastName: string().min(1, '* Bitte geben Sie einen Nachnamen an'),
-  birthday: string().min(1, '* Bitte geben Sie ein Geburtsdatum an'),
   name: string(),
   email: string().email('* Bitte geben Sie eine gültige E-Mail-Adresse an'),
   studentClass: object({
@@ -33,7 +32,6 @@ export default function Student() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState('');
-  const [birthday, setBirthday] = useState<Moment | null>(null);
 
   // get studentId from url
   const { studentId } = router.query;
@@ -98,7 +96,6 @@ export default function Student() {
             schoolClassId: values.studentClass.id,
             firstName: values.firstName,
             lastName: values.lastName,
-            birthday: values.birthday,
           },
         },
       });
@@ -113,7 +110,6 @@ export default function Student() {
             schoolClassId: values.studentClass.id,
             firstName: values.firstName,
             lastName: values.lastName,
-            birthday: values.birthday,
           },
         },
       });

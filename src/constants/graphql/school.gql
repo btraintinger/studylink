@@ -21,7 +21,35 @@ query GetSchoolById($getSchoolByIdId: Float!) {
 
 query GetAdministeredSchool {
   getAdministeredSchool {
+    admins {
+      id
+      schoolId
+      user {
+        email
+        id
+        name
+      }
+    }
+    departments {
+      id
+      longName
+      name
+      schoolId
+    }
+    domain
     id
+    name
+    schoolSubjects {
+      id
+      name
+      longName
+    }
+    teachers {
+      schoolId
+      name
+      longName
+      id
+    }
   }
 }
 
