@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
   useCreateSchoolMutation,
+  useGetAdministeredSchoolQuery,
   useGetSchoolByIdQuery,
   useUpdateSchoolMutation,
 } from '../../../../../generated/graphql';
@@ -17,7 +18,11 @@ import Link from 'next/link';
 import {
   DEPARTMENTS_ADMIN,
   SCHOOL_ADMIN,
+  TEACHERS_ADMIN,
 } from '../../../../constants/menu-items';
+import { Teacher } from '../../../../../generated/graphql';
+import { Department } from 'webuntis';
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 
 const schoolSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
@@ -32,8 +37,8 @@ type SchoolInput = TypeOf<typeof schoolSchema>;
 
 export default function School() {
   const router = useRouter();
-
   const [errorMessage, setErrorMessage] = useState('');
+  const [array, setArray] = useState<Department[]>([]);
 
   // get schoolId from url
   const { schoolId } = router.query;
@@ -59,7 +64,7 @@ export default function School() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const { loading } = useGetSchoolByIdQuery({
+  const {loading}  = useGetSchoolByIdQuery({
     skip: queryId === null,
     variables: {
       getSchoolByIdId: queryId as number,
@@ -70,6 +75,14 @@ export default function School() {
     },
     onCompleted: (data) => {
       if (data) reset(data.getSchoolById);
+    },
+  })
+  && useGetAdministeredSchoolQuery({
+    onCompleted: (data) => {
+      if (data)
+        console.log("Error: GetAdministeredSchoolQuery");
+        setArray(data.getAdministeredSchool.departments as Department[]);
+      console.log(array);
     },
   });
 
@@ -112,6 +125,23 @@ export default function School() {
       reset();
     }
   }, [isSubmitSuccessful]);
+
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'longName',
+      headerName: 'Name',
+      flex: 1,
+    },
+  ];
+
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    router.push(`${TEACHERS_ADMIN}/${params.row.id}`);
+  };
 
   if (loading)
     <Layout role="ADMIN">
@@ -173,6 +203,28 @@ export default function School() {
           >
             {errorMessage}
           </Alert>
+          <Box sx={{ height: '80vh', width: '100%' }}>
+        <DataGrid
+          rows={array}
+          columns={columns}
+          autoPageSize
+          pagination
+          disableSelectionOnClick
+          onRowClick={handleRowClick}
+          sx={{
+            border: 1,
+            borderColor: 'primary.main',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'primary.main',
+              fontSize: '1.2rem',
+            },
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
+          }}
+        ></DataGrid>
+      </Box>
+
         </Box>
       </FormWrapper>
     </Layout>
