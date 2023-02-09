@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   SchoolClass,
@@ -6,7 +5,6 @@ import {
 } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { useState } from 'react';
-import XTable from '../../../components/page/x-table';
 
 export default function Class() {
   const [array, setArray] = useState<SchoolClass[]>([]);
@@ -27,7 +25,7 @@ export default function Class() {
     console.log(array);
     return (
       <Layout role="ADMIN">
-        <XTable {...array} />
+        <div>test</div>
       </Layout>
     );
   }

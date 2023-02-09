@@ -17,8 +17,8 @@ services:
 
   app:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
+      context: ..
+      dockerfile: ./docker/app/Dockerfile
     container_name: studylink
     volumes:
       - .:/app
@@ -38,16 +38,14 @@ services:
 
   db_migration:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
+      context: ..
+      dockerfile: docker/db_migration/Dockerfile
     container_name: db_migration
-    volumes:
-      - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
-    command: npx prisma db push
 
 volumes:
   db_data:

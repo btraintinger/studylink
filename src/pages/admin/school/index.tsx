@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
-import XTable from '../../../components/page/x-table';
 
 export default function School() {
   const { data, loading } = useGetAdministeredSchoolQuery();

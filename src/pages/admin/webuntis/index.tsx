@@ -1,16 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-} from '@mui/material';
+import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { boolean, object, string, TypeOf } from 'zod';
+import { object, string, TypeOf } from 'zod';
 import { useUpdateSchoolDataMutation } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import FormWrapper from '../../../components/utils/formWrapper';

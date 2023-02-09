@@ -6,7 +6,6 @@ import {
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { useState } from 'react';
-import XTable from '../../../components/page/x-table';
 
 export default function Requests() {
   const [array, setArray] = useState<TutorRequest[]>([]);
@@ -28,9 +27,7 @@ export default function Requests() {
 
   return (
     <Layout role="STUDENT">
-      <Typography>
-        <XTable data={array}/>
-      </Typography>
+      <Typography>dAFAS</Typography>
     </Layout>
   );
 }

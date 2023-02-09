@@ -1,4 +1,3 @@
-import { Typography, Box } from '@mui/material';
 import { useState } from 'react';
 import type { TutorOffering } from '../../../../generated/graphql';
 import { useGetTutorOffersOfCurrentUserQuery } from '../../../../generated/graphql';
