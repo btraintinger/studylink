@@ -64,7 +64,7 @@ model SchoolClass {
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
-  student         Student[]
+  students         Student[]
 
   @@index([departmentId])
   @@map("school_class")

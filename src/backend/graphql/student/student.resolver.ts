@@ -67,15 +67,6 @@ async function isUserAdministratingStudent(
 @Resolver((of) => Student)
 export class StudentResolver {
   @FieldResolver()
-  async schoolClass(@Root() student: Student, @Ctx() ctx: Context) {
-    return await ctx.prisma.student
-      .findUnique({
-        where: { id: student.id },
-      })
-      .schoolClass({ select: { id: true, name: true } });
-  }
-
-  @FieldResolver()
   async tutorOfferings(@Root() student: Student, @Ctx() ctx: Context) {
     return await ctx.prisma.student
       .findUnique({

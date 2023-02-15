@@ -5,11 +5,7 @@ query getStudentById($getStudentByIdId: Float!) {
       email
       name
     }
-    schoolClass {
-      id
-      name
-      longName
-    }
+    schoolClassId
   }
 }
 
@@ -20,11 +16,7 @@ mutation createStudent($studentInput: StudentCreationInput!) {
       email
       name
     }
-    schoolClass {
-      id
-      name
-      longName
-    }
+    schoolClassId
   }
 }
 
@@ -67,12 +59,7 @@ query GetStudentOfCurrentUser {
       id
       name
     }
-    schoolClass {
-      departmentId
-      id
-      longName
-      name
-    }
+    schoolClassId
   }
 }
 
@@ -83,11 +70,7 @@ mutation updateStudent($studentInput: StudentUpdateInput!) {
       email
       name
     }
-    schoolClass {
-      id
-      name
-      longName
-    }
+    schoolClassId
   }
 }
 
@@ -104,5 +87,56 @@ query GetTeachersOfStudent {
     name
     schoolId
     id
+  }
+}
+
+query GetAdministeredStudents {
+  getAdministeredSchool {
+    departments {
+      longName
+      name
+      schoolClasses {
+        students {
+          user {
+            name
+            email
+          }
+          tutorOfferings {
+            teacher {
+              longName
+              name
+            }
+            schoolSubject {
+              name
+              longName
+            }
+            grade
+            description
+          }
+          tutorRequests {
+            description
+            grade
+            schoolSubject {
+              name
+              longName
+            }
+            teacher {
+              name
+              longName
+            }
+          }
+        }
+        schoolSubjects {
+          name
+          longName
+        }
+        name
+        longName
+        id
+        departmentId
+      }
+      id
+      schoolId
+    }
   }
 }

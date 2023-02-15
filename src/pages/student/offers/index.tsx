@@ -1,18 +1,18 @@
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetTutorOffersOfCurrentUserQuery, TutorOffering} from '../../../../generated/graphql';
+import { useGetStudentOfCurrentUserQuery, TutorOffering} from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { Teacher } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import { TEACHERS_ADMIN } from '../../../constants/menu-items';
+import { OFFERS_STUDENT} from '../../../constants/menu-items';
 
 export default function Offers() {
   const router = useRouter();
   const [array, setArray] = useState<TutorOffering[]>([]);
 
-  const { loading } = useGetTutorOffersOfCurrentUserQuery({
+  const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
       if (data)
         setArray(data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]);
@@ -35,28 +35,29 @@ export default function Offers() {
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    router.push(`${TEACHERS_ADMIN}/${params.row.id}`);
+    
+    router.push(`${OFFERS_STUDENT}/${params.row.id}`);
   };
 
   if (loading)
     return (
-      <Layout role="ADMIN">
+      <Layout role="STUDENT">
         <LoadingPage />
       </Layout>
     );
 
   return (
-    <Layout role="ADMIN">
+    <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
         <Button
           variant="contained"
           sx={{ mb: 2 }}
           fullWidth
           onClick={() => {
-            router.push(`${TEACHERS_ADMIN}/new`);
+            router.push(`${OFFERS_STUDENT}/new`);
           }}
         >
-          Neuen Lehrer hinzufügen
+          Neues Angebot hinzufügen
         </Button>
         <DataGrid
           rows={array}
