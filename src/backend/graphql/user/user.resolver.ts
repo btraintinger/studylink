@@ -1,4 +1,3 @@
-import { transporter } from './../../utils/mailer';
 import {
   User,
   UserUpdateInput,
@@ -12,6 +11,7 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { sendPasswordResetEmail } from '../../auth/sendPasswordResetEmail';
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -67,18 +67,7 @@ export class UserResolver {
       },
     });
 
-    const data = {
-      from: process.env.MAIL_USER,
-      to: forgotPasswordInput.email,
-      subject: 'Passwort zurücksetzen',
-      html: `<p>Click <a href="${process.env.NEXT_PUBLIC_DOMAIN}/auth/forgotPassword/${token}">here</a> to reset your password</p>`,
-    };
-
-    transporter.sendMail(data, (err, info) => {
-      if (err) {
-        throw new Error(err.message);
-      }
-    });
+    sendPasswordResetEmail(token, user.email);
 
     return true;
   }

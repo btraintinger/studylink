@@ -21,6 +21,9 @@ notes.local.md
 /.next/
 /out/
 
+# react email
+/.react-email
+
 # production
 /build
 

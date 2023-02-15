@@ -128,7 +128,7 @@ export default function LoginPage() {
             sx={{ fontSize: '14px', fontStyle: 'bold' }}
             underline="none"
             component={Link}
-            href="/auth/passwordReset"
+            href="/auth/forgotPassword"
             passHref
           >
             {'Passwort vergessen?'}
