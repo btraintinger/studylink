@@ -16,8 +16,6 @@ export const roboto = Roboto({
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
-    deDE,
-    coreDeDE,
     ...(mode === 'light'
       ? {
           // palette values for light mode
@@ -118,4 +116,6 @@ export const getDesignTokens = (mode: PaletteMode) => ({
           },
         }),
   },
+  deDE,
+  coreDeDE,
 });

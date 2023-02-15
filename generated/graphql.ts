@@ -43,6 +43,10 @@ export type DepartmentUpdateInput = {
   name: Scalars['String'];
 };
 
+export type ForgotPasswordInput = {
+  email: Scalars['String'];
+};
+
 export type Match = {
   __typename?: 'Match';
   rating: Scalars['Float'];
@@ -68,7 +72,8 @@ export type Mutation = {
   deleteTeacher: Teacher;
   deleteTutorOffering: TutorOffering;
   deleteTutorRequest: TutorRequest;
-  resetPassword: User;
+  forgotPassword: Scalars['Boolean'];
+  resetPassword: Scalars['Boolean'];
   updateDepartment: Department;
   updateSchool: School;
   updateSchoolClass: SchoolClass;
@@ -159,6 +164,11 @@ export type MutationDeleteTutorOfferingArgs = {
 
 export type MutationDeleteTutorRequestArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationForgotPasswordArgs = {
+  forgotPasswordInput: ForgotPasswordInput;
 };
 
 
@@ -277,7 +287,8 @@ export type QueryGetTutorRequestByIdArgs = {
 };
 
 export type ResetPasswordInput = {
-  email: Scalars['String'];
+  password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type School = {
@@ -511,11 +522,6 @@ export type UpdateTutorOfferingMutationVariables = Exact<{
 
 export type UpdateTutorOfferingMutation = { __typename?: 'Mutation', updateTutorOffering: { __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', schoolId: number, id: number, name: string } } };
 
-export type GetTutorRequestsOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetTutorRequestsOfCurrentUserQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', tutorOfferings: Array<{ __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', schoolId: number, name: string, id: number } }> } };
-
 export type GetTutorRequestByIdQueryVariables = Exact<{
   getTutorRequestByIdId: Scalars['Float'];
 }>;
@@ -691,12 +697,19 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', email: string, name: string, id: number, role: string } };
 
+export type ForgotPasswordMutationVariables = Exact<{
+  forgotPasswordInput: ForgotPasswordInput;
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: boolean };
+
 export type ResetPasswordMutationVariables = Exact<{
   resetPasswordInput: ResetPasswordInput;
 }>;
 
 
-export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'User', id: number } };
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
 export type UpdateSchoolDataMutationVariables = Exact<{
   loginData: WebUntisImportInput;
@@ -1004,54 +1017,6 @@ export function useUpdateTutorOfferingMutation(baseOptions?: Apollo.MutationHook
 export type UpdateTutorOfferingMutationHookResult = ReturnType<typeof useUpdateTutorOfferingMutation>;
 export type UpdateTutorOfferingMutationResult = Apollo.MutationResult<UpdateTutorOfferingMutation>;
 export type UpdateTutorOfferingMutationOptions = Apollo.BaseMutationOptions<UpdateTutorOfferingMutation, UpdateTutorOfferingMutationVariables>;
-export const GetTutorRequestsOfCurrentUserDocument = gql`
-    query GetTutorRequestsOfCurrentUser {
-  getStudentOfCurrentUser {
-    tutorOfferings {
-      description
-      grade
-      id
-      schoolSubject {
-        name
-        longName
-        id
-      }
-      teacher {
-        schoolId
-        name
-        id
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetTutorRequestsOfCurrentUserQuery__
- *
- * To run a query within a React component, call `useGetTutorRequestsOfCurrentUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTutorRequestsOfCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTutorRequestsOfCurrentUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetTutorRequestsOfCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<GetTutorRequestsOfCurrentUserQuery, GetTutorRequestsOfCurrentUserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetTutorRequestsOfCurrentUserQuery, GetTutorRequestsOfCurrentUserQueryVariables>(GetTutorRequestsOfCurrentUserDocument, options);
-      }
-export function useGetTutorRequestsOfCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTutorRequestsOfCurrentUserQuery, GetTutorRequestsOfCurrentUserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetTutorRequestsOfCurrentUserQuery, GetTutorRequestsOfCurrentUserQueryVariables>(GetTutorRequestsOfCurrentUserDocument, options);
-        }
-export type GetTutorRequestsOfCurrentUserQueryHookResult = ReturnType<typeof useGetTutorRequestsOfCurrentUserQuery>;
-export type GetTutorRequestsOfCurrentUserLazyQueryHookResult = ReturnType<typeof useGetTutorRequestsOfCurrentUserLazyQuery>;
-export type GetTutorRequestsOfCurrentUserQueryResult = Apollo.QueryResult<GetTutorRequestsOfCurrentUserQuery, GetTutorRequestsOfCurrentUserQueryVariables>;
 export const GetTutorRequestByIdDocument = gql`
     query GetTutorRequestById($getTutorRequestByIdId: Float!) {
   getTutorRequestById(id: $getTutorRequestByIdId) {
@@ -2152,11 +2117,40 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($forgotPasswordInput: ForgotPasswordInput!) {
+  forgotPassword(forgotPasswordInput: $forgotPasswordInput)
+}
+    `;
+export type ForgotPasswordMutationFn = Apollo.MutationFunction<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
+
+/**
+ * __useForgotPasswordMutation__
+ *
+ * To run a mutation, you first call `useForgotPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useForgotPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [forgotPasswordMutation, { data, loading, error }] = useForgotPasswordMutation({
+ *   variables: {
+ *      forgotPasswordInput: // value for 'forgotPasswordInput'
+ *   },
+ * });
+ */
+export function useForgotPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument, options);
+      }
+export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswordMutation>;
+export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
+export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {
-  resetPassword(resetPasswordInput: $resetPasswordInput) {
-    id
-  }
+  resetPassword(resetPasswordInput: $resetPasswordInput)
 }
     `;
 export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;

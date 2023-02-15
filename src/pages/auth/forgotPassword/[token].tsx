@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Container,
-  Grid,
   Link as MuiLink,
   TextField,
   Typography,
@@ -17,24 +16,25 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
-import LoadingPage from '../../components/utils/loadingPage';
+import { useResetPasswordMutation } from '../../../../generated/graphql';
+import LoadingPage from '../../../components/utils/loadingPage';
 
-const signUpSchema = object({
-  email: string().email('* Email must be a valid email address'),
-  password: string().min(1, '* Passwort wird benötigt'),
-  passwordConfirm: string().min(1, 'Bitte Passwort bestätigen'),
-  name: string().min(1, '* Name wird benötigt'),
+const resetSchema = object({
+  password: string().min(
+    8,
+    '* Passwort wird mit mindestens 8 Stellen benötigt'
+  ),
+  passwordConfirm: string().min(8, 'Bitte Passwort bestätigen'),
 }).refine((data) => data.password === data.passwordConfirm, {
   path: ['passwordConfirm'],
   message: '* Passwörter stimmen nicht überein',
 });
 
-type SignUpInput = TypeOf<typeof signUpSchema>;
+type ResetInput = TypeOf<typeof resetSchema>;
 
-export default function LoginPage() {
+export default function PasswordReset() {
   const router = useRouter();
-
-  const { data: session, status } = useSession();
+  const { token } = router.query;
 
   const [error, setError] = useState('');
 
@@ -43,9 +43,8 @@ export default function LoginPage() {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<SignUpInput>({
-    resolver: zodResolver(signUpSchema),
-    mode: 'onTouched',
+  } = useForm<ResetInput>({
+    resolver: zodResolver(resetSchema),
   });
 
   useEffect(() => {
@@ -54,26 +53,32 @@ export default function LoginPage() {
     }
   }, [isSubmitSuccessful]);
 
-  if (status === 'loading') return <LoadingPage />;
-  if (session) router.push('/');
+  const [resetFunction, { loading }] = useResetPasswordMutation({
+    onCompleted: () => {
+      router.push('/auth/signin');
+    },
+    onError: (error) => {
+      if (error.message === 'InvalidTokenError') {
+        setError('Der Link ist nicht mehr gültig');
+      }
+    },
+  });
 
-  const onSubmitHandler: SubmitHandler<SignUpInput> = async (values) => {
-    const response = await signIn('signup', {
-      email: values.email,
-      password: values.password,
-      name: values.name,
-      redirect: false,
+  const onSubmitHandler: SubmitHandler<ResetInput> = async (values) => {
+    resetFunction({
+      variables: {
+        resetPasswordInput: {
+          token: token as string,
+          password: values.password,
+        },
+      },
     });
-    if (response === undefined) return;
-    if (response.ok) {
-      router.push('/');
-      return;
-    }
-    if (response.error) setError(response.error);
   };
 
+  if (loading) return <LoadingPage />;
+
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="md">
       <Box
         sx={{
           display: 'flex',
@@ -92,9 +97,6 @@ export default function LoginPage() {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Registrieren
-        </Typography>
         <Box
           component="form"
           noValidate
@@ -102,16 +104,6 @@ export default function LoginPage() {
           onSubmit={handleSubmit(onSubmitHandler)}
           sx={{ mt: 3 }}
         >
-          <TextField
-            sx={{ mb: 2 }}
-            label="Email"
-            fullWidth
-            required
-            type="email"
-            error={!!errors['email']}
-            helperText={errors['email'] ? errors['email'].message : ''}
-            {...register('email')}
-          />
           <TextField
             sx={{ mb: 2 }}
             label="Passwort"
@@ -134,17 +126,6 @@ export default function LoginPage() {
             }
             {...register('passwordConfirm')}
           />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Name"
-            fullWidth
-            required
-            type="text"
-            error={!!errors['name']}
-            helperText={errors['name'] ? errors['name'].message : ''}
-            {...register('name')}
-          />
-
           <Button
             variant="contained"
             fullWidth
@@ -154,19 +135,16 @@ export default function LoginPage() {
             Bestätigen
           </Button>
 
-          <Grid container>
-            <Grid item>
-              <MuiLink
-                underline="none"
-                sx={{ fontSize: '14px', fontStyle: 'bold' }}
-                component={Link}
-                href="/auth/signin"
-                passHref
-              >
-                {'Hast du schon einen Account? Logge dich ein'}
-              </MuiLink>
-            </Grid>
-          </Grid>
+          <MuiLink
+            sx={{ fontSize: '14px', fontStyle: 'bold' }}
+            underline="none"
+            component={Link}
+            href="/"
+            passHref
+          >
+            {'Zurück auf die Startseite'}
+          </MuiLink>
+
           <Alert
             severity="error"
             sx={{

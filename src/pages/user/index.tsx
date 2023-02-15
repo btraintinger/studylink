@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, TextField } from '@mui/material';
+import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
+  useForgotPasswordMutation,
   useGetCurrentUserQuery,
   useResetPasswordMutation,
   useUpdateUserMutation,
@@ -47,7 +48,7 @@ export default function User() {
     },
   });
 
-  const [resetFunction] = useResetPasswordMutation();
+  const [resetPasswordFunction] = useForgotPasswordMutation();
 
   const { data: session } = useSession();
 
@@ -130,9 +131,9 @@ export default function User() {
               fullWidth
               onClick={() => {
                 if (!session.user.email) return;
-                resetFunction({
+                resetPasswordFunction({
                   variables: {
-                    resetPasswordInput: {
+                    forgotPasswordInput: {
                       email: session.user.email,
                     },
                   },

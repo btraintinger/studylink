@@ -64,7 +64,7 @@ model SchoolClass {
   departmentId    Int               @map("department_id")
   department      Department        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classHasSubject ClassHasSubject[]
-  student         Student[]
+  students        Student[]
 
   @@index([departmentId])
   @@map("school_class")
@@ -172,16 +172,18 @@ model Student {
 }
 
 model User {
-  id            String    @id @unique @default(cuid())
-  name          String?
-  firstName     String?   @map("first_name")
-  lastName      String?   @map("last_name")
-  email         String    @unique
-  emailVerified DateTime? @map("email_verified")
-  password      String
-  role          String
-  student       Student?
-  admin         Admin?
+  id                 String    @id @unique @default(cuid())
+  name               String?
+  firstName          String?   @map("first_name")
+  lastName           String?   @map("last_name")
+  email              String    @unique
+  emailVerified      DateTime? @map("email_verified")
+  verificationToken  String?   @map("verification_token")
+  passwordResetToken String?   @map("reset_token")
+  password           String
+  role               String
+  student            Student?
+  admin              Admin?
 
   @@map("user")
 }

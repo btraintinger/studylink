@@ -14,13 +14,11 @@ import {
 import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
-import Link from 'next/link';
 import {
   DEPARTMENTS_ADMIN,
   SCHOOL_ADMIN,
   TEACHERS_ADMIN,
 } from '../../../../constants/menu-items';
-import { Teacher } from '../../../../../generated/graphql';
 import { Department } from 'webuntis';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 
@@ -64,27 +62,27 @@ export default function School() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
-  const {loading}  = useGetSchoolByIdQuery({
-    skip: queryId === null,
-    variables: {
-      getSchoolByIdId: queryId as number,
-    },
-    onError: (error) => {
-      if (error.message === 'DoesNotExistError') router.push('/404');
-      if (error.message === 'NotAuthorizedError') router.push('/401');
-    },
-    onCompleted: (data) => {
-      if (data) reset(data.getSchoolById);
-    },
-  })
-  && useGetAdministeredSchoolQuery({
-    onCompleted: (data) => {
-      if (data)
-        console.log("Error: GetAdministeredSchoolQuery");
+  const { loading } =
+    useGetSchoolByIdQuery({
+      skip: queryId === null,
+      variables: {
+        getSchoolByIdId: queryId as number,
+      },
+      onError: (error) => {
+        if (error.message === 'DoesNotExistError') router.push('/404');
+        if (error.message === 'NotAuthorizedError') router.push('/401');
+      },
+      onCompleted: (data) => {
+        if (data) reset(data.getSchoolById);
+      },
+    }) &&
+    useGetAdministeredSchoolQuery({
+      onCompleted: (data) => {
+        if (data) console.log('Error: GetAdministeredSchoolQuery');
         setArray(data.getAdministeredSchool.departments as Department[]);
-      console.log(array);
-    },
-  });
+        console.log(array);
+      },
+    });
 
   const {
     register,
@@ -203,28 +201,28 @@ export default function School() {
           >
             {errorMessage}
           </Alert>
-          <Box sx={{ height: '80vh', width: '100%' }}>
-        <DataGrid
-          rows={array}
-          columns={columns}
-          autoPageSize
-          pagination
-          disableSelectionOnClick
-          onRowClick={handleRowClick}
-          sx={{
-            border: 1,
-            borderColor: 'primary.main',
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: 'primary.main',
-              fontSize: '1.2rem',
-            },
-            '& .MuiDataGrid-cell': {
-              cursor: 'pointer',
-            },
-          }}
-        ></DataGrid>
-      </Box>
-
+          <Box sx={{ width: '100%' }}>
+            <DataGrid
+              rows={array}
+              columns={columns}
+              autoPageSize
+              pagination
+              disableSelectionOnClick
+              onRowClick={handleRowClick}
+              autoHeight
+              sx={{
+                border: 1,
+                borderColor: 'primary.main',
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: 'primary.main',
+                  fontSize: '1.2rem',
+                },
+                '& .MuiDataGrid-cell': {
+                  cursor: 'pointer',
+                },
+              }}
+            ></DataGrid>
+          </Box>
         </Box>
       </FormWrapper>
     </Layout>

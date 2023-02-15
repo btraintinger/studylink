@@ -4,27 +4,18 @@ import { useRouter } from 'next/router';
 import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
 import Layout from '../../../components/page/layout';
 import LoadingPage from '../../../components/utils/loadingPage';
-import XTable from '../../../components/page/x-table';
 
 export default function School() {
   const { data, loading } = useGetAdministeredSchoolQuery();
 
-  // const [array, setArray] = useState<School[]>([]);
-  // const { loading } = useGetTutorOffersOfCurrentUserQuery({
-  // onCompleted: (data) => {
-  //    if (data)
-  //      setArray(
-  //        data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
-  //      );
-  //  },
-  // });
-
   const router = useRouter();
 
   if (loading)
-    <Layout role="ADMIN">
-      <LoadingPage></LoadingPage>
-    </Layout>;
+    return (
+      <Layout role="ADMIN">
+        <LoadingPage></LoadingPage>
+      </Layout>
+    );
 
   if (data !== undefined)
     router.push(`/admin/school/${data.getAdministeredSchool.id}`);

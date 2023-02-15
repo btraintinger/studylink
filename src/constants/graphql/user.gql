@@ -24,8 +24,10 @@ mutation UpdateUser($userUpdateInput: UserUpdateInput!) {
   }
 }
 
+mutation ForgotPassword($forgotPasswordInput: ForgotPasswordInput!) {
+  forgotPassword(forgotPasswordInput: $forgotPasswordInput)
+}
+
 mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {
-  resetPassword(resetPasswordInput: $resetPasswordInput) {
-    id
-  }
+  resetPassword(resetPasswordInput: $resetPasswordInput)
 }
