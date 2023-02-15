@@ -3,6 +3,7 @@
 import { MaxLength } from 'class-validator';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { SchoolSubject } from '../schoolSubject/schoolSubject.type';
+import { Student } from '../student/student.type';
 
 @ObjectType()
 export class SchoolClass {
@@ -16,10 +17,13 @@ export class SchoolClass {
   longName!: string;
 
   @Field((type) => [SchoolSubject])
-  schoolSubjects?: SchoolSubject[];
+  schoolSubjects!: SchoolSubject[];
 
   @Field((type) => Int)
   departmentId!: number;
+
+  @Field((type) => [Student])
+  students!: Student[];
 }
 
 @InputType()

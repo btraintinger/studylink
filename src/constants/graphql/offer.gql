@@ -1,22 +1,3 @@
-query GetTutorOffersOfCurrentUser {
-  getStudentOfCurrentUser {
-    tutorOfferings {
-      description
-      grade
-      id
-      schoolSubject {
-        id
-        longName
-        name
-      }
-      teacher {
-        schoolId
-        id
-        name
-      }
-    }
-  }
-}
 
 query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {

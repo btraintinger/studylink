@@ -1,0 +1,39 @@
+query GetMatchesOfCurrentUser {
+  getMatchesOfCurrentUser {
+    rating
+    tutorOffering {
+      id
+      description
+      grade
+      schoolSubject {
+        id
+        name
+        longName
+      }
+      studentId
+      teacher {
+        id
+        longName
+        name
+        schoolId
+      }
+    }
+    tutorRequest {
+      description
+      grade
+      id
+      schoolSubject {
+        id
+        longName
+        name
+      }
+      studentId
+      teacher {
+        id
+        longName
+        name
+        schoolId
+      }
+    }
+  }
+}

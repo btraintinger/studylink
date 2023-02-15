@@ -19,7 +19,7 @@ export class Student {
   tutorRequests!: TutorRequest[];
 
   @Field()
-  schoolClass!: SchoolClass;
+  schoolClassId!: number;
 
   @Field()
   user!: User;

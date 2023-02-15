@@ -1,44 +1,69 @@
+import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { Typography } from '@mui/material';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
+import { useGetMatchesOfCurrentUserQuery, Match} from '../../../../generated/graphql';
+import { useEffect, useState } from 'react';
+import { Teacher } from '../../../../generated/graphql';
+import LoadingPage from '../../../components/utils/loadingPage';
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
+import { useRouter } from 'next/router';
+import { OFFERS_STUDENT} from '../../../constants/menu-items';
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+export default function Offers() {
+  const router = useRouter();
+  const [array, setArray] = useState<Match[]>([]);
 
-export default function Matches() {
+  const { loading } = useGetMatchesOfCurrentUserQuery({
+    onCompleted: (data) => {
+      if (data)
+        setArray(data.getMatchesOfCurrentUser as Match[]);
+      console.log(array);
+    },
+  });
+
+
+  const columns: GridColDef[] = [
+    {
+      field: 'rating',
+      headerName: '#',
+      flex: 0.3,
+    },
+  ];
+
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    
+    router.push(`${OFFERS_STUDENT}/${params.row.id}`);
+  };
+
+  if (loading)
+    return (
+      <Layout role="STUDENT">
+        <LoadingPage />
+      </Layout>
+    );
+
   return (
     <Layout role="STUDENT">
-      <Card sx={{ minWidth: 275 }}>
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            It's a Match
-          </Typography>
-          <Typography variant="h5" component="div">
-            Raffael Weilch möchte dir Mathematik Hilfe geben!
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            5AHEL
-          </Typography>
-          <Typography variant="body2">
-            Elektronik
-            <br />
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
-      </Card>
+      <Box sx={{ height: '80vh', width: '100%' }}>
+        <DataGrid
+          rows={array}
+          columns={columns}
+          autoPageSize
+          pagination
+          disableSelectionOnClick
+          onRowClick={handleRowClick}
+          sx={{
+            border: 1,
+            borderColor: 'primary.main',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'primary.main',
+              fontSize: '1.2rem',
+            },
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
+          }}
+        ></DataGrid>
+      </Box>
     </Layout>
   );
 }

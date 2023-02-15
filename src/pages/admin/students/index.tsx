@@ -1,25 +1,30 @@
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
+import { useGetAdministeredStudentsQuery, SchoolClass } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
-import { Student } from '../../../../generated/graphql';
+import { SchoolSubject } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import { SCHOOL_SUBJECTS_ADMIN } from '../../../constants/menu-items';
+import { SCHOOL_SUBJECTS_ADMIN, STUDENTS_ADMIN } from '../../../constants/menu-items';
 
 export default function Students() {
   const router = useRouter();
-  const [array, setArray] = useState<Student[]>([]);
+  const [array, setArray] = useState<SchoolClass[]>([]);
 
-  const { loading } = useGetAdministeredSchoolQuery({
+  const { loading } = useGetAdministeredStudentsQuery({
     onCompleted: (data) => {
-      if (data)
-        setArray(data.getAdministeredSchool.schoolSubjects as SchoolSubject[]);
-      console.log(array);
+      if (data){
+        const temp: SchoolClass[] = [];
+        data.getAdministeredSchool.departments.map((department) => {
+          department.schoolClasses.map((schoolClass) => {
+            temp.push(schoolClass as SchoolClass);
+          });
+        });
+        setArray(temp);
+      }
     },
   });
-
   const columns: GridColDef[] = [
     {
       field: 'name',
@@ -34,7 +39,7 @@ export default function Students() {
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    router.push(`${SCHOOL_SUBJECTS_ADMIN}/${params.row.id}`);
+    router.push(`${STUDENTS_ADMIN}/${params.row.id}`);
   };
 
   if (loading)
@@ -52,10 +57,10 @@ export default function Students() {
           sx={{ mb: 2 }}
           fullWidth
           onClick={() => {
-            router.push(`${SCHOOL_SUBJECTS_ADMIN}/new`);
+            router.push(`${STUDENTS_ADMIN}/new`);
           }}
         >
-          Neues Fach anlegen
+          Neuen Schüler hinzufügen
         </Button>
         <DataGrid
           rows={array}
