@@ -15,7 +15,6 @@ model School {
   departments    Department[]
   admins         Admin[]
   teachers       Teacher[]
-  rooms          Room[]
   schoolSubjects SchoolSubject[]
 
   @@map("school")
@@ -31,18 +30,6 @@ model ClassHasSubject {
   @@index([schoolClassId])
   @@index([subjectId])
   @@map("class_has_subject")
-}
-
-model RoomHasSubject {
-  roomId        Int           @map("room_id")
-  subjectId     Int           @map("subject_id")
-  room          Room          @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  schoolSubject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([roomId, subjectId])
-  @@index([roomId])
-  @@index([subjectId])
-  @@map("room_has_subject")
 }
 
 model Department {
@@ -79,7 +66,6 @@ model SchoolSubject {
   classHasSubject ClassHasSubject[]
   tutor           TutorOffering[]
   tutorRequest    TutorRequest[]
-  RoomHasSubject  RoomHasSubject[]
 
   @@index([schoolId])
   @@map("school_subject")
@@ -96,17 +82,6 @@ model Teacher {
 
   @@index([schoolId])
   @@map("teacher")
-}
-
-model Room {
-  id             Int              @id @unique() @default(autoincrement())
-  name           String
-  schoolId       Int              @map("school_id")
-  school         School           @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  RoomHasSubject RoomHasSubject[]
-
-  @@index([schoolId])
-  @@map("room")
 }
 
 model TutorRequest {
@@ -172,18 +147,18 @@ model Student {
 }
 
 model User {
-  id                 String    @id @unique @default(cuid())
-  name               String?
-  firstName          String?   @map("first_name")
-  lastName           String?   @map("last_name")
-  email              String    @unique
-  emailVerified      DateTime? @map("email_verified")
-  verificationToken  String?   @map("verification_token")
-  passwordResetToken String?   @map("reset_token")
-  password           String
-  role               String
-  student            Student?
-  admin              Admin?
+  id                     String    @id @unique @default(cuid())
+  name                   String?
+  firstName              String?   @map("first_name")
+  lastName               String?   @map("last_name")
+  email                  String    @unique
+  emailVerified          DateTime? @map("email_verified")
+  emailVerificationToken String?   @map("email_verification_token")
+  passwordResetToken     String?   @map("reset_token")
+  password               String
+  role                   String
+  student                Student?
+  admin                  Admin?
 
   @@map("user")
 }

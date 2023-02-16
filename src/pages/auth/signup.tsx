@@ -65,10 +65,8 @@ export default function LoginPage() {
       redirect: false,
     });
     if (response === undefined) return;
-    if (response.ok) {
-      router.push('/');
-      return;
-    }
+    if (response.error === 'EmailVerificationNeeded')
+      router.push('/auth/signin');
     if (response.error) setError(response.error);
   };
 
@@ -94,6 +92,10 @@ export default function LoginPage() {
         </Avatar>
         <Typography component="h1" variant="h5">
           Registrieren
+        </Typography>
+        <Typography component="p" variant="h6">
+          Nach der Registrierung wird eine E-Mail an dich gesendet, welche 15
+          Minuten lang gültig ist, um deine E-Mail Adresse zu verifizieren.
         </Typography>
         <Box
           component="form"

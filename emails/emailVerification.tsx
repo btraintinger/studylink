@@ -24,18 +24,18 @@ import {
 } from './styles';
 
 interface EmailProps {
-  passwordResetToken: string;
+  verificationToken: string;
 }
 
-export default function ForgotPasswordEmail({
-  passwordResetToken,
+export default function EmailVerificationEmail({
+  verificationToken,
 }: EmailProps) {
-  const inviteLink = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/forgotPassword/${passwordResetToken}`;
+  const inviteLink = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/verifyEmail/${verificationToken}`;
 
   return (
     <Html>
       <Head />
-      <Preview>Passwort Zurücksetzen</Preview>
+      <Preview>Email Verifizierung</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={{ marginTop: '32px' }}>
@@ -47,13 +47,13 @@ export default function ForgotPasswordEmail({
               style={logo}
             />
           </Section>
-          <Heading style={h1}>Passwort Zurücksetzen</Heading>
+          <Heading style={h1}>E-Mail Verifizierung</Heading>
           <Text style={text}>
             Diese E-Mail ist 15 Minuten lang gültig. Wenn du eine neue E-Mail
             anforderst verfällt die Gültigkeit dieser E-Mail.
           </Text>
           <Text style={text}>
-            Setze dein Passwort zurück, indem du auf den diesen Button klickst.
+            Verifiziere deine E-Mail, indem du auf den diesen Button klickst.
           </Text>
           <Section
             style={{
@@ -63,7 +63,7 @@ export default function ForgotPasswordEmail({
             }}
           >
             <Button pX={20} pY={12} style={btn} href={inviteLink}>
-              Passwort zurücksetzen
+              Email verifizieren
             </Button>
           </Section>
           <Text style={text}>

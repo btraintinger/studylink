@@ -1,14 +1,17 @@
 import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
 import prisma from '../utils/prismadb';
+import jwt from 'jsonwebtoken';
+import { sendEmailVerificationEmail } from './sendEmailVerificationEmail';
+import { User } from '@prisma/client';
 
-async function isUserAlreadyExistent(email: string) {
+async function isUserAlreadyExistent(email: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true },
+    select: { emailVerified: true },
   });
 
-  return !!user;
+  return !!user?.emailVerified;
 }
 
 function areCredentialsValid(credentials) {
@@ -30,6 +33,24 @@ export async function signin(credentials) {
 
   const isValid = await bcrypt.compare(credentials.password, user.password);
 
+  if (user.role === 'ADMIN' && !user.emailVerified) {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error('JWT_SECRET not set');
+
+    const token = jwt.sign({ id: user.id }, secret, {
+      expiresIn: '15min',
+    });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerificationToken: token,
+      },
+    });
+    sendEmailVerificationEmail(token, user.email);
+    throw new Error('Verifiziere deine Email über den zugesandten Link');
+  }
+
   if (isValid) return user;
 
   throw new Error('Falsche email order falsches Password');
@@ -39,41 +60,73 @@ export async function signup(credentials) {
   if (credentials === undefined) throw new Error('Invalid credentials');
 
   if (!areCredentialsValid(credentials)) throw new Error('Invalid credentials');
-  if (await isUserAlreadyExistent(credentials.email))
-    throw new Error('User existiert bereits');
 
   // hash and salt password with bcrypt
   const hashedPassword = await bcrypt.hash(credentials.password, 10);
 
-  const newUser = await prisma.user.create({
-    data: {
-      name: credentials.name,
-      email: credentials.email,
-      password: hashedPassword,
-      role: 'ADMIN',
-    },
+  const user = await prisma.user.findUnique({
+    where: { email: credentials.email },
+    select: { emailVerified: true, role: true },
   });
 
-  if (newUser === null) throw new Error('User konnte nicht erstellt werden');
+  if (user?.emailVerified || user?.role === 'STUDENT')
+    throw new Error('Benutzer existiert bereits');
 
-  const admin = await prisma.admin.create({
-    data: {
-      user: {
-        connect: {
-          id: newUser.id,
-        },
-      },
-    },
-  });
-
-  if (admin === null) {
-    await prisma.user.delete({
-      where: {
-        id: newUser.id,
+  let newUser: User | null = null;
+  if (user)
+    newUser = await prisma.user.update({
+      where: { email: credentials.email },
+      data: {
+        password: hashedPassword,
+        name: credentials.name,
       },
     });
-    throw new Error('User konnte nicht erstellt werden');
+  else {
+    newUser = await prisma.user.create({
+      data: {
+        email: credentials.email,
+        password: hashedPassword,
+        name: credentials.name,
+        role: 'ADMIN',
+      },
+    });
+    if (newUser === null)
+      throw new Error('Benutzter konnte nicht erstellt werden');
+
+    const admin = await prisma.admin.create({
+      data: {
+        user: {
+          connect: {
+            id: newUser.id,
+          },
+        },
+      },
+    });
+
+    if (admin === null) {
+      await prisma.user.delete({
+        where: {
+          id: newUser.id,
+        },
+      });
+      throw new Error('Benutzter konnte nicht erstellt werden');
+    }
   }
 
-  return newUser;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET not set');
+
+  const token = jwt.sign({ id: newUser.id }, secret, {
+    expiresIn: '15min',
+  });
+
+  await prisma.user.update({
+    where: { id: newUser.id },
+    data: {
+      emailVerificationToken: token,
+    },
+  });
+  sendEmailVerificationEmail(token, newUser.email);
+
+  throw new Error('EmailVerificationNeeded');
 }

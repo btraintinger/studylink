@@ -3,6 +3,7 @@ import {
   UserUpdateInput,
   ResetPasswordInput,
   ForgotPasswordInput,
+  VerifyEmailInput,
 } from './user.type';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -81,12 +82,18 @@ export class UserResolver {
 
     if (!secret) throw new Error('JWT_SECRET not set');
 
-    const { id } = jwt.verify(resetPasswordInput.token, secret) as {
-      id: string;
-    };
+    let userId: string;
+    try {
+      const { id } = jwt.verify(resetPasswordInput.token, secret) as {
+        id: string;
+      };
+      userId = id;
+    } catch (e) {
+      throw new Error('InvalidTokenError');
+    }
 
     const user = await ctx.prisma.user.findUnique({
-      where: { id },
+      where: { id: userId },
       select: { passwordResetToken: true },
     });
 
@@ -98,10 +105,50 @@ export class UserResolver {
     const passwordHash = await bcrypt.hash(resetPasswordInput.password, 10);
 
     await ctx.prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data: {
         password: passwordHash,
         passwordResetToken: null,
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation((returns) => Boolean)
+  async verifyEmail(
+    @Ctx() ctx: Context,
+    @Arg('verifyEmailInput') verifyEmailInput: VerifyEmailInput
+  ) {
+    const secret = process.env.JWT_SECRET;
+
+    if (!secret) throw new Error('JWT_SECRET not set');
+
+    let userId: string;
+    try {
+      const { id } = jwt.verify(verifyEmailInput.token, secret) as {
+        id: string;
+      };
+      userId = id;
+    } catch (e) {
+      throw new Error('InvalidTokenError');
+    }
+
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) throw new Error('InvalidTokenError');
+    if (user.emailVerificationToken !== verifyEmailInput.token)
+      throw new Error('InvalidTokenError');
+
+    if (user.emailVerified) throw new Error('EmailAlreadyVerifiedError');
+
+    await ctx.prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailVerified: new Date(),
+        emailVerificationToken: null,
       },
     });
 

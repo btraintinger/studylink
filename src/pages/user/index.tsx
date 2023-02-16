@@ -8,7 +8,6 @@ import { object, string, TypeOf } from 'zod';
 import {
   useForgotPasswordMutation,
   useGetCurrentUserQuery,
-  useResetPasswordMutation,
   useUpdateUserMutation,
 } from '../../../generated/graphql';
 import Layout from '../../components/page/layout';

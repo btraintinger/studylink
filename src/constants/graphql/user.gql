@@ -31,3 +31,7 @@ mutation ForgotPassword($forgotPasswordInput: ForgotPasswordInput!) {
 mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {
   resetPassword(resetPasswordInput: $resetPasswordInput)
 }
+
+mutation VerifyEmail($verifyEmailInput: VerifyEmailInput!) {
+  verifyEmail(verifyEmailInput: $verifyEmailInput)
+}

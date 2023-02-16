@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -104,6 +103,9 @@ export default function PasswordReset() {
           onSubmit={handleSubmit(onSubmitHandler)}
           sx={{ mt: 3 }}
         >
+          <Typography component="h1" variant="h5">
+            Passwort zurücksetzen
+          </Typography>
           <TextField
             sx={{ mb: 2 }}
             label="Passwort"

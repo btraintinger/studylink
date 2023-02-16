@@ -45,3 +45,9 @@ export class ForgotPasswordInput {
   @Field()
   email!: string;
 }
+
+@InputType()
+export class VerifyEmailInput {
+  @Field()
+  token!: string;
+}
