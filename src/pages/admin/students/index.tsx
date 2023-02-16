@@ -51,22 +51,22 @@ export default function Students() {
     {
       field: 'name',
       headerName: 'Kürzel',
-      flex: 0.3,
+      flex: 0.2,
     },
     {
       field: 'email',
       headerName: 'E-Mail',
-      flex: 0.5,
+      flex: 0.3,
     },
     {
       field: 'schoolClass',
       headerName: 'Klasse',
-      flex: 0.3,
+      flex: 0.25,
     },
     {
       field: 'department',
       headerName: 'Abteilung',
-      flex: 0.3,
+      flex: 0.25,
     },
   ];
 

@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
   useCreateSchoolSubjectMutation,
+  useDeleteSchoolSubjectMutation,
   useGetSchoolSubjectByIdQuery,
   useUpdateSchoolSubjectMutation,
 } from '../../../../../generated/graphql';
@@ -38,8 +39,12 @@ export default function SchoolSubject() {
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
-      if (error.message === 'NoSchoolError') router.push('/admin/school');
+      if (error.message === 'NoSchoolError')
+        setErrorMessage(
+          'Legen Sie zuerst eine Schule unter dem Reiter "Schule" an'
+        );
     },
+    refetchQueries: ['GetAdministeredSchoolSubjects'],
   });
   const [updateFunction] = useUpdateSchoolSubjectMutation({
     onError: (error) => {
@@ -48,6 +53,15 @@ export default function SchoolSubject() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+  });
+  const [deleteFunction] = useDeleteSchoolSubjectMutation({
+    onError: (error) => {
+      if (error.message === 'DeletionFailedError')
+        setErrorMessage('Das Löschen war nicht möglich');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetAdministeredSchoolSubjects'],
   });
   const { loading } = useGetSchoolSubjectByIdQuery({
     skip: queryId === null,
@@ -136,13 +150,26 @@ export default function SchoolSubject() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('longName')}
           />
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
+            Speichern
+          </Button>
           <Button
             variant="contained"
             fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2 }}
+            disabled={queryId === null}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteSchoolSubjectId: queryId,
+                  },
+                });
+                router.push(SCHOOL_SUBJECTS_ADMIN);
+              }
+            }}
           >
-            Speichern
+            Löschen
           </Button>
           <Alert
             severity="error"

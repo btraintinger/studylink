@@ -95,3 +95,24 @@ mutation DeleteStudent($deleteStudentId: Float!) {
     id
   }
 }
+
+query GetAdministeredStudents {
+  getAdministeredSchool {
+    departments {
+      schoolClasses {
+        students {
+          id
+          user {
+            name
+            id
+            email
+          }
+          schoolClassId
+        }
+        departmentId
+        name
+      }
+      name
+    }
+  }
+}

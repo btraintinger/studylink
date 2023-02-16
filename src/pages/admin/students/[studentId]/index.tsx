@@ -215,17 +215,20 @@ export default function Student() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mb: 2, display: queryId === null ? 'none' : null }}
-            onClick={async () => {
-              await deleteFunction({
-                variables: {
-                  deleteStudentId: queryId as number,
-                },
-              });
-              router.push(STUDENTS_ADMIN);
+            sx={{ mb: 2 }}
+            disabled={queryId === null}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteStudentId: queryId,
+                  },
+                });
+                router.push(STUDENTS_ADMIN);
+              }
             }}
           >
-            Lehrer löschen
+            Löschen
           </Button>
           <Alert
             severity="error"

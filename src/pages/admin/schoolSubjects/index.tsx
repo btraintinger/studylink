@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
+import { useGetAdministeredSchoolSubjectsQuery } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { SchoolSubject } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
@@ -12,7 +12,7 @@ export default function SchoolSubjects() {
   const router = useRouter();
   const [array, setArray] = useState<SchoolSubject[]>([]);
 
-  const { loading } = useGetAdministeredSchoolQuery({
+  const { loading } = useGetAdministeredSchoolSubjectsQuery({
     onCompleted: (data) => {
       if (data)
         setArray(data.getAdministeredSchool.schoolSubjects as SchoolSubject[]);

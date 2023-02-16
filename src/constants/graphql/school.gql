@@ -3,53 +3,14 @@ query GetSchoolById($getSchoolByIdId: Float!) {
     name
     domain
     id
-    departments {
-      id
-      longName
-      name
-    }
-    admins {
-      id
-      user {
-        name
-        email
-        id
-      }
-    }
   }
 }
 
 query GetAdministeredSchool {
   getAdministeredSchool {
-    admins {
-      id
-      schoolId
-      user {
-        email
-        id
-        name
-      }
-    }
-    departments {
-      id
-      longName
-      name
-      schoolId
-    }
+    name
     domain
     id
-    name
-    schoolSubjects {
-      id
-      name
-      longName
-    }
-    teachers {
-      schoolId
-      name
-      longName
-      id
-    }
   }
 }
 
@@ -74,26 +35,5 @@ query GetSchoolClassesOfSchool {
     longName
     name
     id
-  }
-}
-
-query GetAdministeredStudents {
-  getAdministeredSchool {
-    departments {
-      schoolClasses {
-        students {
-          id
-          user {
-            name
-            id
-            email
-          }
-          schoolClassId
-        }
-        departmentId
-        name
-      }
-      name
-    }
   }
 }

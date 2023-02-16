@@ -25,3 +25,19 @@ mutation UpdateSchoolSubject(
     name
   }
 }
+
+mutation DeleteSchoolSubject($deleteSchoolSubjectId: Float!) {
+  deleteSchoolSubject(id: $deleteSchoolSubjectId) {
+    id
+  }
+}
+
+query GetAdministeredSchoolSubjects {
+  getAdministeredSchool {
+    schoolSubjects {
+      id
+      longName
+      name
+    }
+  }
+}
