@@ -159,7 +159,7 @@ export default function User() {
     return (
       <Layout role="STUDENT">
         <FormWrapper>
-          <Box component="form">
+          <Box>
             <TextField
               sx={{ mb: 2 }}
               variant="standard"

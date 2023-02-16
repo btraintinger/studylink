@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
-import { Moment } from 'moment';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -10,16 +9,16 @@ import {
   useGetSchoolClassesOfSchoolQuery,
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
-} from '../../../../generated/graphql';
-import Layout from '../../../components/page/layout';
-import FormWrapper from '../../../components/utils/formWrapper';
-import LoadingPage from '../../../components/utils/loadingPage';
-import { STUDENTS_ADMIN } from '../../../constants/menu-items';
+} from '../../../../../generated/graphql';
+import Layout from '../../../../components/page/layout';
+import FormWrapper from '../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../components/utils/loadingPage';
+import { STUDENTS_ADMIN } from '../../../../constants/menu-items';
 
 const studentSchema = object({
   firstName: string().min(1, '* Bitte geben Sie einen Vornamen an'),
   lastName: string().min(1, '* Bitte geben Sie einen Nachnamen an'),
-  name: string(),
+  name: string().min(1, '* Bitte geben Sie einen Namen an'),
   email: string().email('* Bitte geben Sie eine gültige E-Mail-Adresse an'),
   studentClass: object({
     id: number().int().nonnegative('* Bitte wählen Sie eine Klasse aus'),
@@ -69,7 +68,7 @@ export default function Student() {
         reset({
           name: data.getStudentById.user.name,
           email: data.getStudentById.user.email,
-          studentClass: { id: data.getStudentById.schoolClass.id },
+          studentClass: { id: data.getStudentById.schoolClassId },
         });
     },
   });
@@ -122,7 +121,12 @@ export default function Student() {
     }
   }, [isSubmitSuccessful]);
 
-  if (loading) <LoadingPage></LoadingPage>;
+  if (loading)
+    return (
+      <Layout role="ADMIN">
+        <LoadingPage />
+      </Layout>
+    );
 
   return (
     <Layout role="ADMIN">

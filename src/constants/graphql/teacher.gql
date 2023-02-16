@@ -33,3 +33,14 @@ mutation DeleteTeacher($deleteTeacherId: Float!) {
     schoolId
   }
 }
+
+query GetAdministeredTeachers {
+  getAdministeredSchool {
+    teachers {
+      schoolId
+      name
+      longName
+      id
+    }
+  }
+}

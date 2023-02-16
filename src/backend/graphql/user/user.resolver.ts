@@ -43,6 +43,18 @@ export class UserResolver {
     });
   }
 
+  @Authorized('ADMIN', 'STUDENT')
+  @Mutation((returns) => User)
+  async deleteOwnUser(@Ctx() ctx: Context) {
+    if (!ctx.user) throw new Error('NotAuthorizedError');
+
+    const User = await ctx.prisma.user.delete({
+      where: { id: ctx.user.id },
+    });
+
+    return User;
+  }
+
   @Mutation((returns) => Boolean)
   async forgotPassword(
     @Ctx() ctx: Context,

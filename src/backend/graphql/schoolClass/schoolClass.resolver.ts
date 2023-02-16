@@ -75,6 +75,7 @@ export class SchoolClassResolver {
       (classHasSubject) => classHasSubject.schoolSubject
     );
   }
+
   @FieldResolver()
   async students(@Root() schoolClass: SchoolClass, @Ctx() ctx: Context) {
     const students = await ctx.prisma.schoolClass
@@ -82,11 +83,7 @@ export class SchoolClassResolver {
         where: { id: schoolClass.id },
       })
       .students();
-
-    return students;
   }
-
-
 
   @Authorized('ADMIN')
   @Query((returns) => SchoolClass)

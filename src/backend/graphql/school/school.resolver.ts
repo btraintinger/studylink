@@ -12,6 +12,7 @@ import {
   Root,
 } from 'type-graphql';
 import type { Context } from '../context';
+import { Student } from '../student/student.type';
 import { School, SchoolCreationInput, SchoolUpdateInput } from './school.type';
 
 async function isUserAdministratingSchool(

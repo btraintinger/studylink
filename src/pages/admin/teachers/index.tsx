@@ -1,7 +1,7 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetAdministeredSchoolQuery } from '../../../../generated/graphql';
-import { useEffect, useState } from 'react';
+import { useGetAdministeredTeachersQuery } from '../../../../generated/graphql';
+import { useState } from 'react';
 import { Teacher } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
@@ -12,10 +12,9 @@ export default function Teachers() {
   const router = useRouter();
   const [array, setArray] = useState<Teacher[]>([]);
 
-  const { loading } = useGetAdministeredSchoolQuery({
+  const { loading } = useGetAdministeredTeachersQuery({
     onCompleted: (data) => {
-      if (data)
-        setArray(data.getAdministeredSchool.teachers as Teacher[]);
+      if (data) setArray(data.getAdministeredSchool.teachers as Teacher[]);
       console.log(array);
     },
   });

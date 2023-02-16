@@ -192,7 +192,7 @@ export class StudentResolver {
       },
     });
 
-    if (!studentUser) throw new Error('Student user could not be created');
+    if (!studentUser) throw new Error('CreationFailedError');
 
     const student = await ctx.prisma.student.create({
       data: {

@@ -10,7 +10,6 @@ import { Link } from '@react-email/link';
 import { Preview } from '@react-email/preview';
 import { Section } from '@react-email/section';
 import { Text } from '@react-email/text';
-import React from 'react';
 import {
   btn,
   container,

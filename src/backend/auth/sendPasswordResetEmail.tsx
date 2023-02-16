@@ -1,9 +1,9 @@
 import { transporter } from '../utils/mailer';
 import { render } from '@react-email/render';
-import ForgotPasswordEmail from '../../../emails/forgotPassword';
+import ResetPasswordEmail from '../../../emails/resetPassword';
 
 export function sendPasswordResetEmail(token: string, email: string) {
-  const emailHtml = render(<ForgotPasswordEmail passwordResetToken={token} />);
+  const emailHtml = render(<ResetPasswordEmail passwordResetToken={token} />);
 
   const data = {
     from: process.env.MAIL_USER,

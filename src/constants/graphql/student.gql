@@ -90,53 +90,8 @@ query GetTeachersOfStudent {
   }
 }
 
-query GetAdministeredStudents {
-  getAdministeredSchool {
-    departments {
-      longName
-      name
-      schoolClasses {
-        students {
-          user {
-            name
-            email
-          }
-          tutorOfferings {
-            teacher {
-              longName
-              name
-            }
-            schoolSubject {
-              name
-              longName
-            }
-            grade
-            description
-          }
-          tutorRequests {
-            description
-            grade
-            schoolSubject {
-              name
-              longName
-            }
-            teacher {
-              name
-              longName
-            }
-          }
-        }
-        schoolSubjects {
-          name
-          longName
-        }
-        name
-        longName
-        id
-        departmentId
-      }
-      id
-      schoolId
-    }
+mutation DeleteStudent($deleteStudentId: Float!) {
+  deleteStudent(id: $deleteStudentId) {
+    id
   }
 }

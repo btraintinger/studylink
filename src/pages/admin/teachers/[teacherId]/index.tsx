@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -6,6 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
   useCreateTeacherMutation,
+  useDeleteTeacherMutation,
   useGetTeacherByIdQuery,
   useUpdateTeacherMutation,
 } from '../../../../../generated/graphql';
@@ -38,8 +40,12 @@ export default function Teacher() {
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
-      if (error.message === 'NoSchoolError') router.push('/admin/school');
+      if (error.message === 'NoSchoolError')
+        setErrorMessage(
+          'Legen Sie zuerst eine Schule unter dem Reiter "Schule" an'
+        );
     },
+    refetchQueries: ['GetAdministeredTeachers'],
   });
   const [updateFunction] = useUpdateTeacherMutation({
     onError: (error) => {
@@ -48,6 +54,13 @@ export default function Teacher() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+  });
+  const [deleteFunction] = useDeleteTeacherMutation({
+    onError: (error) => {
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetAdministeredTeachers'],
   });
   const { loading } = useGetTeacherByIdQuery({
     skip: queryId === null,
@@ -88,7 +101,7 @@ export default function Teacher() {
       await updateFunction({
         variables: {
           teacherUpdateInput: {
-            id: queryId,
+            id: queryId as number,
             name: values.name,
             longName: values.longName,
           },
@@ -134,13 +147,23 @@ export default function Teacher() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('longName')}
           />
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
+            Speichern
+          </Button>
           <Button
             variant="contained"
             fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2, display: queryId === null ? 'none' : null }}
+            onClick={async () => {
+              await deleteFunction({
+                variables: {
+                  deleteTeacherId: queryId as number,
+                },
+              });
+              router.push(TEACHERS_ADMIN);
+            }}
           >
-            Speichern
+            Lehrer löschen
           </Button>
           <Alert
             severity="error"

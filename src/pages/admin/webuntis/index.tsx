@@ -43,10 +43,13 @@ export default function WebUntis() {
         setErrorMessage(
           'Die Angegebenen WebUntis Anmeldedaten sind nicht korrekt'
         );
-      if (error.message === 'NoSchoolFoundError') router.push('/admin/school');
+      if (error.message === 'NoSchoolFoundError')
+        setErrorMessage(
+          'Erstellen Sie zuerst eine Schule, unter dem Reiter "Schule"'
+        );
     },
     onCompleted: () => {
-      router.push('/admin/school');
+      router.push('/');
     },
   });
 

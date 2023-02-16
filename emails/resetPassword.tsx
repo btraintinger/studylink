@@ -10,7 +10,6 @@ import { Link } from '@react-email/link';
 import { Preview } from '@react-email/preview';
 import { Section } from '@react-email/section';
 import { Text } from '@react-email/text';
-import React from 'react';
 import {
   btn,
   container,
@@ -27,9 +26,7 @@ interface EmailProps {
   passwordResetToken: string;
 }
 
-export default function ForgotPasswordEmail({
-  passwordResetToken,
-}: EmailProps) {
+export default function ResetPasswordEmail({ passwordResetToken }: EmailProps) {
   const inviteLink = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/forgotPassword/${passwordResetToken}`;
 
   return (
