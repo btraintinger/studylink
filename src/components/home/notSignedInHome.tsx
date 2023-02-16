@@ -23,11 +23,11 @@ export default function NotSignedInHome() {
         }}
       >
         <MarketingLogo />
-        <Typography variant="h5" sx={{ mt: 2, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ mt: 2, textAlign: 'center', color:'#000000' }}>
           Studylink ist eine Plattform, die es Schülern innerhalb der Schule
           ermöglicht sich Nachhilfe anzubieten.
         </Typography>
-        <Typography variant="h6" sx={{ m: 1 }}>
+        <Typography variant="h6" sx={{ m: 1, color:'#000000'  }}>
           Anmelden oder Registrieren um fortzufahren.
         </Typography>
         <Button
