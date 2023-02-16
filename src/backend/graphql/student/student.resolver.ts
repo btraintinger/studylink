@@ -99,7 +99,6 @@ export class StudentResolver {
 
     const student = await ctx.prisma.student.findUnique({
       where: { userId: ctx.user.id },
-      select: { id: true },
     });
 
     if (!student) throw new Error('DoesNotExistError');

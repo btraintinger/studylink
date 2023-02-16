@@ -11,26 +11,34 @@ import { OFFERS_STUDENT} from '../../../constants/menu-items';
 export default function Offers() {
   const router = useRouter();
   const [array, setArray] = useState<TutorOffering[]>([]);
+  const temp: string[] = ['jodl', 'dodl', 'wodl'];
+  const temp2: string[] = ['hans', 'huns', 'hens'];
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
+      console.log(data);
       if (data)
         setArray(data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]);
-      console.log(array);
     },
   });
-
+  
+  console.log(array);
 
   const columns: GridColDef[] = [
     {
-      field: 'schoolSubject',
-      headerName: 'Fach',
+      field: 'schoolSubject.name',
+      headerName: 'Klasse',
       flex: 0.3,
     },
     {
       field: 'grade',
       headerName: 'Klasse',
-      flex: 1,
+      flex: 0.3,
+    },
+    {
+      field: 'description',
+      headerName: 'Beschreibung',
+      flex: 0.3,
     },
   ];
 
