@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetAdministeredStudentsQuery, SchoolClass } from '../../../../generated/graphql';
+import { useGetAdministeredStudentsQuery, SchoolClass, Student } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { SchoolSubject } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
@@ -10,15 +10,17 @@ import { SCHOOL_SUBJECTS_ADMIN, STUDENTS_ADMIN } from '../../../constants/menu-i
 
 export default function Students() {
   const router = useRouter();
-  const [array, setArray] = useState<SchoolClass[]>([]);
+  const [array, setArray] = useState<Student[]>([]);
 
   const { loading } = useGetAdministeredStudentsQuery({
     onCompleted: (data) => {
       if (data){
-        const temp: SchoolClass[] = [];
+        const temp: Student[] = [];
         data.getAdministeredSchool.departments.map((department) => {
           department.schoolClasses.map((schoolClass) => {
-            temp.push(schoolClass as SchoolClass);
+            schoolClass.students.map((student) => {
+              temp.push(student as Student);
+            });
           });
         });
         setArray(temp);
