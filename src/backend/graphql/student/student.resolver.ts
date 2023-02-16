@@ -13,7 +13,6 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { sendPasswordToStudent } from '../../utils/mailer';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import {
@@ -220,7 +219,6 @@ export class StudentResolver {
       throw new Error('CreationFailedError');
     }
 
-    sendPasswordToStudent(student.id, password);
     return student;
   }
 
