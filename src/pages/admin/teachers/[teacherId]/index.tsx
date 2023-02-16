@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';

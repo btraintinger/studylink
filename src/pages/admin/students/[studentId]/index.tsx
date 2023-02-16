@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
 import {
   useCreateStudentMutation,
+  useDeleteStudentMutation,
   useGetSchoolClassesOfSchoolQuery,
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
@@ -44,7 +45,12 @@ export default function Student() {
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
+      if (error.message === 'NoSchoolError')
+        setErrorMessage(
+          'Legen Sie zuerst eine Schule unter dem Reiter "Schule" an'
+        );
     },
+    refetchQueries: ['GetAdministeredStudents'],
   });
   const [updateFunction] = useUpdateStudentMutation({
     onError: (error) => {
@@ -53,7 +59,18 @@ export default function Student() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+    refetchQueries: ['GetAdministeredStudents'],
   });
+  const [deleteFunction] = useDeleteStudentMutation({
+    onError: (error) => {
+      if (error.message === 'DeletionFailedError')
+        setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetAdministeredStudents'],
+  });
+
   const { loading } = useGetStudentByIdQuery({
     skip: queryId === null,
     variables: {
@@ -194,6 +211,21 @@ export default function Student() {
             sx={{ mt: 1, mb: 2 }}
           >
             Speichern
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mb: 2, display: queryId === null ? 'none' : null }}
+            onClick={async () => {
+              await deleteFunction({
+                variables: {
+                  deleteStudentId: queryId as number,
+                },
+              });
+              router.push(STUDENTS_ADMIN);
+            }}
+          >
+            Lehrer löschen
           </Button>
           <Alert
             severity="error"

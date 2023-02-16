@@ -586,6 +586,11 @@ export type GetSchoolClassesOfSchoolQueryVariables = Exact<{ [key: string]: neve
 
 export type GetSchoolClassesOfSchoolQuery = { __typename?: 'Query', getSchoolClassesOfSchool: Array<{ __typename?: 'SchoolClass', longName: string, name: string, id: number }> };
 
+export type GetAdministeredStudentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdministeredStudentsQuery = { __typename?: 'Query', getAdministeredSchool: { __typename?: 'School', departments: Array<{ __typename?: 'Department', name: string, schoolClasses: Array<{ __typename?: 'SchoolClass', departmentId: number, name: string, students: Array<{ __typename?: 'Student', id: number, schoolClassId: number, user: { __typename?: 'User', name: string, id: number, email: string } }> }> }> } };
+
 export type GetSchoolClassByIdQueryVariables = Exact<{
   getSchoolClassByIdId: Scalars['Float'];
 }>;
@@ -1423,6 +1428,55 @@ export function useGetSchoolClassesOfSchoolLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetSchoolClassesOfSchoolQueryHookResult = ReturnType<typeof useGetSchoolClassesOfSchoolQuery>;
 export type GetSchoolClassesOfSchoolLazyQueryHookResult = ReturnType<typeof useGetSchoolClassesOfSchoolLazyQuery>;
 export type GetSchoolClassesOfSchoolQueryResult = Apollo.QueryResult<GetSchoolClassesOfSchoolQuery, GetSchoolClassesOfSchoolQueryVariables>;
+export const GetAdministeredStudentsDocument = gql`
+    query GetAdministeredStudents {
+  getAdministeredSchool {
+    departments {
+      schoolClasses {
+        students {
+          id
+          user {
+            name
+            id
+            email
+          }
+          schoolClassId
+        }
+        departmentId
+        name
+      }
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAdministeredStudentsQuery__
+ *
+ * To run a query within a React component, call `useGetAdministeredStudentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAdministeredStudentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAdministeredStudentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAdministeredStudentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>(GetAdministeredStudentsDocument, options);
+      }
+export function useGetAdministeredStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>(GetAdministeredStudentsDocument, options);
+        }
+export type GetAdministeredStudentsQueryHookResult = ReturnType<typeof useGetAdministeredStudentsQuery>;
+export type GetAdministeredStudentsLazyQueryHookResult = ReturnType<typeof useGetAdministeredStudentsLazyQuery>;
+export type GetAdministeredStudentsQueryResult = Apollo.QueryResult<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>;
 export const GetSchoolClassByIdDocument = gql`
     query GetSchoolClassById($getSchoolClassByIdId: Float!) {
   getSchoolClassById(id: $getSchoolClassByIdId) {
