@@ -11,29 +11,67 @@ import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
+interface RequestListItem {
+  id:number;
+  description: string;
+  grade: number;
+  schoolSubjectLongName: string;
+  schoolSubjectName: string;
+  teacherLongName:string;
+  teacherName:string;
+}
+
 export default function Offers() {
   const router = useRouter();
-  const [array, setArray] = useState<TutorRequest[]>([]);
+  const [array, setArray] = useState<RequestListItem[]>([]);
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
-      if (data)
-        setArray(data.getStudentOfCurrentUser.tutorRequests as TutorRequest[]);
-      console.log(array);
+      if (data){
+        const temp:RequestListItem[] = [];
+        data.getStudentOfCurrentUser.tutorRequests.map((tutorRequest) => {
+          temp.push({
+            id:tutorRequest.id,
+            description: tutorRequest.description,
+            grade: tutorRequest.grade,
+            schoolSubjectLongName: tutorRequest.schoolSubject.longName,
+            schoolSubjectName: tutorRequest.schoolSubject.name,
+            teacherLongName: tutorRequest.teacher.longName,
+            teacherName: tutorRequest.teacher.name,
+          })
+        })
+        setArray(temp);
+      }
+
     },
   });
 
   const columns: GridColDef[] = [
     {
-      field: 'schoolSubject',
-      headerName: 'Fach',
+      field: 'schoolSubjectName',
+      headerName: 'Fach Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectLongName',
+      headerName: 'Fach Name',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherName',
+      headerName: 'Lehrer Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherLongName',
+      headerName: 'Lehrer Name',
       flex: 0.3,
     },
     {
       field: 'grade',
       headerName: 'Klasse',
-      flex: 1,
-    },
+      flex: 0.3,
+    }
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
