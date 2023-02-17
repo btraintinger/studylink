@@ -1,4 +1,4 @@
-import { SessionInformation } from 'webuntis';
+import { SessionInformation, WebUntisElementType } from 'webuntis';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -9,11 +9,6 @@ import { WebUntisSecretAuth } from 'webuntis';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
-
-enum PersonType {
-  STUDENT = 5,
-  TEACHER = 2,
-}
 
 @Resolver((of) => WebUntis)
 export class WebUntisResolver {
@@ -181,7 +176,7 @@ export class WebUntisResolver {
       }
     });
 
-    if (loginInfo.personType === PersonType.TEACHER) {
+    if (loginInfo.personType === WebUntisElementType.TEACHER) {
       const teachers = await untis.getTeachers();
       const schoolTeachers = await ctx.prisma.teacher.findMany({
         where: {
@@ -212,6 +207,72 @@ export class WebUntisResolver {
             data: {
               name: teacher.name,
               longName: `${teacher.foreName} ${teacher.longName}`,
+            },
+          });
+        }
+      });
+
+      const students = await untis.getStudents();
+      const schoolStudents = await ctx.prisma.student.findMany({
+        where: {
+          schoolClass: {
+            department: {
+              schoolId: currentSchool.id,
+            },
+          },
+        },
+        include: {
+          user: true,
+        },
+      });
+      students.forEach(async (student) => {
+        const currentStudent = schoolStudents.find(
+          (schoolStudent) => schoolStudent.user.name === student.name
+        );
+        const lastBirthYearDigits = parseInt(student.name.slice(-2), 10);
+        const email = `${student.foreName.toLowerCase()}.${student.longName.toLowerCase()}${lastBirthYearDigits}@${
+          currentSchool.domain
+        }`;
+        const password = generatePassword();
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const studentTimetable = await untis.getTimetableForWeek(
+          new Date(),
+          student.id,
+          WebUntisElementType.STUDENT,
+          2
+        );
+
+        if (!currentStudent) {
+          const newUser = await ctx.prisma.user.create({
+            data: {
+              firstName: student.foreName,
+              lastName: student.longName,
+              name: student.name,
+              email,
+              password: hashedPassword,
+              role: 'STUDENT',
+            },
+          });
+          await ctx.prisma.student.create({
+            data: {
+              user: {
+                connect: {
+                  id: newUser.id,
+                },
+              },
+            },
+          });
+        } else {
+          await ctx.prisma.user.update({
+            where: {
+              id: currentStudent.user.id,
+            },
+            data: {
+              firstName: student.foreName,
+              lastName: student.longName,
+              name: student.name,
+              email,
             },
           });
         }

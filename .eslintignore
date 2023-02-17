@@ -1,8 +1,3 @@
-node_modules
-generated
-.next
-.react-email
-
 # next-pwa
 /public/service-worker.js*
 /public/workbox-*.js*

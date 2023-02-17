@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "graphql.vscode-graphql-syntax",
+    "mikestead.dotenv",
+    "dbaeumer.vscode-eslint",
+    "graphql.vscode-graphql",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
+    "prisma.prisma"
+  ]
+}

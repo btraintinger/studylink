@@ -14,15 +14,14 @@ import React from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import { RequestDialog } from '../../../components/utils/RequestDialog';
 
-
 export interface RequestListItem {
-  id:number;
+  id: number;
   description: string;
   grade: number;
   schoolSubjectLongName: string;
   schoolSubjectName: string;
-  teacherLongName:string;
-  teacherName:string;
+  teacherLongName: string;
+  teacherName: string;
 }
 
 export default function Offers() {
@@ -33,33 +32,32 @@ export default function Offers() {
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
-      if (data){
-        const temp:RequestListItem[] = [];
+      if (data) {
+        const temp: RequestListItem[] = [];
         data.getStudentOfCurrentUser.tutorRequests.map((tutorRequest) => {
           temp.push({
-            id:tutorRequest.id,
+            id: tutorRequest.id,
             description: tutorRequest.description,
             grade: tutorRequest.grade,
             schoolSubjectLongName: tutorRequest.schoolSubject.longName,
             schoolSubjectName: tutorRequest.schoolSubject.name,
             teacherLongName: tutorRequest.teacher.longName,
             teacherName: tutorRequest.teacher.name,
-          })
-        })
+          });
+        });
         setArray(temp);
       }
-
     },
   });
 
   const columns: GridColDef[] = [
     {
       field: 'acceptance',
-      align:'center',
+      align: 'center',
       headerName: 'Akzeptieren',
-      renderCell(){
-        return <PersonIcon />
-      }
+      renderCell() {
+        return <PersonIcon />;
+      },
     },
     {
       field: 'schoolSubjectName',
@@ -85,10 +83,8 @@ export default function Offers() {
       field: 'grade',
       headerName: 'Klasse',
       flex: 0.3,
-    }
+    },
   ];
-
-
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
@@ -100,14 +96,14 @@ export default function Offers() {
         <LoadingPage />
       </Layout>
     );
-  
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Layout role="STUDENT">
@@ -132,10 +128,10 @@ export default function Offers() {
           }}
         ></DataGrid>
         <RequestDialog
-        selectedRow={selectedRow}
-        open={open}
-        onClose={handleClose}
-      />      
+          selectedRow={selectedRow}
+          open={open}
+          onClose={handleClose}
+        />
       </Box>
     </Layout>
   );

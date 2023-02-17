@@ -12,13 +12,13 @@ import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
 interface OfferListItem {
-  id:number;
+  id: number;
   description: string;
   grade: number;
   schoolSubjectLongName: string;
   schoolSubjectName: string;
-  teacherLongName:string;
-  teacherName:string;
+  teacherLongName: string;
+  teacherName: string;
 }
 
 export default function Offers() {
@@ -28,18 +28,19 @@ export default function Offers() {
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
       console.log(data);
-      if (data){
-        const temp:OfferListItem[] = [];
+      if (data) {
+        const temp: OfferListItem[] = [];
         data.getStudentOfCurrentUser.tutorOfferings.map((tutorOffering) => {
-          temp.push({id: tutorOffering.id,   
+          temp.push({
+            id: tutorOffering.id,
             description: tutorOffering.description,
             grade: tutorOffering.grade,
             schoolSubjectLongName: tutorOffering.schoolSubject.longName,
             schoolSubjectName: tutorOffering.schoolSubject.name,
             teacherLongName: tutorOffering.teacher.longName,
-            teacherName:tutorOffering.teacher.name,
-          })
-        })
+            teacherName: tutorOffering.teacher.name,
+          });
+        });
         setArray(temp);
       }
     },
@@ -69,7 +70,7 @@ export default function Offers() {
       field: 'grade',
       headerName: 'Klasse',
       flex: 0.3,
-    }
+    },
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
