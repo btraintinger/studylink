@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   useGetStudentOfCurrentUserQuery,
@@ -10,31 +10,85 @@ import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
+import React from 'react';
+import PersonIcon from '@mui/icons-material/Person';
+import { RequestDialog } from '../../../components/utils/RequestDialog';
+
+
+export interface RequestListItem {
+  id:number;
+  description: string;
+  grade: number;
+  schoolSubjectLongName: string;
+  schoolSubjectName: string;
+  teacherLongName:string;
+  teacherName:string;
+}
 
 export default function Offers() {
   const router = useRouter();
-  const [array, setArray] = useState<TutorRequest[]>([]);
+  const [array, setArray] = useState<RequestListItem[]>([]);
+  const [selectedRow, setSelectedRow] = React.useState(array[0]);
+  const [open, setOpen] = React.useState(false);
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
-      if (data)
-        setArray(data.getStudentOfCurrentUser.tutorRequests as TutorRequest[]);
-      console.log(array);
+      if (data){
+        const temp:RequestListItem[] = [];
+        data.getStudentOfCurrentUser.tutorRequests.map((tutorRequest) => {
+          temp.push({
+            id:tutorRequest.id,
+            description: tutorRequest.description,
+            grade: tutorRequest.grade,
+            schoolSubjectLongName: tutorRequest.schoolSubject.longName,
+            schoolSubjectName: tutorRequest.schoolSubject.name,
+            teacherLongName: tutorRequest.teacher.longName,
+            teacherName: tutorRequest.teacher.name,
+          })
+        })
+        setArray(temp);
+      }
+
     },
   });
 
   const columns: GridColDef[] = [
     {
-      field: 'schoolSubject',
-      headerName: 'Fach',
+      field: 'acceptance',
+      align:'center',
+      headerName: 'Akzeptieren',
+      renderCell(){
+        return <PersonIcon />
+      }
+    },
+    {
+      field: 'schoolSubjectName',
+      headerName: 'Fach Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectLongName',
+      headerName: 'Fach Name',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherName',
+      headerName: 'Lehrer Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherLongName',
+      headerName: 'Lehrer Name',
       flex: 0.3,
     },
     {
       field: 'grade',
       headerName: 'Klasse',
-      flex: 1,
-    },
+      flex: 0.3,
+    }
   ];
+
+
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
@@ -46,27 +100,25 @@ export default function Offers() {
         <LoadingPage />
       </Layout>
     );
+  
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
 
   return (
     <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
-        <Button
-          variant="contained"
-          sx={{ mb: 2 }}
-          fullWidth
-          onClick={() => {
-            router.push(`${OFFERS_STUDENT}/new`);
-          }}
-        >
-          Neues Angebot hinzufügen
-        </Button>
         <DataGrid
           rows={array}
           columns={columns}
           autoPageSize
           pagination
           disableSelectionOnClick
-          onRowClick={handleRowClick}
+          onRowClick={handleClickOpen}
           sx={{
             border: 1,
             borderColor: 'primary.main',
@@ -79,6 +131,11 @@ export default function Offers() {
             },
           }}
         ></DataGrid>
+        <RequestDialog
+        selectedRow={selectedRow}
+        open={open}
+        onClose={handleClose}
+      />      
       </Box>
     </Layout>
   );

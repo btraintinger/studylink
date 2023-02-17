@@ -11,40 +11,65 @@ import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
+interface OfferListItem {
+  id:number;
+  description: string;
+  grade: number;
+  schoolSubjectLongName: string;
+  schoolSubjectName: string;
+  teacherLongName:string;
+  teacherName:string;
+}
+
 export default function Offers() {
   const router = useRouter();
-  const [array, setArray] = useState<TutorOffering[]>([]);
-  const temp: string[] = ['jodl', 'dodl', 'wodl'];
-  const temp2: string[] = ['hans', 'huns', 'hens'];
+  const [array, setArray] = useState<OfferListItem[]>([]);
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
       console.log(data);
-      if (data)
-        setArray(
-          data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
-        );
+      if (data){
+        const temp:OfferListItem[] = [];
+        data.getStudentOfCurrentUser.tutorOfferings.map((tutorOffering) => {
+          temp.push({id: tutorOffering.id,   
+            description: tutorOffering.description,
+            grade: tutorOffering.grade,
+            schoolSubjectLongName: tutorOffering.schoolSubject.longName,
+            schoolSubjectName: tutorOffering.schoolSubject.name,
+            teacherLongName: tutorOffering.teacher.longName,
+            teacherName:tutorOffering.teacher.name,
+          })
+        })
+        setArray(temp);
+      }
     },
   });
-
-  console.log(array);
-
   const columns: GridColDef[] = [
     {
-      field: 'schoolSubject.name',
-      headerName: 'Klasse',
+      field: 'schoolSubjectName',
+      headerName: 'Fach Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectLongName',
+      headerName: 'Fach Name',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherName',
+      headerName: 'Lehrer Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'teacherLongName',
+      headerName: 'Lehrer Name',
       flex: 0.3,
     },
     {
       field: 'grade',
       headerName: 'Klasse',
       flex: 0.3,
-    },
-    {
-      field: 'description',
-      headerName: 'Beschreibung',
-      flex: 0.3,
-    },
+    }
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
