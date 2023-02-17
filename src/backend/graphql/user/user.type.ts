@@ -12,6 +12,12 @@ export class User {
   name!: string;
 
   @Field()
+  firstName?: string;
+
+  @Field()
+  lastName?: string;
+
+  @Field()
   email!: string;
 
   @Field()

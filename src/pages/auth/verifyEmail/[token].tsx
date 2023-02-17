@@ -33,14 +33,6 @@ export default function PasswordReset() {
     },
   });
 
-  verifyFunction({
-    variables: {
-      verifyEmailInput: {
-        token: token as string,
-      },
-    },
-  });
-
   if (loading) return <LoadingPage />;
 
   return (
@@ -69,6 +61,22 @@ export default function PasswordReset() {
           </Typography>
           <Button
             sx={{ mt: 3 }}
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              verifyFunction({
+                variables: {
+                  verifyEmailInput: {
+                    token: token as string,
+                  },
+                },
+              });
+            }}
+          >
+            Verifizieren
+          </Button>
+          <Button
+            sx={{ mt: 2 }}
             variant="contained"
             fullWidth
             component={Link}

@@ -77,7 +77,7 @@ export class SchoolClassResolver {
 
   @FieldResolver()
   async students(@Root() schoolClass: SchoolClass, @Ctx() ctx: Context) {
-    const students = await ctx.prisma.schoolClass
+    return await ctx.prisma.schoolClass
       .findUnique({
         where: { id: schoolClass.id },
       })

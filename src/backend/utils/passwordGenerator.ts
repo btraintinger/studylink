@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export function generatePassword(
   length = 20,
   passwordChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'

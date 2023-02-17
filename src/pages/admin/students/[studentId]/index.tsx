@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
 import {
   useCreateStudentMutation,
@@ -12,6 +12,7 @@ import {
   useUpdateStudentMutation,
 } from '../../../../../generated/graphql';
 import Layout from '../../../../components/page/layout';
+import ControlledAutocomplete from '../../../../components/utils/controlledAutocomplete';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
 import { STUDENTS_ADMIN } from '../../../../constants/menu-items';
@@ -22,7 +23,8 @@ const studentSchema = object({
   name: string().min(1, '* Bitte geben Sie einen Namen an'),
   email: string().email('* Bitte geben Sie eine gültige E-Mail-Adresse an'),
   studentClass: object({
-    id: number().int().nonnegative('* Bitte wählen Sie eine Klasse aus'),
+    id: number().int('* Bitte wählen Sie eine Klasse aus'),
+    name: string().min(1, '* Bitte wählen Sie eine Klasse aus'),
   }),
 });
 
@@ -71,7 +73,14 @@ export default function Student() {
     refetchQueries: ['GetAdministeredStudents'],
   });
 
-  const { loading } = useGetStudentByIdQuery({
+  const [defaultSchoolClass, setDefaultSchoolClass] = useState<{
+    id: number;
+    name: string | undefined;
+  } | null>(null);
+
+  const { data: schoolClasses } = useGetSchoolClassesOfSchoolQuery();
+
+  const { data: studentQueryResult, loading } = useGetStudentByIdQuery({
     skip: queryId === null,
     variables: {
       getStudentByIdId: queryId as number,
@@ -81,22 +90,30 @@ export default function Student() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
     onCompleted: (data) => {
-      if (data)
-        reset({
-          name: data.getStudentById.user.name,
-          email: data.getStudentById.user.email,
-          studentClass: { id: data.getStudentById.schoolClassId },
-        });
+      setDefaultSchoolClass({
+        id: data.getStudentById.schoolClassId,
+        name: schoolClasses?.getSchoolClassesOfSchool.find(
+          (schoolClass) =>
+            parseInt(schoolClass.id as unknown as string, 10) ===
+            data.getStudentById.schoolClassId
+        )?.name,
+      });
+      reset({
+        name: data.getStudentById.user.name,
+        email: data.getStudentById.user.email,
+        firstName: data.getStudentById.user.firstName,
+        lastName: data.getStudentById.user.lastName,
+        studentClass: defaultSchoolClass || undefined,
+      });
     },
   });
-
-  const { data: schoolClasses } = useGetSchoolClassesOfSchoolQuery();
 
   const {
     register,
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
+    control,
   } = useForm<StudentInput>({
     resolver: zodResolver(studentSchema),
     mode: 'onTouched',
@@ -192,16 +209,23 @@ export default function Student() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('email')}
           />
-          <Autocomplete
-            sx={{ mb: 2 }}
-            disablePortal
-            options={schoolClasses?.getSchoolClassesOfSchool || []}
-            getOptionLabel={(option: { id: number; name: string }) => {
-              return option.name;
-            }}
-            fullWidth
-            renderInput={(params) => <TextField {...params} label="Klasse" />}
-            {...register('studentClass')}
+          <ControlledAutocomplete
+            label="Klasse"
+            name="studentClass"
+            options={
+              schoolClasses?.getSchoolClassesOfSchool.map((schoolClass) => {
+                return {
+                  id: parseInt(schoolClass.id as unknown as string, 10),
+                  name: schoolClass.name,
+                };
+              }) || []
+            }
+            control={control}
+            defaultValue={defaultSchoolClass}
+            error={!!errors['studentClass']}
+            helperText={
+              errors['studentClass'] ? errors['studentClass'].message : ''
+            }
           />
           <Button
             variant="contained"

@@ -4,6 +4,8 @@ query getStudentById($getStudentByIdId: Float!) {
     user {
       email
       name
+      firstName
+      lastName
     }
     schoolClassId
   }
@@ -15,8 +17,29 @@ mutation createStudent($studentInput: StudentCreationInput!) {
     user {
       email
       name
+      firstName
+      lastName
     }
     schoolClassId
+  }
+}
+
+mutation updateStudent($studentInput: StudentUpdateInput!) {
+  updateStudent(studentInput: $studentInput) {
+    id
+    user {
+      email
+      name
+      firstName
+      lastName
+    }
+    schoolClassId
+  }
+}
+
+mutation DeleteStudent($deleteStudentId: Float!) {
+  deleteStudent(id: $deleteStudentId) {
+    id
   }
 }
 
@@ -63,17 +86,6 @@ query GetStudentOfCurrentUser {
   }
 }
 
-mutation updateStudent($studentInput: StudentUpdateInput!) {
-  updateStudent(studentInput: $studentInput) {
-    id
-    user {
-      email
-      name
-    }
-    schoolClassId
-  }
-}
-
 query getSubjectsOfStudent {
   getSubjectsOfStudent {
     id
@@ -86,12 +98,6 @@ query GetTeachersOfStudent {
   getTeachersOfStudent {
     name
     schoolId
-    id
-  }
-}
-
-mutation DeleteStudent($deleteStudentId: Float!) {
-  deleteStudent(id: $deleteStudentId) {
     id
   }
 }
