@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, TextField } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
+  useDeleteOwnUserMutation,
   useForgotPasswordMutation,
   useGetCurrentUserQuery,
   useUpdateUserMutation,
@@ -48,6 +49,8 @@ export default function User() {
   });
 
   const [resetPasswordFunction] = useForgotPasswordMutation();
+
+  const [deleteUserFunction] = useDeleteOwnUserMutation();
 
   const { data: session } = useSession();
 
@@ -141,6 +144,16 @@ export default function User() {
               sx={{ mt: 1, mb: 2 }}
             >
               Passwort per E-Mail zurücksetzen
+            </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                deleteUserFunction();
+              }}
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Account löschen
             </Button>
             <Alert
               severity="error"

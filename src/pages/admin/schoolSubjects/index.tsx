@@ -1,7 +1,7 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import { useGetAdministeredSchoolSubjectsQuery } from '../../../../generated/graphql';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SchoolSubject } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';

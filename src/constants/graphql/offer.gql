@@ -1,4 +1,3 @@
-
 query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {
     description

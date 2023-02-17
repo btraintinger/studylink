@@ -26,3 +26,9 @@ mutation UpdateDepartment($departmentInput: DepartmentUpdateInput!) {
     longName
   }
 }
+
+mutation DeleteDepartment($deleteDepartmentId: Float!) {
+  deleteDepartment(id: $deleteDepartmentId) {
+    id
+  }
+}

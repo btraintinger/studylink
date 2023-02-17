@@ -14,7 +14,7 @@ export function sendEmailVerificationEmail(token: string, email: string) {
     html: emailHtml,
   };
 
-  transporter.sendMail(data, (err, info) => {
+  transporter.sendMail(data, (err) => {
     if (err) {
       throw new Error(err.message);
     }

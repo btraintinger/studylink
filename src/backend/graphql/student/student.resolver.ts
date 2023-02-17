@@ -178,6 +178,11 @@ export class StudentResolver {
     )
       throw new Error('NotAuthorizedError');
 
+    if (
+      await ctx.prisma.user.findUnique({ where: { email: studentInput.email } })
+    )
+      throw new Error('AlreadyExistsError');
+
     const password = generatePassword();
     const hashedPassword = await bcrypt.hash(password, 10);
 

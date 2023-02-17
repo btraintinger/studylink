@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt';
 import { authenticator as Authenticator } from 'otplib';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 import { WebUntisSecretAuth } from 'webuntis';
-import { sendPasswordToStudent } from '../../utils/mailer';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
@@ -218,40 +217,6 @@ export class WebUntisResolver {
         }
       });
     }
-
-    const rooms = await untis.getRooms();
-    const schoolRooms = await ctx.prisma.room.findMany({
-      where: {
-        schoolId: currentSchool.id,
-      },
-    });
-    rooms.forEach(async (room) => {
-      const currentRoom = schoolRooms.find(
-        (schoolRoom) => schoolRoom.name === room.name
-      );
-
-      if (!currentRoom) {
-        await ctx.prisma.room.create({
-          data: {
-            name: room.name,
-            school: {
-              connect: {
-                id: currentSchool.id,
-              },
-            },
-          },
-        });
-      } else {
-        await ctx.prisma.room.update({
-          where: {
-            id: currentRoom.id,
-          },
-          data: {
-            name: room.name,
-          },
-        });
-      }
-    });
 
     await untis.logout();
 

@@ -45,9 +45,9 @@ export default function Student() {
         setErrorMessage('Die Erstellung war nicht möglich');
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
-      if (error.message === 'NoSchoolError')
+      if (error.message === 'AlreadyExistsError')
         setErrorMessage(
-          'Legen Sie zuerst eine Schule unter dem Reiter "Schule" an'
+          'Es existiert bereits ein Schüler mit dieser E-Mail. Bitten Sie den Schüler sich anzumelden.'
         );
     },
     refetchQueries: ['GetAdministeredStudents'],
@@ -192,14 +192,13 @@ export default function Student() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('email')}
           />
-
           <Autocomplete
             sx={{ mb: 2 }}
             disablePortal
             options={schoolClasses?.getSchoolClassesOfSchool || []}
-            getOptionLabel={(option: { id: number; name: string }) =>
-              option.name
-            }
+            getOptionLabel={(option: { id: number; name: string }) => {
+              return option.name;
+            }}
             fullWidth
             renderInput={(params) => <TextField {...params} label="Klasse" />}
             {...register('studentClass')}

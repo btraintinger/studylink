@@ -1,12 +1,15 @@
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import { useGetStudentOfCurrentUserQuery, TutorOffering} from '../../../../generated/graphql';
+import {
+  useGetStudentOfCurrentUserQuery,
+  TutorOffering,
+} from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { Teacher } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import { OFFERS_STUDENT} from '../../../constants/menu-items';
+import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
 export default function Offers() {
   const router = useRouter();
@@ -18,10 +21,12 @@ export default function Offers() {
     onCompleted: (data) => {
       console.log(data);
       if (data)
-        setArray(data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]);
+        setArray(
+          data.getStudentOfCurrentUser.tutorOfferings as TutorOffering[]
+        );
     },
   });
-  
+
   console.log(array);
 
   const columns: GridColDef[] = [
@@ -43,7 +48,6 @@ export default function Offers() {
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
   };
 

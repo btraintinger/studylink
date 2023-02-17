@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
   useCreateSchoolClassMutation,
+  useDeleteSchoolClassMutation,
   useGetSchoolClassByIdQuery,
   useUpdateSchoolClassMutation,
 } from '../../../../../generated/graphql';
@@ -13,7 +14,7 @@ import Layout from '../../../../components/page/layout';
 import FormWrapper from '../../../../components/utils/formWrapper';
 import LoadingPage from '../../../../components/utils/loadingPage';
 import {
-  DEPARTMENTS_ADMIN,
+  SCHOOL_ADMIN,
   SCHOOL_CLASSES_ADMIN,
 } from '../../../../constants/menu-items';
 
@@ -34,8 +35,7 @@ export default function SchoolClass() {
   let queryId: number | null = parseInt(schoolClassId as string, 10);
   if (schoolClassId === 'new') queryId = null;
 
-  if (queryId === null && departmentId === undefined)
-    router.push(DEPARTMENTS_ADMIN);
+  if (queryId === null && departmentId === undefined) router.push(SCHOOL_ADMIN);
 
   // graphql queries and mutations
   const [createFunction] = useCreateSchoolClassMutation({
@@ -45,6 +45,7 @@ export default function SchoolClass() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+    refetchQueries: ['GetDepartmentById', 'GetSchoolClassesOfSchool'],
   });
   const [updateFunction] = useUpdateSchoolClassMutation({
     onError: (error) => {
@@ -53,6 +54,15 @@ export default function SchoolClass() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+  });
+  const [deleteFunction] = useDeleteSchoolClassMutation({
+    onError: (error) => {
+      if (error.message === 'DeletionFailedError')
+        setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetDepartmentById', 'GetSchoolClassesOfSchool'],
   });
   const { loading } = useGetSchoolClassByIdQuery({
     skip: queryId === null,
@@ -142,13 +152,26 @@ export default function SchoolClass() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('longName')}
           />
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
+            Speichern
+          </Button>
           <Button
             variant="contained"
             fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2 }}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteSchoolClassId: queryId,
+                  },
+                });
+                router.push(SCHOOL_ADMIN);
+              }
+            }}
+            disabled={queryId === null}
           >
-            Speichern
+            Löschen
           </Button>
           <Alert
             severity="error"

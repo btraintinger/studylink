@@ -1,8 +1,13 @@
 query GetSchoolById($getSchoolByIdId: Float!) {
   getSchoolById(id: $getSchoolByIdId) {
-    name
     domain
     id
+    name
+    departments {
+      longName
+      name
+      id
+    }
   }
 }
 

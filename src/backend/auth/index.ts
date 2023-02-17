@@ -5,15 +5,6 @@ import jwt from 'jsonwebtoken';
 import { sendEmailVerificationEmail } from './sendEmailVerificationEmail';
 import { User } from '@prisma/client';
 
-async function isUserAlreadyExistent(email: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { emailVerified: true },
-  });
-
-  return !!user?.emailVerified;
-}
-
 function areCredentialsValid(credentials) {
   return (
     isEmail(credentials.email) &&
@@ -22,7 +13,7 @@ function areCredentialsValid(credentials) {
   );
 }
 
-export async function signin(credentials) {
+export async function signin(credentials): Promise<User> {
   if (credentials === undefined) throw new Error('Invalid credentials');
 
   const user = await prisma.user.findUnique({
@@ -56,7 +47,7 @@ export async function signin(credentials) {
   throw new Error('Falsche email order falsches Password');
 }
 
-export async function signup(credentials) {
+export async function signup(credentials): Promise<User> {
   if (credentials === undefined) throw new Error('Invalid credentials');
 
   if (!areCredentialsValid(credentials)) throw new Error('Invalid credentials');

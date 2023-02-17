@@ -1,11 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
 import {
+  SchoolClass,
   useCreateDepartmentMutation,
+  useDeleteDepartmentMutation,
   useGetDepartmentByIdQuery,
   useUpdateDepartmentMutation,
 } from '../../../../../generated/graphql';
@@ -27,8 +30,8 @@ type DepartmentInput = TypeOf<typeof departmentSchema>;
 
 export default function Department() {
   const router = useRouter();
-
   const [errorMessage, setErrorMessage] = useState('');
+  const [array, setArray] = useState<SchoolClass[]>([]);
 
   // get departmentId from url
   const { departmentId, schoolId } = router.query;
@@ -45,6 +48,7 @@ export default function Department() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+    refetchQueries: ['GetSchoolById'],
   });
   const [updateFunction] = useUpdateDepartmentMutation({
     onError: (error) => {
@@ -54,13 +58,26 @@ export default function Department() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
   });
+  const [deleteFunction] = useDeleteDepartmentMutation({
+    onError: (error) => {
+      if (error.message === 'DeleteFailedError')
+        setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetSchoolById'],
+  });
+
   const { loading } = useGetDepartmentByIdQuery({
     skip: queryId === null,
     variables: {
       getDepartmentByIdId: queryId as number,
     },
     onCompleted: (data) => {
-      if (data) reset(data.getDepartmentById);
+      if (data) {
+        reset(data.getDepartmentById);
+        setArray(data.getDepartmentById.schoolClasses as SchoolClass[]);
+      }
     },
     onError: (error) => {
       if (error.message === 'DoesNotExistError') router.push('/404');
@@ -105,6 +122,23 @@ export default function Department() {
     }
   };
 
+  const columns: GridColDef[] = [
+    {
+      field: 'name',
+      headerName: 'Kürzel',
+      flex: 0.3,
+    },
+    {
+      field: 'longName',
+      headerName: 'Name',
+      flex: 0.7,
+    },
+  ];
+
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    router.push(`${SCHOOL_CLASSES_ADMIN}/${params.row.id}`);
+  };
+
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
@@ -122,7 +156,6 @@ export default function Department() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Name"
             fullWidth
             required
@@ -134,7 +167,6 @@ export default function Department() {
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Erweiterter Name"
             fullWidth
             required
@@ -144,18 +176,31 @@ export default function Department() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('longName')}
           />
-          <Button
-            variant="contained"
-            fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
-          >
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
             Speichern
           </Button>
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2 }}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteDepartmentId: queryId,
+                  },
+                });
+                router.push(SCHOOL_ADMIN);
+              }
+            }}
+            disabled={queryId === null}
+          >
+            Löschen
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mb: 2 }}
             onClick={() =>
               router.push({
                 pathname: `${SCHOOL_CLASSES_ADMIN}/new`,
@@ -177,6 +222,27 @@ export default function Department() {
           </Alert>
         </Box>
       </FormWrapper>
+      <Box sx={{ mt: 5, height: '50vh' }}>
+        <DataGrid
+          rows={array}
+          columns={columns}
+          autoPageSize
+          pagination
+          disableSelectionOnClick
+          onRowClick={handleRowClick}
+          sx={{
+            border: 1,
+            borderColor: 'primary.main',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'primary.main',
+              fontSize: '1.2rem',
+            },
+            '& .MuiDataGrid-cell': {
+              cursor: 'pointer',
+            },
+          }}
+        ></DataGrid>
+      </Box>
     </Layout>
   );
 }

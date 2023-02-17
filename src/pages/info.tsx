@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MarketingLogo } from '../components/utils/marketingLogo';

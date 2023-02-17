@@ -1,16 +1,10 @@
 import { Box, Button } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import {
-  useGetAdministeredStudentsQuery,
-  Student,
-} from '../../../../generated/graphql';
+import { useGetAdministeredStudentsQuery } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import {
-  SCHOOL_SUBJECTS_ADMIN,
-  STUDENTS_ADMIN,
-} from '../../../constants/menu-items';
+import { STUDENTS_ADMIN } from '../../../constants/menu-items';
 import { useState } from 'react';
 
 interface StudentListItem {

@@ -5,19 +5,12 @@ import {
   Box,
   Button,
   Container,
-  Link as MuiLink,
-  TextField,
   Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { object, string, TypeOf } from 'zod';
-import {
-  useResetPasswordMutation,
-  useVerifyEmailMutation,
-} from '../../../../generated/graphql';
+import { useState } from 'react';
+import { useVerifyEmailMutation } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 
 export default function PasswordReset() {

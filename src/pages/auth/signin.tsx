@@ -87,6 +87,16 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Anmelden
         </Typography>
+        <MuiLink
+          component={Link}
+          href="/auth/resetPassword"
+          passHref
+          underline="none"
+          fontSize={'1rem'}
+        >
+          Wenn du dich als Schüler das erste Mal anmeldest, musst du zuerst dein
+          Passwort zuerst zurücksetzen.
+        </MuiLink>
         <Box
           component="form"
           noValidate

@@ -508,6 +508,13 @@ export type UpdateDepartmentMutationVariables = Exact<{
 
 export type UpdateDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'Department', id: number, name: string, longName: string } };
 
+export type DeleteDepartmentMutationVariables = Exact<{
+  deleteDepartmentId: Scalars['Float'];
+}>;
+
+
+export type DeleteDepartmentMutation = { __typename?: 'Mutation', deleteDepartment: { __typename?: 'Department', id: number } };
+
 export type GetMatchesOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -560,7 +567,7 @@ export type GetSchoolByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSchoolByIdQuery = { __typename?: 'Query', getSchoolById: { __typename?: 'School', name: string, domain: string, id: number } };
+export type GetSchoolByIdQuery = { __typename?: 'Query', getSchoolById: { __typename?: 'School', domain: string, id: number, name: string, departments: Array<{ __typename?: 'Department', longName: string, name: string, id: number }> } };
 
 export type GetAdministeredSchoolQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -606,6 +613,13 @@ export type UpdateSchoolClassMutationVariables = Exact<{
 
 
 export type UpdateSchoolClassMutation = { __typename?: 'Mutation', updateSchoolClass: { __typename?: 'SchoolClass', id: number, name: string, longName: string } };
+
+export type DeleteSchoolClassMutationVariables = Exact<{
+  deleteSchoolClassId: Scalars['Float'];
+}>;
+
+
+export type DeleteSchoolClassMutation = { __typename?: 'Mutation', deleteSchoolClass: { __typename?: 'SchoolClass', id: number } };
 
 export type GetSchoolSubjectByIdQueryVariables = Exact<{
   getSchoolSubjectByIdId: Scalars['Float'];
@@ -884,6 +898,39 @@ export function useUpdateDepartmentMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateDepartmentMutationHookResult = ReturnType<typeof useUpdateDepartmentMutation>;
 export type UpdateDepartmentMutationResult = Apollo.MutationResult<UpdateDepartmentMutation>;
 export type UpdateDepartmentMutationOptions = Apollo.BaseMutationOptions<UpdateDepartmentMutation, UpdateDepartmentMutationVariables>;
+export const DeleteDepartmentDocument = gql`
+    mutation DeleteDepartment($deleteDepartmentId: Float!) {
+  deleteDepartment(id: $deleteDepartmentId) {
+    id
+  }
+}
+    `;
+export type DeleteDepartmentMutationFn = Apollo.MutationFunction<DeleteDepartmentMutation, DeleteDepartmentMutationVariables>;
+
+/**
+ * __useDeleteDepartmentMutation__
+ *
+ * To run a mutation, you first call `useDeleteDepartmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDepartmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDepartmentMutation, { data, loading, error }] = useDeleteDepartmentMutation({
+ *   variables: {
+ *      deleteDepartmentId: // value for 'deleteDepartmentId'
+ *   },
+ * });
+ */
+export function useDeleteDepartmentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDepartmentMutation, DeleteDepartmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDepartmentMutation, DeleteDepartmentMutationVariables>(DeleteDepartmentDocument, options);
+      }
+export type DeleteDepartmentMutationHookResult = ReturnType<typeof useDeleteDepartmentMutation>;
+export type DeleteDepartmentMutationResult = Apollo.MutationResult<DeleteDepartmentMutation>;
+export type DeleteDepartmentMutationOptions = Apollo.BaseMutationOptions<DeleteDepartmentMutation, DeleteDepartmentMutationVariables>;
 export const GetMatchesOfCurrentUserDocument = gql`
     query GetMatchesOfCurrentUser {
   getMatchesOfCurrentUser {
@@ -1230,9 +1277,14 @@ export type UpdateTutorRequestMutationOptions = Apollo.BaseMutationOptions<Updat
 export const GetSchoolByIdDocument = gql`
     query GetSchoolById($getSchoolByIdId: Float!) {
   getSchoolById(id: $getSchoolByIdId) {
-    name
     domain
     id
+    name
+    departments {
+      longName
+      name
+      id
+    }
   }
 }
     `;
@@ -1513,6 +1565,39 @@ export function useUpdateSchoolClassMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateSchoolClassMutationHookResult = ReturnType<typeof useUpdateSchoolClassMutation>;
 export type UpdateSchoolClassMutationResult = Apollo.MutationResult<UpdateSchoolClassMutation>;
 export type UpdateSchoolClassMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolClassMutation, UpdateSchoolClassMutationVariables>;
+export const DeleteSchoolClassDocument = gql`
+    mutation DeleteSchoolClass($deleteSchoolClassId: Float!) {
+  deleteSchoolClass(id: $deleteSchoolClassId) {
+    id
+  }
+}
+    `;
+export type DeleteSchoolClassMutationFn = Apollo.MutationFunction<DeleteSchoolClassMutation, DeleteSchoolClassMutationVariables>;
+
+/**
+ * __useDeleteSchoolClassMutation__
+ *
+ * To run a mutation, you first call `useDeleteSchoolClassMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSchoolClassMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSchoolClassMutation, { data, loading, error }] = useDeleteSchoolClassMutation({
+ *   variables: {
+ *      deleteSchoolClassId: // value for 'deleteSchoolClassId'
+ *   },
+ * });
+ */
+export function useDeleteSchoolClassMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSchoolClassMutation, DeleteSchoolClassMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSchoolClassMutation, DeleteSchoolClassMutationVariables>(DeleteSchoolClassDocument, options);
+      }
+export type DeleteSchoolClassMutationHookResult = ReturnType<typeof useDeleteSchoolClassMutation>;
+export type DeleteSchoolClassMutationResult = Apollo.MutationResult<DeleteSchoolClassMutation>;
+export type DeleteSchoolClassMutationOptions = Apollo.BaseMutationOptions<DeleteSchoolClassMutation, DeleteSchoolClassMutationVariables>;
 export const GetSchoolSubjectByIdDocument = gql`
     query GetSchoolSubjectById($getSchoolSubjectByIdId: Float!) {
   getSchoolSubjectById(id: $getSchoolSubjectByIdId) {

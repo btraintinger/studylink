@@ -19,3 +19,8 @@ mutation UpdateSchoolClass($schoolClassUpdateInput: SchoolClassUpdateInput!) {
     longName
   }
 }
+mutation DeleteSchoolClass($deleteSchoolClassId: Float!) {
+  deleteSchoolClass(id: $deleteSchoolClassId) {
+    id
+  }
+}

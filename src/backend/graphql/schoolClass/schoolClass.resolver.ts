@@ -17,7 +17,6 @@ import {
   Root,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { FieldsOnCorrectTypeRule } from 'graphql';
 
 export async function isUserAdministratingSchoolClass(
   ctx: Context,
@@ -116,7 +115,7 @@ export class SchoolClassResolver {
       },
     });
 
-    const schoolClasses: any = [];
+    const schoolClasses: SchoolClass[] = [];
 
     for (const department of departments) {
       const classes = await ctx.prisma.schoolClass.findMany({
@@ -124,7 +123,7 @@ export class SchoolClassResolver {
           departmentId: department.id,
         },
       });
-      schoolClasses.push(...classes);
+      schoolClasses.push(...(classes as SchoolClass[]));
     }
 
     return schoolClasses;
