@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   useGetStudentOfCurrentUserQuery,
@@ -10,8 +10,12 @@ import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
+import React from 'react';
+import PersonIcon from '@mui/icons-material/Person';
+import { RequestDialog } from '../../../components/utils/RequestDialog';
 
-interface RequestListItem {
+
+export interface RequestListItem {
   id:number;
   description: string;
   grade: number;
@@ -24,6 +28,8 @@ interface RequestListItem {
 export default function Offers() {
   const router = useRouter();
   const [array, setArray] = useState<RequestListItem[]>([]);
+  const [selectedRow, setSelectedRow] = React.useState(array[0]);
+  const [open, setOpen] = React.useState(false);
 
   const { loading } = useGetStudentOfCurrentUserQuery({
     onCompleted: (data) => {
@@ -47,6 +53,14 @@ export default function Offers() {
   });
 
   const columns: GridColDef[] = [
+    {
+      field: 'acceptance',
+      align:'center',
+      headerName: 'Akzeptieren',
+      renderCell(){
+        return <PersonIcon />
+      }
+    },
     {
       field: 'schoolSubjectName',
       headerName: 'Fach Kürzel',
@@ -74,6 +88,8 @@ export default function Offers() {
     }
   ];
 
+
+
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
   };
@@ -84,27 +100,25 @@ export default function Offers() {
         <LoadingPage />
       </Layout>
     );
+  
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
 
   return (
     <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
-        <Button
-          variant="contained"
-          sx={{ mb: 2 }}
-          fullWidth
-          onClick={() => {
-            router.push(`${OFFERS_STUDENT}/new`);
-          }}
-        >
-          Neues Angebot hinzufügen
-        </Button>
         <DataGrid
           rows={array}
           columns={columns}
           autoPageSize
           pagination
           disableSelectionOnClick
-          onRowClick={handleRowClick}
+          onRowClick={handleClickOpen}
           sx={{
             border: 1,
             borderColor: 'primary.main',
@@ -117,6 +131,11 @@ export default function Offers() {
             },
           }}
         ></DataGrid>
+        <RequestDialog
+        selectedRow={selectedRow}
+        open={open}
+        onClose={handleClose}
+      />      
       </Box>
     </Layout>
   );
