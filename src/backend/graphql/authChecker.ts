@@ -7,7 +7,6 @@ export const customAuthChecker: AuthChecker<Context> = async (
   roles
 ) => {
   if (context.user === null) return false;
-
   for (const role of roles) {
     if (context.user.role === role) return true;
   }

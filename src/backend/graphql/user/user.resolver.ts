@@ -48,7 +48,39 @@ export class UserResolver {
   async deleteOwnUser(@Ctx() ctx: Context) {
     if (!ctx.user) throw new Error('NotAuthorizedError');
 
-    const User = await ctx.prisma.user.delete({
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.user.id },
+      include: {
+        admin: {
+          include: {
+            school: {
+              include: {
+                admins: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (ctx.user.admin?.schoolId) {
+      if (user?.admin?.school?.admins && user.admin.school.admins.length > 1) {
+        await ctx.prisma.school.update({
+          where: { id: ctx.user.admin.schoolId },
+          data: {
+            admins: {
+              disconnect: { id: ctx.user.admin.id },
+            },
+          },
+        });
+      } else {
+        await ctx.prisma.school.delete({
+          where: { id: ctx.user.admin.schoolId },
+        });
+      }
+    }
+
+    await ctx.prisma.user.delete({
       where: { id: ctx.user.id },
     });
 

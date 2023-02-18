@@ -149,7 +149,36 @@ export class SchoolResolver {
     if (!(await isUserAdministratingSchool(ctx, id)))
       throw new Error('NotAuthorizedError');
 
-    const school = await ctx.prisma.school.delete({
+    const school = await ctx.prisma.school.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!school) throw new Error('DoesNotExistError');
+
+    await ctx.prisma.school.update({
+      where: {
+        id,
+      },
+      data: {
+        admins: {
+          disconnect: {
+            id: ctx.user?.admin?.id,
+          },
+        },
+      },
+    });
+
+    const admins = school.admins;
+    if (admins.length > 1) {
+      return school;
+    }
+
+    await ctx.prisma.school.delete({
       where: {
         id,
       },

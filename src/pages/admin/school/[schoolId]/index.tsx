@@ -8,6 +8,7 @@ import { object, string, TypeOf } from 'zod';
 import {
   Department,
   useCreateSchoolMutation,
+  useDeleteSchoolMutation,
   useGetSchoolByIdQuery,
   useUpdateSchoolMutation,
 } from '../../../../../generated/graphql';
@@ -51,6 +52,7 @@ export default function School() {
       if (error.message === 'AlreadyAdministratingSchoolError')
         setErrorMessage('Sie sind bereits für eine Schule verantwortlich');
     },
+    refetchQueries: ['GetAdministeredSchool'],
   });
   const [updateFunction] = useUpdateSchoolMutation({
     onError: (error) => {
@@ -59,6 +61,15 @@ export default function School() {
       if (error.message === 'DoesNotExistError') router.push('/404');
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
+  });
+  const [deleteFunction] = useDeleteSchoolMutation({
+    onError: (error) => {
+      if (error.message === 'DeletionFailedError')
+        setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
+      if (error.message === 'DoesNotExistError') router.push('/404');
+      if (error.message === 'NotAuthorizedError') router.push('/401');
+    },
+    refetchQueries: ['GetAdministeredSchool'],
   });
   const { loading } = useGetSchoolByIdQuery({
     skip: queryId === null,
@@ -163,18 +174,13 @@ export default function School() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('domain')}
           />
-          <Button
-            variant="contained"
-            fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
-          >
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
             Speichern
           </Button>
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2 }}
             onClick={() =>
               router.push({
                 pathname: `${DEPARTMENTS_ADMIN}/new`,
@@ -184,6 +190,24 @@ export default function School() {
             disabled={queryId === null}
           >
             Neue Abteilung hinzufügen
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mb: 2 }}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteSchoolId: queryId as number,
+                  },
+                });
+                router.push(SCHOOL_ADMIN);
+              }
+            }}
+            disabled={queryId === null}
+          >
+            Löschen oder Entfernen
           </Button>
           <Alert
             severity="error"

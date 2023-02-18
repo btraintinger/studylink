@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, TextField } from '@mui/material';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -50,7 +50,9 @@ export default function User() {
 
   const [resetPasswordFunction] = useForgotPasswordMutation();
 
-  const [deleteUserFunction] = useDeleteOwnUserMutation();
+  const [deleteUserFunction] = useDeleteOwnUserMutation({
+    refetchQueries: ['GetAdministeredSchool'],
+  });
 
   const { data: session } = useSession();
 
@@ -150,6 +152,8 @@ export default function User() {
               fullWidth
               onClick={() => {
                 deleteUserFunction();
+                signOut({ redirect: false });
+                router.push('/');
               }}
               sx={{ mt: 1, mb: 2 }}
             >

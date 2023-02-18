@@ -35,6 +35,12 @@ mutation UpdateSchool($schoolUpdateInput: SchoolUpdateInput!) {
   }
 }
 
+mutation DeleteSchool($deleteSchoolId: Float!) {
+  deleteSchool(id: $deleteSchoolId) {
+    id
+  }
+}
+
 query GetSchoolClassesOfSchool {
   getSchoolClassesOfSchool {
     longName
