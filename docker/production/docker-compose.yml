@@ -15,39 +15,52 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
 
+  nginx:
+    build:
+      context: ../../
+      dockerfile: ./docker/production/nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - ${PORT}:80
+    depends_on:
+      app:
+        condition: service_started
+    volumes:
+      - nginx_logs:/var/log/nginx/:rw
+    restart: always
+
   app:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
-    container_name: studylink
-    volumes:
-      - .:/app
-    ports:
-      - ${PORT}:3000
+      context: ../../
+      dockerfile: ./docker/production/app/Dockerfile
+    container_name: app
+    expose:
+      - 3000
     depends_on:
-      db_migration:
+      db-migration:
         condition: service_completed_successfully
     environment:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       NEXTAUTH_URL: ${DOMAIN}
-      DOMAIN: ${DOMAIN}
       NEXT_PUBLIC_DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
-      NODE_ENV: production
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
     restart: always
 
-  db_migration:
+  db-migration:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
-    container_name: db_migration
-    volumes:
-      - .:/app
+      context: ../../
+      dockerfile: ./docker/shared/db-migration/Dockerfile
+    container_name: db-migration
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
-    command: npx prisma db push
 
 volumes:
   db_data:
+  nginx_logs:

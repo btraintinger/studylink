@@ -1,3 +1,4 @@
+# not tested yet
 version: '3'
 
 services:
@@ -19,46 +20,44 @@ services:
 
   app:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
-    container_name: studylink
-    volumes:
-      - .:/app
+      context: ../../
+      dockerfile: ./docker/production_tls/app/Dockerfile
+    container_name: app
     expose:
       - 3000
     depends_on:
-      db_migration:
+      db-migration:
         condition: service_completed_successfully
     environment:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       NEXTAUTH_URL: ${DOMAIN}
-      DOMAIN: ${DOMAIN}
       NEXT_PUBLIC_DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
-      NODE_ENV: development
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
     restart: always
     networks:
       - backend
       - frontend
 
-  db_migration:
+  db-migration:
     build:
-      context: .
-      dockerfile: ./docker/app/prod/Dockerfile
-    container_name: db_migration
-    volumes:
-      - .:/app
+      context: ../../
+      dockerfile: ./docker/shared/db-migration/Dockerfile
+    container_name: db-migration
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
-    command: npx prisma db push
     networks:
       - backend
 
   nginx:
     build:
-      context: ./docker/nginx
+      context: ./nginx
       dockerfile: Dockerfile
       args:
         - DOMAIN=${DOMAIN}
@@ -71,24 +70,25 @@ services:
       - app
       - certbot
     volumes:
-      - certbot_var:/var/lib/letsencrypt/:ro
-      - certbot_var:/etc/letsencrypt/:ro
       - nginx_logs:/var/log/nginx/:rw
+      - certbot_conf:/etc/letsencrypt/:ro
+      - certbot_www:/var/www/certbot/:ro
     networks:
       - frontend
 
   certbot:
-    image: certbot/certbot:latest
+    image: certbot/certbot
     container_name: certbot
     volumes:
-      - certbot_var:/var/lib/letsencrypt/:rw
-      - certbot_var:/etc/letsencrypt/:rw
-    command: cerbot certonly --webroot -w /var/www/certbot/ -d ${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --rsa-key-size 4096 --force-renewal
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${FQDN} --agree-tos
+    restart: always
     networks:
       - frontend
 
   cert_renewer:
-    build: ./docker/cert_renewer
+    build: ./cert_renewer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
@@ -97,9 +97,9 @@ services:
 
 volumes:
   db_data:
-  certbot_var:
-  certbot_etc:
   nginx_logs:
+  certbot_conf:
+  certbot_www:
 
 networks:
   backend:

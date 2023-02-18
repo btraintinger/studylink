@@ -4,3 +4,7 @@ node_modules
 .next-env.d.ts
 .env
 .react-email
+Dockerfile
+.dockerignore
+Makefile
+README.md
