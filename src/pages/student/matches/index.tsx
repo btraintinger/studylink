@@ -15,25 +15,60 @@ import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
 export default function Matches() {
   const router = useRouter();
-  const [array, setArray] = useState<Match[]>([]);
+  const [array, setArray] = useState<MatchListItem[]>([]);
 
-  type MatchesDisplay = {
-    id: number;
+  type MatchListItem = {
     rating: number;
-    subject: string;
+    requestGrade: number;
+    offeringGrade: number;
+    schoolSubjectLongName: string;
+    schoolSubjectName: string;
+    offeringDescr: string;
+    requestDescr: string;
+    offeringTeacherLongName: string;
+    offeringTeachernName: string;   
+    requestTeacherLongName: string;
+    requestTeachernName: string;
   };
 
-  const matchesDisplay: MatchesDisplay[] = [];
 
   const { loading } = useGetMatchesOfCurrentUserQuery({
     onCompleted: (data) => {
-      if (data) setArray(data.getMatchesOfCurrentUser as Match[]);
+      if (data) {
+        const matchList: MatchListItem[] = [];
+        data.getMatchesOfCurrentUser.map((match) => {
+          matchList.push({
+            rating: match.rating,
+            requestGrade: match.tutorRequest.grade,
+            offeringGrade: match.tutorOffering.grade,
+            schoolSubjectLongName: match.tutorOffering.schoolSubject.longName,
+            schoolSubjectName: match.tutorOffering.schoolSubject.name,
+            offeringDescr: match.tutorOffering.description,
+            requestDescr: match.tutorRequest.description,
+            offeringTeacherLongName: match.tutorOffering.teacher.longName,
+            offeringTeachernName: match.tutorOffering.teacher.name,
+            requestTeacherLongName: match.tutorRequest.teacher.longName,
+            requestTeachernName: match.tutorRequest.teacher.name,
+          });
+          setArray(matchList);
+        });
+      }
     },
   });
 
   const columns: GridColDef[] = [
     {
       field: 'rating',
+      headerName: '#',
+      flex: 0.3,
+    },
+    {
+      field: 'requestGrade',
+      headerName: '#',
+      flex: 0.3,
+    },
+    {
+      field: 'offerGrade',
       headerName: '#',
       flex: 0.3,
     },
