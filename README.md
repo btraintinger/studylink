@@ -2,18 +2,20 @@
 
 ## How to run Studylink locally
 
-copy `.env.docker.example` to `.env`
+1. install docker and docker-compose
 
-change the variable `PORT` in `.env` to the desired one
+2. copy `.env.docker.example` to `./docker/production/.env` or `./docker/development/.env`
+
+3. change the variables in the `.env` file to your liking
 
 ### Start a development environment
 
 ```bash
-docker compose -f docker-compose.dev.yml up
+make start-development
 ```
 
 ### Start a production environment
 
 ```bash
-docker compose -f docker-compose.node.prod.yml up
+make start-production
 ```

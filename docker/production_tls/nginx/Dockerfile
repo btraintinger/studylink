@@ -1,4 +1,4 @@
-FROM nginx:1.22-alpine
+FROM nginx:1.23-alpine
 
 RUN apk update && \
     apk add --no-cache openssl
@@ -11,5 +11,3 @@ RUN find /etc/nginx/ -type f -exec \
 RUN openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 RUN mkdir -p /var/www/_letsencrypt
-
-RUN chown www-data /var/www/_letsencrypt
