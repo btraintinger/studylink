@@ -87,6 +87,7 @@ export default function Offers() {
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    console.log('params');
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
   };
 
@@ -97,11 +98,16 @@ export default function Offers() {
       </Layout>
     );
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (params) => {
+    setSelectedRow(params.row as RequestListItem);
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (acceptedItem: RequestListItem | null) => {
+    if (acceptedItem !== null) {
+      console.log(acceptedItem);
+      //make match and delete acceptedItem from array
+    }
     setOpen(false);
   };
 
