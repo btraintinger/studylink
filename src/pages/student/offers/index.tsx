@@ -3,6 +3,7 @@ import Layout from '../../../components/page/layout';
 import {
   useGetStudentOfCurrentUserQuery,
   TutorOffering,
+  useGetTutorOfferingsQuery,
 } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { Teacher } from '../../../../generated/graphql';
@@ -25,9 +26,8 @@ export default function Offers() {
   const router = useRouter();
   const [array, setArray] = useState<OfferListItem[]>([]);
 
-  const { loading } = useGetStudentOfCurrentUserQuery({
+  const { loading } = useGetTutorOfferingsQuery({
     onCompleted: (data) => {
-      console.log(data);
       if (data) {
         const temp: OfferListItem[] = [];
         data.getStudentOfCurrentUser.tutorOfferings.map((tutorOffering) => {
@@ -68,7 +68,7 @@ export default function Offers() {
     },
     {
       field: 'grade',
-      headerName: 'Klasse',
+      headerName: 'Schulstufe',
       flex: 0.3,
     },
   ];

@@ -93,7 +93,7 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Registrieren
         </Typography>
-        <Typography component="p" variant="h6">
+        <Typography component="p" fontSize="0.8rem">
           Nach der Registrierung wird eine E-Mail an dich gesendet, welche 15
           Minuten lang gültig ist, um deine E-Mail Adresse zu verifizieren.
         </Typography>

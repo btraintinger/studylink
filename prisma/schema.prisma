@@ -9,27 +9,62 @@ generator client {
 }
 
 model School {
-  id             Int             @id @unique @default(autoincrement())
-  name           String
-  domain         String
-  departments    Department[]
-  admins         Admin[]
-  teachers       Teacher[]
-  schoolSubjects SchoolSubject[]
+  id                Int              @id @unique @default(autoincrement())
+  name              String
+  domain            String
+  departments       Department[]
+  admins            Admin[]
+  teachers          Teacher[]
+  schoolSubjects    SchoolSubject[]
+  rooms             Room[]
+  TimeGrid          TimeGridElement? @relation(fields: [timeGridElementId], references: [id])
+  timeGridElementId Int?
 
+  @@index([timeGridElementId])
   @@map("school")
 }
 
-model ClassHasSubject {
-  schoolClassId Int           @map("school_class_id")
-  subjectId     Int           @map("subject_id")
-  schoolClass   SchoolClass   @relation(fields: [schoolClassId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  schoolSubject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model TimeGridElement {
+  id              Int      @id @unique() @default(autoincrement())
+  weekDay         Int      @map("week_day")
+  startTime       Int      @map("start_time")
+  endTime         Int      @map("end_time")
+  ClassHasSubject Lesson[]
+  School          School[]
+
+  @@map("time_grid_element")
+}
+
+model Lesson {
+  schoolClassId     Int              @map("school_class_id")
+  subjectId         Int              @map("subject_id")
+  schoolClass       SchoolClass      @relation(fields: [schoolClassId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  schoolSubject     SchoolSubject    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  timeGridElement   TimeGridElement? @relation(fields: [timeGridElementId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  timeGridElementId Int?             @map("time_grid_element_id")
+  room              Room?            @relation(fields: [roomId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  roomId            Int?             @map("room_id")
+  teacher           Teacher?         @relation(fields: [teacherId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  teacherId         Int?             @map("teacher_id")
 
   @@id([schoolClassId, subjectId])
   @@index([schoolClassId])
   @@index([subjectId])
+  @@index([timeGridElementId])
+  @@index([roomId])
+  @@index([teacherId])
   @@map("class_has_subject")
+}
+
+model Room {
+  id              Int      @id @unique() @default(autoincrement())
+  name            String
+  schoolId        Int      @map("school_id")
+  school          School   @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ClassHasSubject Lesson[]
+
+  @@index([schoolId])
+  @@map("room")
 }
 
 model Department {
@@ -45,12 +80,12 @@ model Department {
 }
 
 model SchoolClass {
-  id              Int               @id @unique() @default(autoincrement())
+  id              Int        @id @unique() @default(autoincrement())
   name            String
-  longName        String            @map("long_name")
-  departmentId    Int               @map("department_id")
-  department      Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  classHasSubject ClassHasSubject[]
+  longName        String     @map("long_name")
+  departmentId    Int        @map("department_id")
+  department      Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  classHasSubject Lesson[]
   students        Student[]
 
   @@index([departmentId])
@@ -58,12 +93,12 @@ model SchoolClass {
 }
 
 model SchoolSubject {
-  id              Int               @id @unique() @default(autoincrement())
+  id              Int             @id @unique() @default(autoincrement())
   name            String
-  longName        String            @map("long_name")
-  schoolId        Int               @map("school_id")
-  school          School            @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  classHasSubject ClassHasSubject[]
+  longName        String          @map("long_name")
+  schoolId        Int             @map("school_id")
+  school          School          @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  classHasSubject Lesson[]
   tutor           TutorOffering[]
   tutorRequest    TutorRequest[]
 
@@ -72,13 +107,14 @@ model SchoolSubject {
 }
 
 model Teacher {
-  id            Int             @id @unique() @default(autoincrement())
-  name          String
-  longName      String          @map("long_name")
-  schoolId      Int             @map("school_id")
-  school        School          @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  TutorOffering TutorOffering[]
-  TutorRequest  TutorRequest[]
+  id             Int             @id @unique() @default(autoincrement())
+  name           String
+  longName       String          @map("long_name")
+  schoolId       Int             @map("school_id")
+  school         School          @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tutorOfferings TutorOffering[]
+  tutorRequests  TutorRequest[]
+  lessons        Lesson[]
 
   @@index([schoolId])
   @@map("teacher")
@@ -125,7 +161,7 @@ model Admin {
   userId   String  @unique() @map("user_id")
   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId Int?    @unique() @map("school_id")
-  school   School? @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull, onUpdate: SetNull)
 
   @@index([userId])
   @@index([schoolId])
@@ -135,7 +171,7 @@ model Admin {
 model Student {
   id            Int             @id @unique() @default(autoincrement())
   schoolClassId Int?            @map("school_class_id")
-  schoolClass   SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schoolClass   SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId        String          @unique() @map("user_id")
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   tutorRequest  TutorRequest[]
@@ -144,6 +180,16 @@ model Student {
   @@index([schoolClassId])
   @@index([userId])
   @@map("student")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
 }
 
 model User {
@@ -159,6 +205,7 @@ model User {
   role                   String
   student                Student?
   admin                  Admin?
+  Session                Session[]
 
   @@map("user")
 }

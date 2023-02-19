@@ -55,3 +55,9 @@ mutation UpdateTutorRequest(
     }
   }
 }
+
+mutation DeleteTutorRequest($deleteTutorRequestId: Float!) {
+  deleteTutorRequest(id: $deleteTutorRequestId) {
+    id
+  }
+}

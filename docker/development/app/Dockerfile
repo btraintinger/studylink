@@ -25,6 +25,4 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 EXPOSE 3000
 
-#COPY ./docker/development/app/entrypoint.sh /
-#RUN chmod +x  /entrypoint.sh
 CMD [ "npm", "run", "dev" ]

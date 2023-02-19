@@ -43,6 +43,46 @@ mutation DeleteStudent($deleteStudentId: Float!) {
   }
 }
 
+query GetTutorOfferings {
+  getStudentOfCurrentUser {
+    tutorOfferings {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+  }
+}
+
+query GetTutorRequests {
+  getStudentOfCurrentUser {
+    tutorRequests {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+  }
+}
+
 query GetStudentOfCurrentUser {
   getStudentOfCurrentUser {
     tutorOfferings {
@@ -119,6 +159,36 @@ query GetAdministeredStudents {
         name
       }
       name
+    }
+  }
+}
+
+query GetOfferingRequestFormData {
+  getSchoolOfOwnStudent {
+    id
+    departments {
+      schoolClasses {
+        name
+        schoolSubjects {
+          name
+          longName
+          id
+        }
+      }
+    }
+    teachers {
+      id
+      name
+      schoolSubjects {
+        id
+        name
+        longName
+      }
+    }
+    schoolSubjects {
+      name
+      longName
+      id
     }
   }
 }

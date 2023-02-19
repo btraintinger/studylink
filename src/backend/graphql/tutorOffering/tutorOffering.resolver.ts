@@ -20,33 +20,33 @@ import type { Context } from '../context';
 
 async function isTutorOfferingExistent(
   ctx: Context,
-  tutorRequestId: number
+  tutorOfferingId: number
 ): Promise<boolean> {
-  const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+  const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
     where: {
-      id: tutorRequestId,
+      id: tutorOfferingId,
     },
     select: {
       id: true,
     },
   });
 
-  return !!tutorRequest;
+  return !!tutorOffering;
 }
 
 async function isTutorOfferingByUser(
   ctx: Context,
-  tutorRequestId: number
+  tutorOfferingId: number
 ): Promise<boolean> {
-  const tutorRequest = await ctx.prisma.tutorRequest.findUnique({
+  const tutorOffering = await ctx.prisma.tutorOffering.findUnique({
     where: {
-      id: tutorRequestId,
+      id: tutorOfferingId,
     },
     select: {
       studentId: true,
     },
   });
-  return ctx.user?.student?.id === tutorRequest?.studentId;
+  return ctx.user?.student?.id === tutorOffering?.studentId;
 }
 
 @Resolver((of) => TutorOffering)

@@ -1,4 +1,4 @@
-import { SessionInformation, WebUntisElementType } from 'webuntis';
+import { SessionInformation, WebUntisElementType, Klasse } from 'webuntis';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -9,6 +9,17 @@ import { WebUntisSecretAuth } from 'webuntis';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
+import { Student, WebAPITimetable } from 'webuntis';
+import { SchoolClass } from '@prisma/client';
+
+function getSchoolClassOfStudent(timetableElements: WebAPITimetable[]) {
+  for (const element of timetableElements) {
+    if (element.classes.length === 0) {
+      return element.classes[0];
+    }
+  }
+  return null;
+}
 
 @Resolver((of) => WebUntis)
 export class WebUntisResolver {
@@ -243,6 +254,15 @@ export class WebUntisResolver {
           2
         );
 
+        const studentClass = getSchoolClassOfStudent(studentTimetable);
+        let currentSchoolClass: SchoolClass | undefined;
+        if (studentClass) {
+          currentSchoolClass = schoolSchoolClasses.find(
+            (schoolSchoolClass) =>
+              schoolSchoolClass.name === studentClass.element.name
+          );
+        }
+
         if (!currentStudent) {
           const newUser = await ctx.prisma.user.create({
             data: {
@@ -261,6 +281,11 @@ export class WebUntisResolver {
                   id: newUser.id,
                 },
               },
+              schoolClass: {
+                connect: {
+                  id: currentSchoolClass?.id,
+                },
+              },
             },
           });
         } else {
@@ -273,6 +298,18 @@ export class WebUntisResolver {
               lastName: student.longName,
               name: student.name,
               email,
+            },
+          });
+          await ctx.prisma.student.update({
+            where: {
+              id: currentStudent.id,
+            },
+            data: {
+              schoolClass: {
+                connect: {
+                  id: currentSchoolClass?.id,
+                },
+              },
             },
           });
         }
