@@ -59,19 +59,59 @@ export default function Matches() {
   const columns: GridColDef[] = [
     {
       field: 'rating',
-      headerName: '#',
+      headerName: 'rating',
       flex: 0.3,
     },
     {
       field: 'requestGrade',
-      headerName: '#',
+      headerName: 'requestGrade',
       flex: 0.3,
     },
     {
       field: 'offerGrade',
-      headerName: '#',
+      headerName: 'offerGrade',
       flex: 0.3,
     },
+    {
+      field: 'schoolSubjectLongName',
+      headerName: 'schoolSubjectLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectName',
+      headerName: 'schoolSubjectName',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringDescr',
+      headerName: 'offeringDescr',
+      flex: 0.3,
+    },
+    {
+      field: 'requestDescr',
+      headerName: 'requestDescr',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringTeacherLongName',
+      headerName: 'offeringTeacherLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringTeachernName',
+      headerName: 'offeringTeachernName',
+      flex: 0.3,  
+    },
+    {
+      field: 'requestTeacherLongName',
+      headerName: 'requestTeacherLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'requestTeachernName',
+      headerName: 'requestTeachernName',
+      flex: 0.3,
+    },  
   ];
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);

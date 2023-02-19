@@ -21,6 +21,7 @@ export class MatchResolver {
         id: ctx.user?.student?.id,
       },
     });
+    console.log(requests);
     const matches: {
       rating: number;
       tutorOffering: TutorOffering;
@@ -44,7 +45,6 @@ export class MatchResolver {
         });
       });
     });
-
     return matches;
   }
 }
