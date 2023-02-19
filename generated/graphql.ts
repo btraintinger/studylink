@@ -712,6 +712,11 @@ export type GetTutorOfferingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetTutorOfferingsQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', tutorOfferings: Array<{ __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', name: string, longName: string, id: number } }> } };
 
+export type GetTutorRequestsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTutorRequestsQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', tutorRequests: Array<{ __typename?: 'TutorRequest', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', name: string, longName: string, id: number } }> } };
+
 export type GetStudentOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2113,6 +2118,54 @@ export function useGetTutorOfferingsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetTutorOfferingsQueryHookResult = ReturnType<typeof useGetTutorOfferingsQuery>;
 export type GetTutorOfferingsLazyQueryHookResult = ReturnType<typeof useGetTutorOfferingsLazyQuery>;
 export type GetTutorOfferingsQueryResult = Apollo.QueryResult<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>;
+export const GetTutorRequestsDocument = gql`
+    query GetTutorRequests {
+  getStudentOfCurrentUser {
+    tutorRequests {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTutorRequestsQuery__
+ *
+ * To run a query within a React component, call `useGetTutorRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTutorRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTutorRequestsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTutorRequestsQuery(baseOptions?: Apollo.QueryHookOptions<GetTutorRequestsQuery, GetTutorRequestsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTutorRequestsQuery, GetTutorRequestsQueryVariables>(GetTutorRequestsDocument, options);
+      }
+export function useGetTutorRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTutorRequestsQuery, GetTutorRequestsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTutorRequestsQuery, GetTutorRequestsQueryVariables>(GetTutorRequestsDocument, options);
+        }
+export type GetTutorRequestsQueryHookResult = ReturnType<typeof useGetTutorRequestsQuery>;
+export type GetTutorRequestsLazyQueryHookResult = ReturnType<typeof useGetTutorRequestsLazyQuery>;
+export type GetTutorRequestsQueryResult = Apollo.QueryResult<GetTutorRequestsQuery, GetTutorRequestsQueryVariables>;
 export const GetStudentOfCurrentUserDocument = gql`
     query GetStudentOfCurrentUser {
   getStudentOfCurrentUser {

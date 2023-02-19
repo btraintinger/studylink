@@ -1,20 +1,17 @@
-import { Box, Button, Popover, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   useGetStudentOfCurrentUserQuery,
-  TutorRequest,
+  useGetTutorRequestsQuery,
 } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
 import { Teacher } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import { OFFERS_STUDENT } from '../../../constants/menu-items';
-import React from 'react';
-import PersonIcon from '@mui/icons-material/Person';
-import { RequestDialog } from '../../../components/utils/RequestDialog';
+import { REQUESTS_STUDENT } from '../../../constants/menu-items';
 
-export interface RequestListItem {
+interface RequestListItem {
   id: number;
   description: string;
   grade: number;
@@ -24,13 +21,11 @@ export interface RequestListItem {
   teacherName: string;
 }
 
-export default function Offers() {
+export default function Requests() {
   const router = useRouter();
   const [array, setArray] = useState<RequestListItem[]>([]);
-  const [selectedRow, setSelectedRow] = React.useState(array[0]);
-  const [open, setOpen] = React.useState(false);
 
-  const { loading } = useGetStudentOfCurrentUserQuery({
+  const { loading } = useGetTutorRequestsQuery({
     onCompleted: (data) => {
       if (data) {
         const temp: RequestListItem[] = [];
@@ -49,16 +44,7 @@ export default function Offers() {
       }
     },
   });
-
   const columns: GridColDef[] = [
-    {
-      field: 'acceptance',
-      align: 'center',
-      headerName: 'Akzeptieren',
-      renderCell() {
-        return <PersonIcon />;
-      },
-    },
     {
       field: 'schoolSubjectName',
       headerName: 'Fach Kürzel',
@@ -81,14 +67,13 @@ export default function Offers() {
     },
     {
       field: 'grade',
-      headerName: 'Klasse',
+      headerName: 'Schulstufe',
       flex: 0.3,
     },
   ];
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    console.log('params');
-    router.push(`${OFFERS_STUDENT}/${params.row.id}`);
+    router.push(`${REQUESTS_STUDENT}/${params.row.id}`);
   };
 
   if (loading)
@@ -98,29 +83,26 @@ export default function Offers() {
       </Layout>
     );
 
-  const handleClickOpen = (params) => {
-    setSelectedRow(params.row as RequestListItem);
-    setOpen(true);
-  };
-
-  const handleClose = (acceptedItem: RequestListItem | null) => {
-    if (acceptedItem !== null) {
-      console.log(acceptedItem);
-      //make match and delete acceptedItem from array
-    }
-    setOpen(false);
-  };
-
   return (
     <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
+        <Button
+          variant="contained"
+          sx={{ mb: 2 }}
+          fullWidth
+          onClick={() => {
+            router.push(`${REQUESTS_STUDENT}/new`);
+          }}
+        >
+          Neues Angebot hinzufügen
+        </Button>
         <DataGrid
           rows={array}
           columns={columns}
           autoPageSize
           pagination
           disableSelectionOnClick
-          onRowClick={handleClickOpen}
+          onRowClick={handleRowClick}
           sx={{
             border: 1,
             borderColor: 'primary.main',
@@ -133,11 +115,6 @@ export default function Offers() {
             },
           }}
         ></DataGrid>
-        <RequestDialog
-          selectedRow={selectedRow}
-          open={open}
-          onClose={handleClose}
-        />
       </Box>
     </Layout>
   );

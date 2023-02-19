@@ -9,18 +9,16 @@ generator client {
 }
 
 model School {
-  id                Int              @id @unique @default(autoincrement())
-  name              String
-  domain            String
-  departments       Department[]
-  admins            Admin[]
-  teachers          Teacher[]
-  schoolSubjects    SchoolSubject[]
-  rooms             Room[]
-  TimeGrid          TimeGridElement? @relation(fields: [timeGridElementId], references: [id])
-  timeGridElementId Int?
+  id              Int               @id @unique @default(autoincrement())
+  name            String
+  domain          String
+  departments     Department[]
+  admins          Admin[]
+  teachers        Teacher[]
+  schoolSubjects  SchoolSubject[]
+  rooms           Room[]
+  TimeGridElement TimeGridElement[]
 
-  @@index([timeGridElementId])
   @@map("school")
 }
 
@@ -30,8 +28,10 @@ model TimeGridElement {
   startTime       Int      @map("start_time")
   endTime         Int      @map("end_time")
   ClassHasSubject Lesson[]
-  School          School[]
+  school          School   @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  schoolId        Int      @map("school_id")
 
+  @@index([schoolId])
   @@map("time_grid_element")
 }
 

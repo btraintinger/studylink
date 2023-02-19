@@ -21,6 +21,11 @@ export class MatchResolver {
         id: ctx.user?.student?.id,
       },
     });
+    const offerings = await ctx.prisma.tutorOffering.findMany({
+      where: {
+        id: ctx.user?.student?.id,
+      },
+    });
     const matches: {
       rating: number;
       tutorOffering: TutorOffering;
@@ -40,6 +45,24 @@ export class MatchResolver {
         matches.push({
           tutorRequest: request,
           tutorOffering: offering,
+          rating: matchRating(request, offering),
+        });
+      });
+    });
+
+    offerings.forEach(async (offering) => {
+      const matchingRequests = await ctx.prisma.tutorRequest.findMany({
+        where: {
+          schoolSubjectId: offering.schoolSubjectId,
+          grade: {
+            lte: offering.grade,
+          },
+        },
+      });
+      matchingRequests.forEach((request) => {
+        matches.push({
+          tutorRequest: request,
+          tutorOffering: request,
           rating: matchRating(request, offering),
         });
       });

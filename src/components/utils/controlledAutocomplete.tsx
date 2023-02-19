@@ -33,7 +33,6 @@ export default function ControlledAutocomplete(
           sx={{ mb: 2 }}
           fullWidth
           disablePortal
-          defaultValue={defaultValue}
           options={options}
           value={value}
           getOptionLabel={(option) => {

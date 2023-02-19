@@ -62,6 +62,7 @@ export default function Offer() {
   const { requestId } = router.query;
   let queryId: number | null = parseInt(requestId as string, 10);
   if (requestId === 'new') queryId = null;
+  console.log('queryId', queryId);
 
   // graphql queries and mutations
   const [createFunction] = useCreateTutorRequestMutation({
