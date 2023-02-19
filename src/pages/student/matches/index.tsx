@@ -15,28 +15,103 @@ import { OFFERS_STUDENT } from '../../../constants/menu-items';
 
 export default function Matches() {
   const router = useRouter();
-  const [array, setArray] = useState<Match[]>([]);
+  const [array, setArray] = useState<MatchListItem[]>([]);
 
-  type MatchesDisplay = {
-    id: number;
+  type MatchListItem = {
     rating: number;
-    subject: string;
+    requestGrade: number;
+    offeringGrade: number;
+    schoolSubjectLongName: string;
+    schoolSubjectName: string;
+    offeringDescr: string;
+    requestDescr: string;
+    offeringTeacherLongName: string;
+    offeringTeachernName: string;   
+    requestTeacherLongName: string;
+    requestTeachernName: string;
   };
 
-  const matchesDisplay: MatchesDisplay[] = [];
 
   const { loading } = useGetMatchesOfCurrentUserQuery({
     onCompleted: (data) => {
-      if (data) setArray(data.getMatchesOfCurrentUser as Match[]);
+      if (data) {
+        const matchList: MatchListItem[] = [];
+        data.getMatchesOfCurrentUser.map((match) => {
+          matchList.push({
+            rating: match.rating,
+            requestGrade: match.tutorRequest.grade,
+            offeringGrade: match.tutorOffering.grade,
+            schoolSubjectLongName: match.tutorOffering.schoolSubject.longName,
+            schoolSubjectName: match.tutorOffering.schoolSubject.name,
+            offeringDescr: match.tutorOffering.description,
+            requestDescr: match.tutorRequest.description,
+            offeringTeacherLongName: match.tutorOffering.teacher.longName,
+            offeringTeachernName: match.tutorOffering.teacher.name,
+            requestTeacherLongName: match.tutorRequest.teacher.longName,
+            requestTeachernName: match.tutorRequest.teacher.name,
+          });
+          setArray(matchList);
+        });
+      }
     },
   });
 
   const columns: GridColDef[] = [
     {
       field: 'rating',
-      headerName: '#',
+      headerName: 'rating',
       flex: 0.3,
     },
+    {
+      field: 'requestGrade',
+      headerName: 'requestGrade',
+      flex: 0.3,
+    },
+    {
+      field: 'offerGrade',
+      headerName: 'offerGrade',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectLongName',
+      headerName: 'schoolSubjectLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'schoolSubjectName',
+      headerName: 'schoolSubjectName',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringDescr',
+      headerName: 'offeringDescr',
+      flex: 0.3,
+    },
+    {
+      field: 'requestDescr',
+      headerName: 'requestDescr',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringTeacherLongName',
+      headerName: 'offeringTeacherLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'offeringTeachernName',
+      headerName: 'offeringTeachernName',
+      flex: 0.3,  
+    },
+    {
+      field: 'requestTeacherLongName',
+      headerName: 'requestTeacherLongName',
+      flex: 0.3,
+    },
+    {
+      field: 'requestTeachernName',
+      headerName: 'requestTeachernName',
+      flex: 0.3,
+    },  
   ];
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     router.push(`${OFFERS_STUDENT}/${params.row.id}`);
