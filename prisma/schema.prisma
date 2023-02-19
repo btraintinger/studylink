@@ -169,13 +169,13 @@ model Admin {
 }
 
 model Student {
-  id            Int             @id @unique() @default(autoincrement())
-  schoolClassId Int?            @map("school_class_id")
-  schoolClass   SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  userId        String          @unique() @map("user_id")
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  tutorRequest  TutorRequest[]
-  tutorOffering TutorOffering[]
+  id             Int             @id @unique() @default(autoincrement())
+  schoolClassId  Int?            @map("school_class_id")
+  schoolClass    SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  userId         String          @unique() @map("user_id")
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tutorRequests  TutorRequest[]
+  tutorOfferings TutorOffering[]
 
   @@index([schoolClassId])
   @@index([userId])

@@ -16,57 +16,75 @@ function matchRating(request: TutorRequest, offering: TutorOffering): number {
 export class MatchResolver {
   @Query((returns) => [Match])
   async getMatchesOfCurrentUser(@Ctx() ctx: Context) {
-    const requests = await ctx.prisma.tutorRequest.findMany({
+    const student = await ctx.prisma.student.findUnique({
       where: {
         id: ctx.user?.student?.id,
       },
-    });
-    const offerings = await ctx.prisma.tutorOffering.findMany({
-      where: {
-        id: ctx.user?.student?.id,
+      include: {
+        tutorRequests: true,
+        tutorOfferings: true,
       },
     });
+    const requests = student?.tutorRequests ?? [];
+    const offerings = student?.tutorOfferings ?? [];
+
     const matches: {
       rating: number;
       tutorOffering: TutorOffering;
       tutorRequest: TutorRequest;
     }[] = [];
 
-    requests.forEach(async (request) => {
+    for (const request of requests) {
       const matchingOfferings = await ctx.prisma.tutorOffering.findMany({
         where: {
-          schoolSubjectId: request.schoolSubjectId,
-          grade: {
-            gte: request.grade,
-          },
+          AND: [
+            {
+              schoolSubjectId: request.schoolSubjectId,
+            },
+            {
+              grade: {
+                gte: request.grade,
+              },
+            },
+          ],
         },
       });
-      matchingOfferings.forEach((offering) => {
+
+      for (const offering of matchingOfferings) {
         matches.push({
           tutorRequest: request,
           tutorOffering: offering,
           rating: matchRating(request, offering),
         });
-      });
-    });
+      }
+    }
 
-    offerings.forEach(async (offering) => {
+    for (const offering of offerings) {
       const matchingRequests = await ctx.prisma.tutorRequest.findMany({
         where: {
-          schoolSubjectId: offering.schoolSubjectId,
-          grade: {
-            lte: offering.grade,
-          },
+          AND: [
+            {
+              schoolSubjectId: offering.schoolSubjectId,
+            },
+            {
+              grade: {
+                lte: offering.grade,
+              },
+            },
+          ],
         },
       });
-      matchingRequests.forEach((request) => {
+
+      for (const request of matchingRequests) {
         matches.push({
           tutorRequest: request,
-          tutorOffering: request,
+          tutorOffering: offering,
           rating: matchRating(request, offering),
         });
-      });
-    });
+      }
+    }
+
+    console.log(matches);
 
     return matches;
   }
