@@ -1,6 +1,6 @@
-import { transporter } from '../utils/mailer';
 import { render } from '@react-email/render';
 import EmailVerificationEmail from '../../../emails/emailVerification';
+import { getMailTransporter } from '../utils/mailer';
 
 export function sendEmailVerificationEmail(token: string, email: string) {
   const emailHtml = render(
@@ -14,9 +14,11 @@ export function sendEmailVerificationEmail(token: string, email: string) {
     html: emailHtml,
   };
 
+  const transporter = getMailTransporter();
   transporter.sendMail(data, (err) => {
     if (err) {
       throw new Error(err.message);
     }
   });
+  transporter.close();
 }
