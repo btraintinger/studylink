@@ -80,7 +80,7 @@ export default function Student() {
 
   const { data: schoolClasses } = useGetSchoolClassesOfSchoolQuery();
 
-  const { data: studentQueryResult, loading } = useGetStudentByIdQuery({
+  const { loading } = useGetStudentByIdQuery({
     skip: queryId === null,
     variables: {
       getStudentByIdId: queryId as number,
@@ -90,20 +90,21 @@ export default function Student() {
       if (error.message === 'NotAuthorizedError') router.push('/401');
     },
     onCompleted: (data) => {
-      setDefaultSchoolClass({
+      const loadedSchoolClass = {
         id: data.getStudentById.schoolClassId,
         name: schoolClasses?.getSchoolClassesOfSchool.find(
           (schoolClass) =>
             parseInt(schoolClass.id as unknown as string, 10) ===
             data.getStudentById.schoolClassId
         )?.name,
-      });
+      };
+      setDefaultSchoolClass(loadedSchoolClass);
       reset({
         name: data.getStudentById.user.name,
         email: data.getStudentById.user.email,
         firstName: data.getStudentById.user.firstName,
         lastName: data.getStudentById.user.lastName,
-        studentClass: defaultSchoolClass || undefined,
+        studentClass: loadedSchoolClass,
       });
     },
   });

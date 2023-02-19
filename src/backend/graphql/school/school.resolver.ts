@@ -186,4 +186,26 @@ export class SchoolResolver {
 
     return school;
   }
+
+  @Authorized('STUDENT')
+  @Query((returns) => School)
+  async getSchoolOfOwnStudent(@Ctx() ctx: Context) {
+    const schoolClassId = ctx.user?.student?.schoolClassId;
+    if (!schoolClassId) throw new Error('NoSchoolClassError');
+
+    const schoolClass = await ctx.prisma.schoolClass.findUnique({
+      where: {
+        id: schoolClassId,
+      },
+      include: {
+        department: {
+          include: {
+            school: true,
+          },
+        },
+      },
+    });
+
+    return schoolClass?.department?.school;
+  }
 }

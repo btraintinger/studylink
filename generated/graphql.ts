@@ -243,6 +243,7 @@ export type Query = {
   getSchoolById: School;
   getSchoolClassById: SchoolClass;
   getSchoolClassesOfSchool: Array<SchoolClass>;
+  getSchoolOfOwnStudent: School;
   getSchoolSubjectById: SchoolSubject;
   getStudentById: Student;
   getStudentOfCurrentUser: Student;
@@ -392,6 +393,7 @@ export type Teacher = {
   longName: Scalars['String'];
   name: Scalars['String'];
   schoolId: Scalars['Float'];
+  schoolSubjects: Array<SchoolSubject>;
 };
 
 export type TeacherCreationInput = {
@@ -543,6 +545,13 @@ export type UpdateTutorOfferingMutationVariables = Exact<{
 
 export type UpdateTutorOfferingMutation = { __typename?: 'Mutation', updateTutorOffering: { __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', schoolId: number, id: number, name: string } } };
 
+export type DeleteTutorOfferingMutationVariables = Exact<{
+  deleteTutorOfferingId: Scalars['Float'];
+}>;
+
+
+export type DeleteTutorOfferingMutation = { __typename?: 'Mutation', deleteTutorOffering: { __typename?: 'TutorOffering', id: number } };
+
 export type GetTutorRequestByIdQueryVariables = Exact<{
   getTutorRequestByIdId: Scalars['Float'];
 }>;
@@ -563,6 +572,13 @@ export type UpdateTutorRequestMutationVariables = Exact<{
 
 
 export type UpdateTutorRequestMutation = { __typename?: 'Mutation', updateTutorRequest: { __typename?: 'TutorRequest', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', schoolId: number, name: string, id: number } } };
+
+export type DeleteTutorRequestMutationVariables = Exact<{
+  deleteTutorRequestId: Scalars['Float'];
+}>;
+
+
+export type DeleteTutorRequestMutation = { __typename?: 'Mutation', deleteTutorRequest: { __typename?: 'TutorRequest', id: number } };
 
 export type GetSchoolByIdQueryVariables = Exact<{
   getSchoolByIdId: Scalars['Float'];
@@ -691,6 +707,11 @@ export type DeleteStudentMutationVariables = Exact<{
 
 export type DeleteStudentMutation = { __typename?: 'Mutation', deleteStudent: { __typename?: 'Student', id: number } };
 
+export type GetTutorOfferingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTutorOfferingsQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', tutorOfferings: Array<{ __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', name: string, longName: string, id: number } }> } };
+
 export type GetStudentOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -710,6 +731,11 @@ export type GetAdministeredStudentsQueryVariables = Exact<{ [key: string]: never
 
 
 export type GetAdministeredStudentsQuery = { __typename?: 'Query', getAdministeredSchool: { __typename?: 'School', departments: Array<{ __typename?: 'Department', name: string, schoolClasses: Array<{ __typename?: 'SchoolClass', departmentId: number, name: string, students: Array<{ __typename?: 'Student', id: number, schoolClassId: number, user: { __typename?: 'User', name: string, id: number, email: string } }> }> }> } };
+
+export type GetOfferingRequestFormDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOfferingRequestFormDataQuery = { __typename?: 'Query', getSchoolOfOwnStudent: { __typename?: 'School', id: number, departments: Array<{ __typename?: 'Department', schoolClasses: Array<{ __typename?: 'SchoolClass', name: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> }> }>, teachers: Array<{ __typename?: 'Teacher', id: number, name: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', id: number, name: string, longName: string }> }>, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> } };
 
 export type GetTeacherByIdQueryVariables = Exact<{
   getTeacherByIdId: Scalars['Float'];
@@ -1146,6 +1172,39 @@ export function useUpdateTutorOfferingMutation(baseOptions?: Apollo.MutationHook
 export type UpdateTutorOfferingMutationHookResult = ReturnType<typeof useUpdateTutorOfferingMutation>;
 export type UpdateTutorOfferingMutationResult = Apollo.MutationResult<UpdateTutorOfferingMutation>;
 export type UpdateTutorOfferingMutationOptions = Apollo.BaseMutationOptions<UpdateTutorOfferingMutation, UpdateTutorOfferingMutationVariables>;
+export const DeleteTutorOfferingDocument = gql`
+    mutation DeleteTutorOffering($deleteTutorOfferingId: Float!) {
+  deleteTutorOffering(id: $deleteTutorOfferingId) {
+    id
+  }
+}
+    `;
+export type DeleteTutorOfferingMutationFn = Apollo.MutationFunction<DeleteTutorOfferingMutation, DeleteTutorOfferingMutationVariables>;
+
+/**
+ * __useDeleteTutorOfferingMutation__
+ *
+ * To run a mutation, you first call `useDeleteTutorOfferingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTutorOfferingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTutorOfferingMutation, { data, loading, error }] = useDeleteTutorOfferingMutation({
+ *   variables: {
+ *      deleteTutorOfferingId: // value for 'deleteTutorOfferingId'
+ *   },
+ * });
+ */
+export function useDeleteTutorOfferingMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTutorOfferingMutation, DeleteTutorOfferingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTutorOfferingMutation, DeleteTutorOfferingMutationVariables>(DeleteTutorOfferingDocument, options);
+      }
+export type DeleteTutorOfferingMutationHookResult = ReturnType<typeof useDeleteTutorOfferingMutation>;
+export type DeleteTutorOfferingMutationResult = Apollo.MutationResult<DeleteTutorOfferingMutation>;
+export type DeleteTutorOfferingMutationOptions = Apollo.BaseMutationOptions<DeleteTutorOfferingMutation, DeleteTutorOfferingMutationVariables>;
 export const GetTutorRequestByIdDocument = gql`
     query GetTutorRequestById($getTutorRequestByIdId: Float!) {
   getTutorRequestById(id: $getTutorRequestByIdId) {
@@ -1283,6 +1342,39 @@ export function useUpdateTutorRequestMutation(baseOptions?: Apollo.MutationHookO
 export type UpdateTutorRequestMutationHookResult = ReturnType<typeof useUpdateTutorRequestMutation>;
 export type UpdateTutorRequestMutationResult = Apollo.MutationResult<UpdateTutorRequestMutation>;
 export type UpdateTutorRequestMutationOptions = Apollo.BaseMutationOptions<UpdateTutorRequestMutation, UpdateTutorRequestMutationVariables>;
+export const DeleteTutorRequestDocument = gql`
+    mutation DeleteTutorRequest($deleteTutorRequestId: Float!) {
+  deleteTutorRequest(id: $deleteTutorRequestId) {
+    id
+  }
+}
+    `;
+export type DeleteTutorRequestMutationFn = Apollo.MutationFunction<DeleteTutorRequestMutation, DeleteTutorRequestMutationVariables>;
+
+/**
+ * __useDeleteTutorRequestMutation__
+ *
+ * To run a mutation, you first call `useDeleteTutorRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTutorRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTutorRequestMutation, { data, loading, error }] = useDeleteTutorRequestMutation({
+ *   variables: {
+ *      deleteTutorRequestId: // value for 'deleteTutorRequestId'
+ *   },
+ * });
+ */
+export function useDeleteTutorRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTutorRequestMutation, DeleteTutorRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTutorRequestMutation, DeleteTutorRequestMutationVariables>(DeleteTutorRequestDocument, options);
+      }
+export type DeleteTutorRequestMutationHookResult = ReturnType<typeof useDeleteTutorRequestMutation>;
+export type DeleteTutorRequestMutationResult = Apollo.MutationResult<DeleteTutorRequestMutation>;
+export type DeleteTutorRequestMutationOptions = Apollo.BaseMutationOptions<DeleteTutorRequestMutation, DeleteTutorRequestMutationVariables>;
 export const GetSchoolByIdDocument = gql`
     query GetSchoolById($getSchoolByIdId: Float!) {
   getSchoolById(id: $getSchoolByIdId) {
@@ -1973,6 +2065,54 @@ export function useDeleteStudentMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteStudentMutationHookResult = ReturnType<typeof useDeleteStudentMutation>;
 export type DeleteStudentMutationResult = Apollo.MutationResult<DeleteStudentMutation>;
 export type DeleteStudentMutationOptions = Apollo.BaseMutationOptions<DeleteStudentMutation, DeleteStudentMutationVariables>;
+export const GetTutorOfferingsDocument = gql`
+    query GetTutorOfferings {
+  getStudentOfCurrentUser {
+    tutorOfferings {
+      description
+      grade
+      id
+      schoolSubject {
+        name
+        longName
+        id
+      }
+      teacher {
+        name
+        longName
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTutorOfferingsQuery__
+ *
+ * To run a query within a React component, call `useGetTutorOfferingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTutorOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTutorOfferingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTutorOfferingsQuery(baseOptions?: Apollo.QueryHookOptions<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>(GetTutorOfferingsDocument, options);
+      }
+export function useGetTutorOfferingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>(GetTutorOfferingsDocument, options);
+        }
+export type GetTutorOfferingsQueryHookResult = ReturnType<typeof useGetTutorOfferingsQuery>;
+export type GetTutorOfferingsLazyQueryHookResult = ReturnType<typeof useGetTutorOfferingsLazyQuery>;
+export type GetTutorOfferingsQueryResult = Apollo.QueryResult<GetTutorOfferingsQuery, GetTutorOfferingsQueryVariables>;
 export const GetStudentOfCurrentUserDocument = gql`
     query GetStudentOfCurrentUser {
   getStudentOfCurrentUser {
@@ -2165,6 +2305,64 @@ export function useGetAdministeredStudentsLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetAdministeredStudentsQueryHookResult = ReturnType<typeof useGetAdministeredStudentsQuery>;
 export type GetAdministeredStudentsLazyQueryHookResult = ReturnType<typeof useGetAdministeredStudentsLazyQuery>;
 export type GetAdministeredStudentsQueryResult = Apollo.QueryResult<GetAdministeredStudentsQuery, GetAdministeredStudentsQueryVariables>;
+export const GetOfferingRequestFormDataDocument = gql`
+    query GetOfferingRequestFormData {
+  getSchoolOfOwnStudent {
+    id
+    departments {
+      schoolClasses {
+        name
+        schoolSubjects {
+          name
+          longName
+          id
+        }
+      }
+    }
+    teachers {
+      id
+      name
+      schoolSubjects {
+        id
+        name
+        longName
+      }
+    }
+    schoolSubjects {
+      name
+      longName
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOfferingRequestFormDataQuery__
+ *
+ * To run a query within a React component, call `useGetOfferingRequestFormDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOfferingRequestFormDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOfferingRequestFormDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetOfferingRequestFormDataQuery(baseOptions?: Apollo.QueryHookOptions<GetOfferingRequestFormDataQuery, GetOfferingRequestFormDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOfferingRequestFormDataQuery, GetOfferingRequestFormDataQueryVariables>(GetOfferingRequestFormDataDocument, options);
+      }
+export function useGetOfferingRequestFormDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOfferingRequestFormDataQuery, GetOfferingRequestFormDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOfferingRequestFormDataQuery, GetOfferingRequestFormDataQueryVariables>(GetOfferingRequestFormDataDocument, options);
+        }
+export type GetOfferingRequestFormDataQueryHookResult = ReturnType<typeof useGetOfferingRequestFormDataQuery>;
+export type GetOfferingRequestFormDataLazyQueryHookResult = ReturnType<typeof useGetOfferingRequestFormDataLazyQuery>;
+export type GetOfferingRequestFormDataQueryResult = Apollo.QueryResult<GetOfferingRequestFormDataQuery, GetOfferingRequestFormDataQueryVariables>;
 export const GetTeacherByIdDocument = gql`
     query GetTeacherById($getTeacherByIdId: Float!) {
   getTeacherById(id: $getTeacherByIdId) {

@@ -1,4 +1,4 @@
-import { Mutation } from 'type-graphql';
+import { FieldResolver, Mutation, Root } from 'type-graphql';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Arg, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
@@ -40,6 +40,19 @@ async function isTeacherExistent(
 
 @Resolver((of) => Teacher)
 export class TeacherResolver {
+  @FieldResolver()
+  async schoolSubjects(@Root() teacher: Teacher, @Ctx() ctx: Context) {
+    const teacherData = await ctx.prisma.teacher
+      .findUnique({
+        where: {
+          id: teacher.id,
+        },
+      })
+      .lessons({ include: { schoolSubject: true } });
+
+    return teacherData?.map((lesson) => lesson.schoolSubject) || [];
+  }
+
   @Authorized('STUDENT', 'ADMIN')
   @Query((returns) => Teacher)
   async getTeacherById(@Ctx() ctx: Context, @Arg('id') id: number) {

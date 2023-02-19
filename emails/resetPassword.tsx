@@ -27,7 +27,7 @@ interface EmailProps {
 }
 
 export default function ResetPasswordEmail({ passwordResetToken }: EmailProps) {
-  const inviteLink = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/forgotPassword/${passwordResetToken}`;
+  const inviteLink = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/resetPassword/${passwordResetToken}`;
 
   return (
     <Html>

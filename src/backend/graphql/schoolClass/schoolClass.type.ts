@@ -17,7 +17,7 @@ export class SchoolClass {
   longName!: string;
 
   @Field((type) => [SchoolSubject])
-  schoolSubjects!: SchoolSubject[];
+  schoolSubjects?: SchoolSubject[];
 
   @Field((type) => Int)
   departmentId!: number;

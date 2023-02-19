@@ -6,14 +6,24 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { number, object, string, TypeOf } from 'zod';
 import {
   useCreateTutorRequestMutation,
-  useGetSubjectsOfStudentQuery,
-  useGetTeachersOfStudentQuery,
+  useDeleteTutorRequestMutation,
+  useGetOfferingRequestFormDataQuery,
   useGetTutorRequestByIdQuery,
   useUpdateTutorRequestMutation,
-} from '../../../../generated/graphql';
-import Layout from '../../../components/page/layout';
-import FormWrapper from '../../../components/utils/formWrapper';
-import LoadingPage from '../../../components/utils/loadingPage';
+} from '../../../../../generated/graphql';
+import Layout from '../../../../components/page/layout';
+import FormWrapper from '../../../../components/utils/formWrapper';
+import LoadingPage from '../../../../components/utils/loadingPage';
+import ControlledAutocomplete from '../../../../components/utils/controlledAutocomplete';
+import {
+  OFFERS_STUDENT,
+  REQUESTS_STUDENT,
+} from '../../../../constants/menu-items';
+import wrongNumberToNumber from '../../../../utils/wrongNumberToString';
+import {
+  getSchoolSubjectOptions,
+  getTeacherOptions,
+} from '../../../../utils/getOfferRequestOptions';
 
 const tutorRequestSchema = object({
   description: string()
@@ -21,12 +31,14 @@ const tutorRequestSchema = object({
     .max(1000, '* Bitte gib eine Beschreibung von bis zu 1000 Zeichen an'),
   teacher: object({
     id: number().int().nonnegative('* Bitte wähle einen Lehrer aus'),
+    name: string(),
   }),
   grade: number()
     .min(1, '* Bitte gib eine Schulstufe an')
     .max(13, '* Bitte gib eine Schulstufe an'),
   schoolSubject: object({
     id: number().int().nonnegative('* Bitte wähle ein Fach aus'),
+    name: string(),
   }),
 });
 
@@ -37,10 +49,19 @@ export default function Offer() {
 
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [defaultSchoolSubject, setDefaultSchoolSubject] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [defaultTeacher, setDefaultTeacher] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
   // get tutorRequestId from url
-  const { tutorRequestId } = router.query;
-  let queryId: number | null = parseInt(tutorRequestId as string, 10);
-  if (tutorRequestId === 'new') queryId = null;
+  const { requestId } = router.query;
+  let queryId: number | null = parseInt(requestId as string, 10);
+  if (requestId === 'new') queryId = null;
 
   // graphql queries and mutations
   const [createFunction] = useCreateTutorRequestMutation({
@@ -48,8 +69,9 @@ export default function Offer() {
       if (error?.message === 'DoesNotExistError') router.push('/404');
       if (error?.message === 'NotAuthorizedError') router.push('/401');
       if (error?.message === 'CreationFailedError')
-        setErrorMessage('Die Erstellung war nicht möglich');
+        setErrorMessage('Bei der Erstellung ist ein Fehler aufgetreten');
     },
+    refetchQueries: ['GetTutorRequests'],
   });
   const [updateFunction] = useUpdateTutorRequestMutation({
     onError: (error) => {
@@ -59,6 +81,15 @@ export default function Offer() {
         setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
     },
   });
+  const [deleteFunction] = useDeleteTutorRequestMutation({
+    onError: (error) => {
+      if (error?.message === 'DoesNotExistError') router.push('/404');
+      if (error?.message === 'NotAuthorizedError') router.push('/401');
+      if (error?.message === 'DeletionFailedError')
+        setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
+    },
+    refetchQueries: ['GetTutorRequests'],
+  });
   const { loading } = useGetTutorRequestByIdQuery({
     skip: queryId === null,
     variables: {
@@ -66,27 +97,38 @@ export default function Offer() {
     },
     onCompleted: (data) => {
       if (data) {
-        reset(data.getTutorRequestById);
+        const loadedSchoolSubject = {
+          id: wrongNumberToNumber(data.getTutorRequestById.schoolSubject.id),
+          name: `${data.getTutorRequestById.schoolSubject.name} - ${data.getTutorRequestById.schoolSubject.longName}`,
+        };
+        const loadedTeacher = {
+          id: wrongNumberToNumber(data.getTutorRequestById.teacher.id),
+          name: data.getTutorRequestById.teacher.name,
+        };
+        setDefaultSchoolSubject(loadedSchoolSubject);
+        setDefaultTeacher(loadedTeacher);
+        reset({
+          description: data.getTutorRequestById.description,
+          grade: data.getTutorRequestById.grade,
+          schoolSubject: loadedSchoolSubject,
+          teacher: loadedTeacher,
+        });
       }
     },
     onError: (error) => {
       if (error?.message === 'DoesNotExistError') router.push('/404');
       if (error?.message === 'NotAuthorizedError') router.push('/401');
-      if (error?.message === 'CreationFailedError')
-        setErrorMessage('Die Erstellung war nicht möglich');
-      if (error?.message === 'UpdateFailedError')
-        setErrorMessage('Bei der Aktualisierung ist ein Fehler aufgetreten');
     },
   });
 
-  const { data: schoolSubjects } = useGetSubjectsOfStudentQuery();
-  const { data: teachers } = useGetTeachersOfStudentQuery();
+  const { data: formData } = useGetOfferingRequestFormDataQuery();
 
   const {
     register,
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
+    control,
   } = useForm<TutorRequestInput>({
     resolver: zodResolver(tutorRequestSchema),
     mode: 'onTouched',
@@ -105,7 +147,7 @@ export default function Offer() {
         },
       });
       router.push(
-        `/admin/tutorRequest/${tutorRequest?.data?.createTutorRequest.id}`
+        `${REQUESTS_STUDENT}/${tutorRequest?.data?.createTutorRequest.id}`
       );
     } else {
       await updateFunction({
@@ -134,24 +176,19 @@ export default function Offer() {
     <Layout role="STUDENT">
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-          <Autocomplete
-            sx={{ mb: 2 }}
-            disablePortal
-            options={schoolSubjects?.getSubjectsOfStudent || []}
-            getOptionLabel={(option: {
-              id: number;
-              name: string;
-              longName: string;
-            }) => `${option.name} (${option.longName})`}
-            fullWidth
-            renderInput={(params) => (
-              <TextField {...params} label="Schulfach" />
-            )}
-            {...register('schoolSubject')}
+          <ControlledAutocomplete
+            label="Schulfach"
+            name="schoolSubject"
+            options={getSchoolSubjectOptions(formData)}
+            control={control}
+            defaultValue={defaultSchoolSubject}
+            error={!!errors['schoolSubject']}
+            helperText={
+              errors['schoolSubject'] ? errors['schoolSubject'].message : ''
+            }
           />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Beschreibung"
             fullWidth
             required
@@ -164,36 +201,46 @@ export default function Offer() {
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('description')}
           />
-          <Autocomplete
-            sx={{ mb: 2 }}
-            disablePortal
-            options={teachers?.getTeachersOfStudent || []}
-            getOptionLabel={(option: { id: number; name: string }) =>
-              option.name
-            }
-            fullWidth
-            renderInput={(params) => <TextField {...params} label="LehrerIn" />}
-            {...register('teacher')}
-          />
           <TextField
             sx={{ mb: 2 }}
-            variant="standard"
             label="Schulstufe"
             fullWidth
             required
             type="number"
             error={!!errors['grade']}
             helperText={errors['grade'] ? errors['grade'].message : ''}
-            defaultValue={queryId === null ? '' : ' '} // formatting
+            defaultValue={queryId === null ? '' : 1} // formatting
             {...register('grade', { valueAsNumber: true })}
           />
+          <ControlledAutocomplete
+            label="Lehrkraft"
+            name="teacher"
+            options={getTeacherOptions(formData)}
+            control={control}
+            defaultValue={defaultTeacher}
+            error={!!errors['teacher']}
+            helperText={errors['teacher'] ? errors['teacher'].message : ''}
+          />
+          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
+            Speichern
+          </Button>
           <Button
             variant="contained"
             fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
+            sx={{ mb: 2 }}
+            disabled={queryId === null}
+            onClick={() => {
+              if (queryId !== null) {
+                deleteFunction({
+                  variables: {
+                    deleteTutorRequestId: queryId,
+                  },
+                });
+                router.push(OFFERS_STUDENT);
+              }
+            }}
           >
-            Speichern
+            Löschen
           </Button>
           <Alert
             severity="error"

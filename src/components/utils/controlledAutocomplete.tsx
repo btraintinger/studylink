@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form';
 import { Autocomplete, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ControlledAutocompleteProps {
   options: any[];
@@ -19,6 +19,10 @@ export default function ControlledAutocomplete(
     props;
 
   const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <Controller

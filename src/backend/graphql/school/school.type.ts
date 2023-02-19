@@ -1,3 +1,4 @@
+import { Authorized } from 'type-graphql';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IsFQDN, MaxLength } from 'class-validator';
@@ -20,8 +21,9 @@ export class School {
   domain!: string;
 
   @Field((type) => [Department])
-  departments?: Department[];
+  departments!: Department[];
 
+  @Authorized('ADMIN')
   @Field((type) => [Admin])
   admins!: Admin[];
 
