@@ -12,25 +12,28 @@ import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
+import { AcceptDialog } from '../../../components/utils/AcceptDialog';
+
+export type MatchListItem = {
+  id: number;
+  rating: number;
+  requestGrade: number;
+  offeringGrade: number;
+  schoolSubjectLongName: string;
+  schoolSubjectName: string;
+  offeringDescription: string;
+  requestDescription: string;
+  offeringTeacherLongName: string;
+  offeringTeacherName: string;
+  requestTeacherLongName: string;
+  requestTeacherName: string;
+};
 
 export default function Matches() {
   const router = useRouter();
   const [array, setArray] = useState<MatchListItem[]>([]);
-
-  type MatchListItem = {
-    id: number;
-    rating: number;
-    requestGrade: number;
-    offeringGrade: number;
-    schoolSubjectLongName: string;
-    schoolSubjectName: string;
-    offeringDescription: string;
-    requestDescription: string;
-    offeringTeacherLongName: string;
-    offeringTeacherName: string;
-    requestTeacherLongName: string;
-    requestTeacherName: string;
-  };
+  const [selectedRow, setSelected] = useState<MatchListItem>(array[0]);
+  const [open, setOpen] = useState(false);
 
   const { loading } = useGetMatchesOfCurrentUserQuery({
     onCompleted: (data) => {
@@ -116,8 +119,18 @@ export default function Matches() {
     },
   ];
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    router.push(`${OFFERS_STUDENT}/${params.row.id}`);
+    //router.push(`${OFFERS_STUDENT}/${params.row.id}`);
+    setSelected(params.row);
+    setOpen(true);
   };
+
+  function closeDialog(acceptedMatch:MatchListItem | null){
+    if(acceptedMatch != null){
+      console.log(acceptedMatch);
+      setOpen(false);
+    }
+    setOpen(false);
+  }
 
   if (loading)
     return (
@@ -148,6 +161,10 @@ export default function Matches() {
             },
           }}
         ></DataGrid>
+        <AcceptDialog
+          open = {open}
+          selectedRow = {selectedRow}
+          onClose = {closeDialog}/>
       </Box>
     </Layout>
   );
