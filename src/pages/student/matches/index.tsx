@@ -119,13 +119,12 @@ export default function Matches() {
     },
   ];
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    //router.push(`${OFFERS_STUDENT}/${params.row.id}`);
     setSelected(params.row);
     setOpen(true);
   };
 
-  function closeDialog(acceptedMatch:MatchListItem | null){
-    if(acceptedMatch != null){
+  function closeDialog(acceptedMatch: MatchListItem | null) {
+    if (acceptedMatch != null) {
       console.log(acceptedMatch);
       setOpen(false);
     }
@@ -162,9 +161,10 @@ export default function Matches() {
           }}
         ></DataGrid>
         <AcceptDialog
-          open = {open}
-          selectedRow = {selectedRow}
-          onClose = {closeDialog}/>
+          open={open}
+          selectedRow={selectedRow}
+          onClose={closeDialog}
+        />
       </Box>
     </Layout>
   );

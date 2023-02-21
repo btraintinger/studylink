@@ -71,7 +71,7 @@ export class StudentResolver {
       .findUnique({
         where: { id: student.id },
       })
-      .tutorOffering();
+      .tutorOfferings();
   }
 
   @FieldResolver()
@@ -80,7 +80,7 @@ export class StudentResolver {
       .findUnique({
         where: { id: student.id },
       })
-      .tutorRequest();
+      .tutorRequests();
   }
 
   @FieldResolver()

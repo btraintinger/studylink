@@ -22,11 +22,10 @@ import NotesIcon from '@mui/icons-material/Notes';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { MatchListItem } from '../../pages/student/matches';
 
-
 export interface AcceptDialogProps {
   open: boolean;
   selectedRow: MatchListItem;
-  onClose: (acceptedItem:MatchListItem | null) => void;
+  onClose: (acceptedItem: MatchListItem | null) => void;
 }
 
 export function AcceptDialog(props: AcceptDialogProps) {
@@ -42,39 +41,59 @@ export function AcceptDialog(props: AcceptDialogProps) {
   if (selectedRow !== null && selectedRow !== undefined) {
     return (
       <Dialog onClose={handleClose} open={open}>
-        <DialogTitle sx={{bgcolor: '#4caf50'}}>Nachhilfe Anfrage </DialogTitle>
-        <Box sx={{margin:4}}>
-        <List>
-          <ListItem>
-          <ClassIcon sx={{mr:2}}/>
-          <Typography> Fach: </Typography>
-            <Typography> ({selectedRow.schoolSubjectName}) {selectedRow.schoolSubjectLongName}</Typography>
-          </ListItem>
-          <ListItem>
-          <PersonIcon sx={{mr:2}}/>
-          <Typography> Lehrer: </Typography>
-            <Typography> ({selectedRow.offeringTeacherName}) {selectedRow.offeringTeacherLongName}</Typography>
-            <Typography> ({selectedRow.requestTeacherName}) {selectedRow.requestTeacherLongName}</Typography>
-          </ListItem>
-          <ListItem>
-          <GroupsIcon sx={{mr:2}}/>
-          <Typography> Klasse: </Typography>
-            <Typography> {selectedRow.offeringGrade}</Typography>
-          </ListItem>
-          <ListItem>
-          <NotesIcon sx={{mr:2}}/>
-          <Typography> Beschreibung: </Typography>
-            <Typography> {selectedRow.offeringDescription}</Typography>
-          </ListItem>
-          <ListItemButton sx={{bgcolor:'#4caf50', mt:5}} onClick={handleAccept}>
-            <AddIcon sx={{color: '#ffffff'}}/>
-            <Typography sx={{color: '#ffffff'}}>Akzeptieren</Typography>
-          </ListItemButton>
-          <ListItemButton sx={{bgcolor:'#f51414', mt:1}} onClick={handleClose}>
-            <CancelIcon sx={{color: '#ffffff'}}/>
-            <Typography sx={{color: '#ffffff'}}>Abbrechen</Typography>
-          </ListItemButton>
-        </List>
+        <DialogTitle sx={{ bgcolor: '#4caf50' }}>
+          Nachhilfe Anfrage{' '}
+        </DialogTitle>
+        <Box sx={{ margin: 4 }}>
+          <List>
+            <ListItem>
+              <ClassIcon sx={{ mr: 2 }} />
+              <Typography> Fach: </Typography>
+              <Typography>
+                {' '}
+                ({selectedRow.schoolSubjectName}){' '}
+                {selectedRow.schoolSubjectLongName}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <PersonIcon sx={{ mr: 2 }} />
+              <Typography> Lehrer: </Typography>
+              <Typography>
+                {' '}
+                ({selectedRow.offeringTeacherName}){' '}
+                {selectedRow.offeringTeacherLongName}
+              </Typography>
+              <Typography>
+                {' '}
+                ({selectedRow.requestTeacherName}){' '}
+                {selectedRow.requestTeacherLongName}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <GroupsIcon sx={{ mr: 2 }} />
+              <Typography> Klasse: </Typography>
+              <Typography> {selectedRow.offeringGrade}</Typography>
+            </ListItem>
+            <ListItem>
+              <NotesIcon sx={{ mr: 2 }} />
+              <Typography> Beschreibung: </Typography>
+              <Typography> {selectedRow.offeringDescription}</Typography>
+            </ListItem>
+            <ListItemButton
+              sx={{ bgcolor: '#4caf50', mt: 5 }}
+              onClick={handleAccept}
+            >
+              <AddIcon sx={{ color: '#ffffff' }} />
+              <Typography sx={{ color: '#ffffff' }}>Akzeptieren</Typography>
+            </ListItemButton>
+            <ListItemButton
+              sx={{ bgcolor: '#f51414', mt: 1 }}
+              onClick={handleClose}
+            >
+              <CancelIcon sx={{ color: '#ffffff' }} />
+              <Typography sx={{ color: '#ffffff' }}>Abbrechen</Typography>
+            </ListItemButton>
+          </List>
         </Box>
       </Dialog>
     );

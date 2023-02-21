@@ -84,8 +84,6 @@ export class MatchResolver {
       }
     }
 
-    console.log(matches);
-
     return matches;
   }
 }
