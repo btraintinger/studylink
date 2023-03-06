@@ -108,7 +108,7 @@ export default function Offers() {
               aria-describedby={id}
               variant="contained"
               onClick={handleClick}
-              sx={{ backgroundColor: '#ffffff' }}
+              sx={{ backgroundColor: '#ffffff', ml: 1 }}
             >
               <InfoIcon />
             </Button>
@@ -121,7 +121,7 @@ export default function Offers() {
                 vertical: 'bottom',
                 horizontal: 'left',
               }}
-              sx={{ width: 800 }}
+              sx={{ width: 1000 }}
             >
               <Typography sx={{ p: 2 }}>
                 Wenn du ein Fach sehr gut beherrscht, kannst du ein Offer

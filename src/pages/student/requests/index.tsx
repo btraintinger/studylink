@@ -109,7 +109,7 @@ export default function Requests() {
               aria-describedby={id}
               variant="contained"
               onClick={handleClick}
-              sx={{ backgroundColor: '#ffffff' }}
+              sx={{ backgroundColor: '#ffffff', ml: 2 }}
             >
               <InfoIcon />
             </Button>
@@ -122,7 +122,7 @@ export default function Requests() {
                 vertical: 'bottom',
                 horizontal: 'left',
               }}
-              sx={{ width: 800 }}
+              sx={{ width: 1000 }}
             >
               <Typography sx={{ p: 2 }}>
                 Wenn du einen Nachhilfebedarf hast, erstelle ein Request um
