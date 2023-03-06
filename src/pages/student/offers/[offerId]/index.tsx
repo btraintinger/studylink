@@ -1,5 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -173,6 +180,16 @@ export default function Offer() {
     <Layout role="STUDENT">
       <FormWrapper>
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: queryId === null ? 'flex' : 'none' }}>
+              <Typography variant="h5">Erzeuge dein neues Offering</Typography>
+            </Box>
+            <Box sx={{ display: queryId !== null ? 'flex' : 'none' }}>
+              <Typography variant="h5">
+                Bearbeite dein bestehendes Offering
+              </Typography>
+            </Box>
+          </Box>
           <ControlledAutocomplete
             label="Schulfach"
             name="schoolSubject"
@@ -193,7 +210,9 @@ export default function Offer() {
             multiline
             error={!!errors['description']}
             helperText={
-              errors['description'] ? errors['description'].message : ''
+              errors['description']
+                ? errors['description'].message
+                : 'Wie kann ich helfen, was kann ich besonders gut?'
             }
             defaultValue={queryId === null ? '' : ' '} // formatting
             {...register('description')}
@@ -205,7 +224,11 @@ export default function Offer() {
             required
             type="number"
             error={!!errors['grade']}
-            helperText={errors['grade'] ? errors['grade'].message : ''}
+            helperText={
+              errors['grade']
+                ? errors['grade'].message
+                : 'Bis zu welcher Schulstufe kann ich Nachhilfe anbieten?'
+            }
             defaultValue={queryId === null ? '' : 1} // formatting
             {...register('grade', { valueAsNumber: true })}
           />
@@ -216,7 +239,11 @@ export default function Offer() {
             control={control}
             defaultValue={defaultTeacher}
             error={!!errors['teacher']}
-            helperText={errors['teacher'] ? errors['teacher'].message : ''}
+            helperText={
+              errors['teacher']
+                ? errors['teacher'].message
+                : 'Welche Lehrkraft habe ich in diesem Fach?'
+            }
           />
           <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
             Speichern
@@ -224,7 +251,7 @@ export default function Offer() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, bgcolor: '#f51414' }}
             disabled={queryId === null}
             onClick={() => {
               if (queryId !== null) {
