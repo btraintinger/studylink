@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Button, Link, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   useGetStudentOfCurrentUserQuery,
@@ -10,6 +11,9 @@ import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { REQUESTS_STUDENT } from '../../../constants/menu-items';
+import AddIcon from '@mui/icons-material/Add';
+import InfoIcon from '@mui/icons-material/Info';
+import SosIcon from '@mui/icons-material/Sos';
 
 interface RequestListItem {
   id: number;
@@ -24,6 +28,18 @@ interface RequestListItem {
 export default function Requests() {
   const router = useRouter();
   const [array, setArray] = useState<RequestListItem[]>([]);
+  const [InfoAnchorEl, setInfoAnchorEl] = useState<HTMLButtonElement | null>(
+    null
+  );
+  const open = Boolean(InfoAnchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setInfoAnchorEl(event.currentTarget);
+  };
+  const handleInfoClose = () => {
+    setInfoAnchorEl(null);
+  };
 
   const { loading } = useGetTutorRequestsQuery({
     onCompleted: (data) => {
@@ -86,16 +102,51 @@ export default function Requests() {
   return (
     <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
-        <Button
-          variant="contained"
-          sx={{ mb: 2 }}
-          fullWidth
-          onClick={() => {
-            router.push(`${REQUESTS_STUDENT}/new`);
-          }}
-        >
-          Neues Angebot hinzufügen
-        </Button>
+        <Box sx={{ ml: 5 }}>
+          <Typography variant="h3" sx={{ mb: 1 }}>
+            <SosIcon /> Requests{' '}
+            <Button
+              aria-describedby={id}
+              variant="contained"
+              onClick={handleClick}
+              sx={{ backgroundColor: '#ffffff', ml: 2 }}
+            >
+              <InfoIcon />
+            </Button>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={InfoAnchorEl}
+              onClose={handleInfoClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              sx={{ width: 1000 }}
+            >
+              <Typography sx={{ p: 2 }}>
+                Wenn du einen Nachhilfebedarf hast, erstelle ein Request um
+                deinen Nachhilfelehrer zu finden. Besuch unsere{' '}
+                <Link href="/info"> Infoseite </Link> wenn du mehr Informationen
+                benötigst.
+              </Typography>
+            </Popover>
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{
+              mb: 2,
+              alignSelf: 'center',
+              borderRadius: 100,
+            }}
+            onClick={() => {
+              router.push(`${REQUESTS_STUDENT}/new`);
+            }}
+          >
+            <AddIcon />
+            Add new Request
+          </Button>
+        </Box>
         <DataGrid
           rows={array}
           columns={columns}

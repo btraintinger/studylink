@@ -1,8 +1,9 @@
 import * as Muicon from '@mui/icons-material';
-import { Link as MuiLink } from '@mui/material';
+import { Box, Link as MuiLink } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -11,6 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
@@ -71,6 +73,7 @@ export default function MiniDrawer() {
   const { selectedItem, isDrawerOpen, setDrawerOpen, setSelectedItem } =
     useDrawerContext();
   const { data: session } = useSession();
+  const router = useRouter();
 
   const userRole = session?.user?.role;
 
@@ -193,6 +196,73 @@ export default function MiniDrawer() {
           </ListItem>
         ))}
       </List>
+
+      <Box
+        sx={{
+          display: isDrawerOpen ? 'flex' : 'none',
+          flexGrow: 1,
+          alignItems: 'end',
+          flexDirection: 'row-reverse',
+          mb: 3,
+          width: { drawerWidth },
+        }}
+      >
+        <IconButton
+          onClick={() => {
+            router.push(`/info`);
+          }}
+        >
+          <InfoIcon />
+        </IconButton>
+        <MuiLink
+          component={Link}
+          href={'http://www.htl-salzburg.ac.at/startseite.html'}
+          passHref
+          underline="none"
+          sx={{ display: isDrawerOpen ? 'flex' : 'none' }}
+        >
+          <Image
+            height={123 / 2}
+            width={393 / 2}
+            src="/images/htl-logo.png"
+            alt="logo"
+          />
+        </MuiLink>
+      </Box>
+      <Box sx={{ display: 'flex' }}>
+        <MuiLink
+          component={Link}
+          href={
+            'http://www.htl-salzburg.ac.at/elektronik-technische-informatik.html'
+          }
+          passHref
+          underline="none"
+          sx={{
+            display: isDrawerOpen ? 'flex' : 'none',
+            flexDirection: 'column',
+          }}
+        >
+          <Typography
+            sx={{
+              display: isDrawerOpen ? 'inline' : 'none',
+              whiteSpace: 'pre-line',
+              width: { drawerWidth },
+            }}
+          >
+            Diplomprojekt an der Abt.
+          </Typography>
+          <Typography
+            sx={{
+              display: isDrawerOpen ? 'inline' : 'none',
+              whiteSpace: 'pre-line',
+              width: { drawerWidth },
+              textDecoration: 'underline',
+            }}
+          >
+            Elektronik u. techn. Informatik
+          </Typography>
+        </MuiLink>
+      </Box>
     </Drawer>
   );
 }

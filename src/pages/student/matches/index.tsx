@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Button, Link, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
 import {
   useGetMatchesOfCurrentUserQuery,
@@ -19,6 +20,7 @@ import {
   AcceptDialogProps,
 } from '../../../components/utils/AcceptDialog';
 import { Rowdies } from '@next/font/google';
+import InfoIcon from '@mui/icons-material/Info';
 
 export type MatchListItem = {
   id: number;
@@ -34,7 +36,18 @@ export default function Matches() {
   const [selectedRow, setSelected] = useState<AcceptDialogInfo | null>(null);
   const [open, setOpen] = useState(false);
 
-  const { data: ownStudent } = useGetStudentOfCurrentUserQuery();
+  const [InfoAnchorEl, setInfoAnchorEl] = useState<HTMLButtonElement | null>(
+    null
+  );
+  const infoOpen = Boolean(InfoAnchorEl);
+  const id = infoOpen ? 'simple-popover' : undefined;
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setInfoAnchorEl(event.currentTarget);
+  };
+  const handleInfoClose = () => {
+    setInfoAnchorEl(null);
+  };
 
   const { data: matches, loading } = useGetMatchesOfCurrentUserQuery({
     onCompleted: (data) => {
@@ -124,6 +137,36 @@ export default function Matches() {
   return (
     <Layout role="STUDENT">
       <Box sx={{ height: '80vh', width: '100%' }}>
+        <Typography sx={{ mb: 1 }} variant="h4">
+          Vorgeschlagene Nachhilfekontakte
+          <Button
+            aria-describedby={id}
+            variant="contained"
+            onClick={handleClick}
+            sx={{ backgroundColor: '#ffffff', ml: 1 }}
+          >
+            <InfoIcon />
+          </Button>
+        </Typography>
+        <Popover
+          id={id}
+          open={infoOpen}
+          anchorEl={InfoAnchorEl}
+          onClose={handleInfoClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          sx={{ width: 1000 }}
+        >
+          <Typography sx={{ p: 2 }}>
+            Hier werden Vorschläge für Nachhilfekontakte angezeigt, also deine
+            Nachhilfetutoren, die dir helfen oder deine Nachhilfeschüler, denen
+            du helfen kannst. Besuche unsere{' '}
+            <Link href="/info"> Infoseite </Link> wenn du mehr Informationen
+            benötigst.
+          </Typography>
+        </Popover>
         <DataGrid
           rows={array}
           columns={columns}

@@ -1,5 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Autocomplete, Box, Button, TextField } from '@mui/material';
+import React from 'react';
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -46,7 +55,6 @@ type TutorRequestInput = TypeOf<typeof tutorRequestSchema>;
 
 export default function Offer() {
   const router = useRouter();
-
   const [errorMessage, setErrorMessage] = useState('');
 
   const [defaultSchoolSubject, setDefaultSchoolSubject] = useState<{
@@ -174,86 +182,109 @@ export default function Offer() {
   if (loading) <LoadingPage></LoadingPage>;
 
   return (
-    <Layout role="STUDENT">
-      <FormWrapper>
-        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-          <ControlledAutocomplete
-            label="Schulfach"
-            name="schoolSubject"
-            options={getSchoolSubjectOptions(formData)}
-            control={control}
-            defaultValue={defaultSchoolSubject}
-            error={!!errors['schoolSubject']}
-            helperText={
-              errors['schoolSubject'] ? errors['schoolSubject'].message : ''
-            }
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Beschreibung"
-            fullWidth
-            required
-            type="text"
-            multiline
-            error={!!errors['description']}
-            helperText={
-              errors['description'] ? errors['description'].message : ''
-            }
-            defaultValue={queryId === null ? '' : ' '} // formatting
-            {...register('description')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Schulstufe"
-            fullWidth
-            required
-            type="number"
-            error={!!errors['grade']}
-            helperText={errors['grade'] ? errors['grade'].message : ''}
-            defaultValue={queryId === null ? '' : 1} // formatting
-            {...register('grade', { valueAsNumber: true })}
-          />
-          <ControlledAutocomplete
-            label="Lehrkraft"
-            name="teacher"
-            options={getTeacherOptions(formData)}
-            control={control}
-            defaultValue={defaultTeacher}
-            error={!!errors['teacher']}
-            helperText={errors['teacher'] ? errors['teacher'].message : ''}
-          />
-          <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
-            Speichern
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ mb: 2 }}
-            disabled={queryId === null}
-            onClick={() => {
-              if (queryId !== null) {
-                deleteFunction({
-                  variables: {
-                    deleteTutorRequestId: queryId,
-                  },
-                });
-                router.push(OFFERS_STUDENT);
+    <div>
+      <Layout role="STUDENT">
+        <FormWrapper>
+          <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: queryId === null ? 'flex' : 'none' }}>
+                <Typography variant="h5">Erzeuge dein neues Request</Typography>
+              </Box>
+              <Box sx={{ display: queryId !== null ? 'flex' : 'none' }}>
+                <Typography variant="h5">
+                  Bearbeite dein bestehendes Request
+                </Typography>
+              </Box>
+            </Box>
+
+            <ControlledAutocomplete
+              label="Schulfach"
+              name="schoolSubject"
+              options={getSchoolSubjectOptions(formData)}
+              control={control}
+              defaultValue={defaultSchoolSubject}
+              error={!!errors['schoolSubject']}
+              helperText={
+                errors['schoolSubject'] ? errors['schoolSubject'].message : ''
               }
-            }}
-          >
-            Löschen
-          </Button>
-          <Alert
-            severity="error"
-            sx={{
-              display: errorMessage ? null : 'none',
-              marginTop: '15px',
-            }}
-          >
-            {errorMessage}
-          </Alert>
-        </Box>
-      </FormWrapper>
-    </Layout>
+            />
+            <TextField
+              sx={{ mb: 2 }}
+              label="Beschreibung"
+              fullWidth
+              required
+              type="text"
+              multiline
+              error={!!errors['description']}
+              helperText={
+                errors['description']
+                  ? errors['description'].message
+                  : 'Wo brauche ich Hilfe?'
+              }
+              defaultValue={queryId === null ? '' : ' '} // formatting
+              {...register('description')}
+            />
+            <TextField
+              sx={{ mb: 2 }}
+              label="Schulstufe"
+              fullWidth
+              required
+              type="number"
+              error={!!errors['grade']}
+              helperText={
+                errors['grade']
+                  ? errors['grade'].message
+                  : 'Welche Schulstufe besuche ich: 1,2,3?'
+              }
+              defaultValue={queryId === null ? '' : 1} // formatting
+              {...register('grade', { valueAsNumber: true })}
+            />
+            <ControlledAutocomplete
+              label="Lehrkraft"
+              name="teacher"
+              options={getTeacherOptions(formData)}
+              control={control}
+              defaultValue={defaultTeacher}
+              error={!!errors['teacher']}
+              helperText={
+                errors['teacher']
+                  ? errors['teacher'].message
+                  : 'Wähle Lehrkraft aus Menü'
+              }
+            />
+            <Button variant="contained" fullWidth type="submit" sx={{ mb: 2 }}>
+              Speichern
+            </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ mb: 2, bgcolor: '#f51414' }}
+              disabled={queryId === null}
+              onClick={() => {
+                if (queryId !== null) {
+                  deleteFunction({
+                    variables: {
+                      deleteTutorRequestId: queryId,
+                    },
+                  });
+                  router.push(OFFERS_STUDENT);
+                }
+              }}
+            >
+              Löschen
+            </Button>
+            <Alert
+              severity="error"
+              sx={{
+                display: errorMessage ? null : 'none',
+                marginTop: '15px',
+              }}
+            >
+              {errorMessage}
+            </Alert>
+          </Box>
+        </FormWrapper>
+      </Layout>
+    </div>
   );
 }
