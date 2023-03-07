@@ -193,19 +193,20 @@ model Session {
 }
 
 model User {
-  id                     String    @id @unique @default(cuid())
-  name                   String?
-  firstName              String?   @map("first_name")
-  lastName               String?   @map("last_name")
-  email                  String    @unique
-  emailVerified          DateTime? @map("email_verified")
-  emailVerificationToken String?   @map("email_verification_token")
-  passwordResetToken     String?   @map("reset_token")
-  password               String
-  role                   String
-  student                Student?
-  admin                  Admin?
-  Session                Session[]
+  id                      String    @id @unique @default(cuid())
+  name                    String?
+  firstName               String?   @map("first_name")
+  lastName                String?   @map("last_name")
+  email                   String    @unique
+  emailVerified           DateTime? @map("email_verified")
+  emailVerificationToken  String?   @map("email_verification_token")
+  passwordResetToken      String?   @map("reset_token")
+  allowEmailNotifications Boolean?  @default(true) @map("allow_email_notifications")
+  password                String
+  role                    String
+  student                 Student?
+  admin                   Admin?
+  Session                 Session[]
 
   @@map("user")
 }

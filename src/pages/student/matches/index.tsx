@@ -5,57 +5,63 @@ import {
   Match,
   TutorOffering,
   TutorRequest,
+  useGetStudentOfCurrentUserQuery,
 } from '../../../../generated/graphql';
 import { useEffect, useState } from 'react';
-import { Teacher } from '../../../../generated/graphql';
+import { GetMatchesOfCurrentUserQuery } from '../../../../generated/graphql';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import { OFFERS_STUDENT } from '../../../constants/menu-items';
-import { AcceptDialog } from '../../../components/utils/AcceptDialog';
+import {
+  AcceptDialog,
+  AcceptDialogInfo,
+  AcceptDialogProps,
+} from '../../../components/utils/AcceptDialog';
+import { Rowdies } from '@next/font/google';
 
 export type MatchListItem = {
   id: number;
   rating: number;
-  requestGrade: number;
-  offeringGrade: number;
-  schoolSubjectLongName: string;
+  type: string;
+  grade: number;
   schoolSubjectName: string;
-  offeringDescription: string;
-  requestDescription: string;
-  offeringTeacherLongName: string;
-  offeringTeacherName: string;
-  requestTeacherLongName: string;
-  requestTeacherName: string;
+  teacherName: string;
 };
 
 export default function Matches() {
-  const router = useRouter();
   const [array, setArray] = useState<MatchListItem[]>([]);
-  const [selectedRow, setSelected] = useState<MatchListItem>(array[0]);
+  const [selectedRow, setSelected] = useState<AcceptDialogInfo | null>(null);
   const [open, setOpen] = useState(false);
 
-  const { loading } = useGetMatchesOfCurrentUserQuery({
+  const { data: ownStudent } = useGetStudentOfCurrentUserQuery();
+
+  const { data: matches, loading } = useGetMatchesOfCurrentUserQuery({
     onCompleted: (data) => {
       if (data) {
-        const matchList: MatchListItem[] = [];
-        let i = 0;
-        data.getMatchesOfCurrentUser.map((match) => {
-          matchList.push({
-            id: i++,
-            rating: match.rating,
-            requestGrade: match.tutorRequest.grade,
-            offeringGrade: match.tutorOffering.grade,
-            schoolSubjectLongName: match.tutorOffering.schoolSubject.longName,
-            schoolSubjectName: match.tutorOffering.schoolSubject.name,
-            offeringDescription: match.tutorOffering.description,
-            requestDescription: match.tutorRequest.description,
-            offeringTeacherLongName: match.tutorOffering.teacher.longName,
-            offeringTeacherName: match.tutorOffering.teacher.name,
-            requestTeacherLongName: match.tutorRequest.teacher.longName,
-            requestTeacherName: match.tutorRequest.teacher.name,
-          });
-        });
+        const matchList: MatchListItem[] = data.getMatchesOfCurrentUser.map(
+          (match) => {
+            if (match.type === 'REQUEST') {
+              return {
+                id: match.id,
+                rating: match.rating,
+                type: 'Anfrage',
+                grade: match.tutorOffering.grade,
+                schoolSubjectName: `${match.tutorOffering.schoolSubject.name} - ${match.tutorOffering.schoolSubject.longName}`,
+                teacherName: `${match.tutorOffering.teacher.name} - ${match.tutorOffering.teacher.longName}`,
+              };
+            } else {
+              return {
+                id: match.id,
+                rating: match.rating,
+                type: 'Angebot',
+                grade: match.tutorRequest.grade,
+                schoolSubjectName: `${match.tutorRequest.schoolSubject.name} - ${match.tutorRequest.schoolSubject.longName}`,
+                teacherName: `${match.tutorRequest.teacher.name} - ${match.tutorRequest.teacher.longName}`,
+              };
+            }
+          }
+        );
         setArray(matchList);
       }
     },
@@ -65,71 +71,48 @@ export default function Matches() {
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 0.3,
+      flex: 0.15,
     },
     {
-      field: 'requestGrade',
-      headerName: 'Anfrage Schulstufe',
-      flex: 0.3,
-    },
-    {
-      field: 'offerGrade',
-      headerName: 'Angebot Schulstufe',
-      flex: 0.3,
-    },
-    {
-      field: 'schoolSubjectLongName',
-      headerName: 'Schulfach',
-      flex: 0.3,
+      field: 'type',
+      headerName: 'Typ',
+      flex: 0.15,
     },
     {
       field: 'schoolSubjectName',
-      headerName: 'Schulfach Kürzel',
-      flex: 0.3,
+      headerName: 'Fach',
+      flex: 0.2,
     },
     {
-      field: 'offeringDescription',
-      headerName: 'Angebot Beschreibung',
-      flex: 0.3,
+      field: 'grade',
+      headerName: 'Schulstufe',
+      flex: 0.2,
     },
     {
-      field: 'requestDescription',
-      headerName: 'Anfrage Beschreibung',
-      flex: 0.3,
-    },
-    {
-      field: 'offeringTeacherLongName',
-      headerName: 'Angebot Lehrer',
-      flex: 0.3,
-    },
-    {
-      field: 'offeringTeacherName',
-      headerName: 'Angebot Lehrer Kürzel',
-      flex: 0.3,
-    },
-    {
-      field: 'requestTeacherLongName',
-      headerName: 'Anfrage Lehrer',
-      flex: 0.3,
-    },
-    {
-      field: 'requestTeacherName',
-      headerName: 'Anfrage Lehrer Kürzel',
-      flex: 0.3,
+      field: 'teacherName',
+      headerName: 'Lehrer',
+      flex: 0.2,
     },
   ];
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    setSelected(params.row);
+    const match = matches?.getMatchesOfCurrentUser.find(
+      (match) => match.id === params.row.id
+    );
+    if (match === null) return;
+    if (match === undefined) return;
+
+    const tutoringAction =
+      match.type === 'REQUEST' ? match.tutorOffering : match.tutorRequest;
+    setSelected({
+      type: match.type,
+      rating: match.rating,
+      grade: tutoringAction.grade,
+      schoolSubjectName: `${tutoringAction.schoolSubject.name} - ${tutoringAction.schoolSubject.longName}`,
+      teacherName: `${tutoringAction.teacher.name} - ${tutoringAction.teacher.longName}`,
+      description: tutoringAction.description,
+    });
     setOpen(true);
   };
-
-  function closeDialog(acceptedMatch: MatchListItem | null) {
-    if (acceptedMatch != null) {
-      console.log(acceptedMatch);
-      setOpen(false);
-    }
-    setOpen(false);
-  }
 
   if (loading)
     return (
@@ -160,11 +143,7 @@ export default function Matches() {
             },
           }}
         ></DataGrid>
-        <AcceptDialog
-          open={open}
-          selectedRow={selectedRow}
-          onClose={closeDialog}
-        />
+        <AcceptDialog open={open} info={selectedRow} setOpen={setOpen} />
       </Box>
     </Layout>
   );

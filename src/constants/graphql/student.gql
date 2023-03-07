@@ -85,37 +85,6 @@ query GetTutorRequests {
 
 query GetStudentOfCurrentUser {
   getStudentOfCurrentUser {
-    tutorOfferings {
-      description
-      grade
-      id
-      schoolSubject {
-        name
-        longName
-        id
-      }
-      teacher {
-        name
-        longName
-        id
-      }
-    }
-    tutorRequests {
-      description
-      grade
-      id
-      schoolSubject {
-        name
-        longName
-        id
-      }
-      teacher {
-        schoolId
-        name
-        longName
-        id
-      }
-    }
     id
     user {
       email

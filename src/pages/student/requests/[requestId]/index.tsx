@@ -72,7 +72,7 @@ export default function Offer() {
       if (error?.message === 'CreationFailedError')
         setErrorMessage('Bei der Erstellung ist ein Fehler aufgetreten');
     },
-    refetchQueries: ['GetTutorRequests'],
+    refetchQueries: ['GetTutorRequests', 'GetMatchesOfCurrentUser'],
   });
   const [updateFunction] = useUpdateTutorRequestMutation({
     onError: (error) => {
@@ -89,7 +89,7 @@ export default function Offer() {
       if (error?.message === 'DeletionFailedError')
         setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
     },
-    refetchQueries: ['GetTutorRequests'],
+    refetchQueries: ['GetTutorRequests', 'GetMatchesOfCurrentUser'],
   });
   const { loading } = useGetTutorRequestByIdQuery({
     skip: queryId === null,

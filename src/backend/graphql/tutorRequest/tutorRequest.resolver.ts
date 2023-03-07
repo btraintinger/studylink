@@ -17,6 +17,7 @@ import {
   Root,
 } from 'type-graphql';
 import type { Context } from '../context';
+import { notifyAvailableMatches } from '../../utils/notifyAvailableMatches';
 
 async function isTutorRequestExistent(
   ctx: Context,
@@ -120,6 +121,11 @@ export class TutorRequestResolver {
     });
 
     if (!tutorRequest) throw new Error('CreationFailedError');
+
+    notifyAvailableMatches({
+      tutorAction: tutorRequest,
+      tutorActionType: 'REQUEST',
+    });
 
     return tutorRequest;
   }

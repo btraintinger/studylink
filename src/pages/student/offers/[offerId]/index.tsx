@@ -68,7 +68,7 @@ export default function Offer() {
       if (error?.message === 'CreationFailedError')
         setErrorMessage('Bei der Erstellung ist ein Fehler aufgetreten');
     },
-    refetchQueries: ['GetTutorOfferings'],
+    refetchQueries: ['GetTutorOfferings', 'GetMatchesOfCurrentUser'],
   });
   const [updateFunction] = useUpdateTutorOfferingMutation({
     onError: (error) => {
@@ -85,7 +85,7 @@ export default function Offer() {
       if (error?.message === 'DeletionFailedError')
         setErrorMessage('Bei der Löschung ist ein Fehler aufgetreten');
     },
-    refetchQueries: ['GetTutorOfferings'],
+    refetchQueries: ['GetTutorOfferings', 'GetMatchesOfCurrentUser'],
   });
   const { loading } = useGetTutorOfferingByIdQuery({
     skip: queryId === null,

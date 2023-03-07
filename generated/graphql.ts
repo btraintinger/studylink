@@ -49,9 +49,11 @@ export type ForgotPasswordInput = {
 
 export type Match = {
   __typename?: 'Match';
+  id: Scalars['ID'];
   rating: Scalars['Float'];
   tutorOffering: TutorOffering;
   tutorRequest: TutorRequest;
+  type: Scalars['String'];
 };
 
 export type Mutation = {
@@ -522,7 +524,7 @@ export type DeleteDepartmentMutation = { __typename?: 'Mutation', deleteDepartme
 export type GetMatchesOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMatchesOfCurrentUserQuery = { __typename?: 'Query', getMatchesOfCurrentUser: Array<{ __typename?: 'Match', rating: number, tutorOffering: { __typename?: 'TutorOffering', id: number, description: string, grade: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, name: string, longName: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } }, tutorRequest: { __typename?: 'TutorRequest', description: string, grade: number, id: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } } }> };
+export type GetMatchesOfCurrentUserQuery = { __typename?: 'Query', getMatchesOfCurrentUser: Array<{ __typename?: 'Match', id: number, rating: number, type: string, tutorOffering: { __typename?: 'TutorOffering', id: number, description: string, grade: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, name: string, longName: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } }, tutorRequest: { __typename?: 'TutorRequest', description: string, grade: number, id: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } } }> };
 
 export type GetTutorOfferingByIdQueryVariables = Exact<{
   getTutorOfferingByIdId: Scalars['Float'];
@@ -720,7 +722,7 @@ export type GetTutorRequestsQuery = { __typename?: 'Query', getStudentOfCurrentU
 export type GetStudentOfCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetStudentOfCurrentUserQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', id: number, schoolClassId: number, tutorOfferings: Array<{ __typename?: 'TutorOffering', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', name: string, longName: string, id: number } }>, tutorRequests: Array<{ __typename?: 'TutorRequest', description: string, grade: number, id: number, schoolSubject: { __typename?: 'SchoolSubject', name: string, longName: string, id: number }, teacher: { __typename?: 'Teacher', schoolId: number, name: string, longName: string, id: number } }>, user: { __typename?: 'User', email: string, id: number, name: string } } };
+export type GetStudentOfCurrentUserQuery = { __typename?: 'Query', getStudentOfCurrentUser: { __typename?: 'Student', id: number, schoolClassId: number, user: { __typename?: 'User', email: string, id: number, name: string } } };
 
 export type GetSubjectsOfStudentQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -974,7 +976,9 @@ export type DeleteDepartmentMutationOptions = Apollo.BaseMutationOptions<DeleteD
 export const GetMatchesOfCurrentUserDocument = gql`
     query GetMatchesOfCurrentUser {
   getMatchesOfCurrentUser {
+    id
     rating
+    type
     tutorOffering {
       id
       description
@@ -2169,37 +2173,6 @@ export type GetTutorRequestsQueryResult = Apollo.QueryResult<GetTutorRequestsQue
 export const GetStudentOfCurrentUserDocument = gql`
     query GetStudentOfCurrentUser {
   getStudentOfCurrentUser {
-    tutorOfferings {
-      description
-      grade
-      id
-      schoolSubject {
-        name
-        longName
-        id
-      }
-      teacher {
-        name
-        longName
-        id
-      }
-    }
-    tutorRequests {
-      description
-      grade
-      id
-      schoolSubject {
-        name
-        longName
-        id
-      }
-      teacher {
-        schoolId
-        name
-        longName
-        id
-      }
-    }
     id
     user {
       email

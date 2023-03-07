@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 const port = Number(process.env.MAIL_PORT);
 
 export function getMailTransporter() {
-  return nodemailer.createTransport({
+  const transport = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port,
     secure: port === 465,
@@ -12,4 +12,5 @@ export function getMailTransporter() {
       pass: process.env.MAIL_PASS,
     },
   });
+  return transport;
 }

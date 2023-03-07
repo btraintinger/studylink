@@ -12,7 +12,7 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import type { Context } from '../context';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { sendPasswordResetEmail } from '../../auth/sendPasswordResetEmail';
+import { sendPasswordResetEmail } from '../../mail/sendPasswordResetEmail';
 
 @Resolver((of) => User)
 export class UserResolver {

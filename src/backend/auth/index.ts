@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { isEmail } from 'class-validator';
 import prisma from '../utils/prismadb';
 import jwt from 'jsonwebtoken';
-import { sendEmailVerificationEmail } from './sendEmailVerificationEmail';
+import { sendEmailVerificationEmail } from '../mail/sendEmailVerificationEmail';
 import { User } from '@prisma/client';
 
 function areCredentialsValid(credentials) {

@@ -1,6 +1,8 @@
 query GetMatchesOfCurrentUser {
   getMatchesOfCurrentUser {
+    id
     rating
+    type
     tutorOffering {
       id
       description

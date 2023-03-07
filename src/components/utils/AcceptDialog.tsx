@@ -22,62 +22,58 @@ import NotesIcon from '@mui/icons-material/Notes';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { MatchListItem } from '../../pages/student/matches';
 
+export interface AcceptDialogInfo {
+  rating: number;
+  type: string;
+  grade: number;
+  schoolSubjectName: string;
+  teacherName: string;
+  description: string;
+}
+
 export interface AcceptDialogProps {
   open: boolean;
-  selectedRow: MatchListItem;
-  onClose: (acceptedItem: MatchListItem | null) => void;
+  info: AcceptDialogInfo | null;
+  setOpen: (open: boolean) => void;
 }
 
 export function AcceptDialog(props: AcceptDialogProps) {
-  const { onClose, selectedRow, open } = props;
-  const theme = useTheme();
+  const { setOpen, info, open } = props;
+
+  if (info === null) {
+    return null;
+  }
 
   const handleClose = () => {
-    onClose(null);
+    setOpen(false);
   };
   const handleAccept = () => {
-    onClose(selectedRow);
+    setOpen(false);
+    // TODO Mutation
   };
-  if (selectedRow !== null && selectedRow !== undefined) {
+  if (info !== null && info !== undefined) {
     return (
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle sx={{ bgcolor: '#4caf50' }}>
-          Nachhilfe Anfrage{' '}
+          {info.type === 'REQUEST' ? 'Anfrage' : 'Angebot'}
         </DialogTitle>
         <Box sx={{ margin: 4 }}>
           <List>
             <ListItem>
               <ClassIcon sx={{ mr: 2 }} />
-              <Typography> Fach: </Typography>
-              <Typography>
-                {' '}
-                ({selectedRow.schoolSubjectName}){' '}
-                {selectedRow.schoolSubjectLongName}
-              </Typography>
+              <Typography> Fach: {info.schoolSubjectName}</Typography>
             </ListItem>
             <ListItem>
               <PersonIcon sx={{ mr: 2 }} />
-              <Typography> Lehrer: </Typography>
-              <Typography>
-                {' '}
-                ({selectedRow.offeringTeacherName}){' '}
-                {selectedRow.offeringTeacherLongName}
-              </Typography>
-              <Typography>
-                {' '}
-                ({selectedRow.requestTeacherName}){' '}
-                {selectedRow.requestTeacherLongName}
-              </Typography>
+              <Typography> Lehrer: {info.teacherName}</Typography>
             </ListItem>
             <ListItem>
               <GroupsIcon sx={{ mr: 2 }} />
-              <Typography> Klasse: </Typography>
-              <Typography> {selectedRow.offeringGrade}</Typography>
+              <Typography> Schulstufe: {info.grade}</Typography>
             </ListItem>
             <ListItem>
               <NotesIcon sx={{ mr: 2 }} />
-              <Typography> Beschreibung: </Typography>
-              <Typography> {selectedRow.offeringDescription}</Typography>
+              <Typography> Beschreibung: {info.description}</Typography>
             </ListItem>
             <ListItemButton
               sx={{ bgcolor: '#4caf50', mt: 5 }}
