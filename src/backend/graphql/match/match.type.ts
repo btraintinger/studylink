@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { TutorOffering } from '../tutorOffering/tutorOffering.type';
 import { TutorRequest } from '../tutorRequest/tutorRequest.type';
 
@@ -20,4 +20,13 @@ export class Match {
 
   @Field()
   tutorRequest!: TutorRequest;
+}
+
+@InputType()
+export class AcceptMatchInput {
+  @Field()
+  tutorOfferingId!: number;
+
+  @Field()
+  tutorRequestId!: number;
 }

@@ -17,7 +17,7 @@ import {
   Root,
 } from 'type-graphql';
 import type { Context } from '../context';
-import { notifyAvailableMatches } from '../../utils/notifyAvailableMatches';
+import { notifyAvailableMatches } from '../../notifications/notifyAvailableMatches';
 
 async function isTutorRequestExistent(
   ctx: Context,

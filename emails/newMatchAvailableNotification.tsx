@@ -4,7 +4,6 @@ import { Section } from '@react-email/section';
 import { Text } from '@react-email/text';
 import { btn, link, text } from './styles';
 import EmailWrapper from './emailWrapper';
-import { TutorActionInfo } from '../src/backend/types/notification';
 import React from 'react';
 
 interface EmailProps {

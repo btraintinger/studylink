@@ -15,6 +15,11 @@ export type Scalars = {
   Float: number;
 };
 
+export type AcceptMatchInput = {
+  tutorOfferingId: Scalars['Float'];
+  tutorRequestId: Scalars['Float'];
+};
+
 export type Admin = {
   __typename?: 'Admin';
   id: Scalars['ID'];
@@ -58,6 +63,7 @@ export type Match = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptMatch: Scalars['Boolean'];
   createDepartment: Department;
   createSchool: School;
   createSchoolClass: SchoolClass;
@@ -88,6 +94,11 @@ export type Mutation = {
   updateTutorRequest: TutorRequest;
   updateUser: User;
   verifyEmail: Scalars['Boolean'];
+};
+
+
+export type MutationAcceptMatchArgs = {
+  acceptMatchInput: AcceptMatchInput;
 };
 
 
@@ -525,6 +536,13 @@ export type GetMatchesOfCurrentUserQueryVariables = Exact<{ [key: string]: never
 
 
 export type GetMatchesOfCurrentUserQuery = { __typename?: 'Query', getMatchesOfCurrentUser: Array<{ __typename?: 'Match', id: number, rating: number, type: string, tutorOffering: { __typename?: 'TutorOffering', id: number, description: string, grade: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, name: string, longName: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } }, tutorRequest: { __typename?: 'TutorRequest', description: string, grade: number, id: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } } }> };
+
+export type AcceptMatchMutationVariables = Exact<{
+  acceptMatchInput: AcceptMatchInput;
+}>;
+
+
+export type AcceptMatchMutation = { __typename?: 'Mutation', acceptMatch: boolean };
 
 export type GetTutorOfferingByIdQueryVariables = Exact<{
   getTutorOfferingByIdId: Scalars['Float'];
@@ -1043,6 +1061,37 @@ export function useGetMatchesOfCurrentUserLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetMatchesOfCurrentUserQueryHookResult = ReturnType<typeof useGetMatchesOfCurrentUserQuery>;
 export type GetMatchesOfCurrentUserLazyQueryHookResult = ReturnType<typeof useGetMatchesOfCurrentUserLazyQuery>;
 export type GetMatchesOfCurrentUserQueryResult = Apollo.QueryResult<GetMatchesOfCurrentUserQuery, GetMatchesOfCurrentUserQueryVariables>;
+export const AcceptMatchDocument = gql`
+    mutation AcceptMatch($acceptMatchInput: AcceptMatchInput!) {
+  acceptMatch(acceptMatchInput: $acceptMatchInput)
+}
+    `;
+export type AcceptMatchMutationFn = Apollo.MutationFunction<AcceptMatchMutation, AcceptMatchMutationVariables>;
+
+/**
+ * __useAcceptMatchMutation__
+ *
+ * To run a mutation, you first call `useAcceptMatchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptMatchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptMatchMutation, { data, loading, error }] = useAcceptMatchMutation({
+ *   variables: {
+ *      acceptMatchInput: // value for 'acceptMatchInput'
+ *   },
+ * });
+ */
+export function useAcceptMatchMutation(baseOptions?: Apollo.MutationHookOptions<AcceptMatchMutation, AcceptMatchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptMatchMutation, AcceptMatchMutationVariables>(AcceptMatchDocument, options);
+      }
+export type AcceptMatchMutationHookResult = ReturnType<typeof useAcceptMatchMutation>;
+export type AcceptMatchMutationResult = Apollo.MutationResult<AcceptMatchMutation>;
+export type AcceptMatchMutationOptions = Apollo.BaseMutationOptions<AcceptMatchMutation, AcceptMatchMutationVariables>;
 export const GetTutorOfferingByIdDocument = gql`
     query GetTutorOfferingById($getTutorOfferingByIdId: Float!) {
   getTutorOfferingById(id: $getTutorOfferingByIdId) {

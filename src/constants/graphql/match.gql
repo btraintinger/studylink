@@ -39,3 +39,7 @@ query GetMatchesOfCurrentUser {
     }
   }
 }
+
+mutation AcceptMatch($acceptMatchInput: AcceptMatchInput!) {
+  acceptMatch(acceptMatchInput: $acceptMatchInput)
+}

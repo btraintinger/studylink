@@ -4,24 +4,17 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
   Typography,
   Box,
-  Button,
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
-import { StayPrimaryLandscape } from '@mui/icons-material';
-import { useTheme } from '@emotion/react';
 import ClassIcon from '@mui/icons-material/Class';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import GroupsIcon from '@mui/icons-material/Groups';
 import NotesIcon from '@mui/icons-material/Notes';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { MatchListItem } from '../../pages/student/matches';
-
+import { useAcceptMatchMutation } from '../../../generated/graphql';
+import wrongNumberToNumber from '../../utils/wrongNumberToString';
 export interface AcceptDialogInfo {
   rating: number;
   type: string;
@@ -29,6 +22,8 @@ export interface AcceptDialogInfo {
   schoolSubjectName: string;
   teacherName: string;
   description: string;
+  tutorOfferingId: number;
+  tutorRequestId: number;
 }
 
 export interface AcceptDialogProps {
@@ -40,6 +35,8 @@ export interface AcceptDialogProps {
 export function AcceptDialog(props: AcceptDialogProps) {
   const { setOpen, info, open } = props;
 
+  const [acceptMatchFunction] = useAcceptMatchMutation();
+
   if (info === null) {
     return null;
   }
@@ -48,9 +45,17 @@ export function AcceptDialog(props: AcceptDialogProps) {
     setOpen(false);
   };
   const handleAccept = () => {
+    acceptMatchFunction({
+      variables: {
+        acceptMatchInput: {
+          tutorOfferingId: wrongNumberToNumber(info.tutorOfferingId),
+          tutorRequestId: wrongNumberToNumber(info.tutorRequestId),
+        },
+      },
+    });
     setOpen(false);
-    // TODO Mutation
   };
+
   if (info !== null && info !== undefined) {
     return (
       <Dialog onClose={handleClose} open={open}>

@@ -5,9 +5,9 @@ import {
   getMatchesForTutorOffering,
   getMatchesForTutorRequest,
   Match,
-} from './getMatches';
+} from '../graphql/match/getMatches';
 import NewMatchAvailableNotification from '../../../emails/newMatchAvailableNotification';
-import prisma from './prismadb';
+import prisma from '../utils/prismadb';
 
 interface availableMatchesNotificationProps {
   tutorAction: TutorOffering | TutorRequest;
@@ -90,9 +90,7 @@ export async function notifyAvailableMatches({
         from: process.env.MAIL_USER,
         to: toStudent.user.email,
         subject: 'Neue Nachhilfe ist verfügbar',
-        html: render(
-          <NewMatchAvailableNotification heading={tutorActionType} />
-        ),
+        html: render(<NewMatchAvailableNotification heading={heading} />),
       };
 
       const transporter = getMailTransporter();

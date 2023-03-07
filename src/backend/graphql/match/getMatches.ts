@@ -1,5 +1,5 @@
 import { TutorOffering, TutorRequest } from '@prisma/client';
-import prisma from './prismadb';
+import prisma from '../../utils/prismadb';
 
 export interface Match {
   id: number;

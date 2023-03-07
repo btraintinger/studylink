@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller } from 'react-hook-form';
 import { Autocomplete, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';

@@ -1,25 +1,14 @@
 import React from 'react';
 import { Box, Button, Link, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import {
-  useGetMatchesOfCurrentUserQuery,
-  Match,
-  TutorOffering,
-  TutorRequest,
-  useGetStudentOfCurrentUserQuery,
-} from '../../../../generated/graphql';
-import { useEffect, useState } from 'react';
-import { GetMatchesOfCurrentUserQuery } from '../../../../generated/graphql';
+import { useGetMatchesOfCurrentUserQuery } from '../../../../generated/graphql';
+import { useState } from 'react';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
-import { useRouter } from 'next/router';
-import { OFFERS_STUDENT } from '../../../constants/menu-items';
 import {
   AcceptDialog,
   AcceptDialogInfo,
-  AcceptDialogProps,
 } from '../../../components/utils/AcceptDialog';
-import { Rowdies } from '@next/font/google';
 import InfoIcon from '@mui/icons-material/Info';
 
 export type MatchListItem = {
@@ -84,7 +73,7 @@ export default function Matches() {
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 0.15,
+      flex: 0.05,
     },
     {
       field: 'type',
@@ -99,7 +88,7 @@ export default function Matches() {
     {
       field: 'grade',
       headerName: 'Schulstufe',
-      flex: 0.2,
+      flex: 0.05,
     },
     {
       field: 'teacherName',
@@ -123,6 +112,8 @@ export default function Matches() {
       schoolSubjectName: `${tutoringAction.schoolSubject.name} - ${tutoringAction.schoolSubject.longName}`,
       teacherName: `${tutoringAction.teacher.name} - ${tutoringAction.teacher.longName}`,
       description: tutoringAction.description,
+      tutorOfferingId: match.tutorOffering.id,
+      tutorRequestId: match.tutorRequest.id,
     });
     setOpen(true);
   };
