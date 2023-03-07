@@ -1,12 +1,8 @@
+import React from 'react';
 import { Box, Button, Link, Popover, Typography } from '@mui/material';
 import Layout from '../../../components/page/layout';
-import {
-  useGetStudentOfCurrentUserQuery,
-  TutorOffering,
-  useGetTutorOfferingsQuery,
-} from '../../../../generated/graphql';
-import { useEffect, useState } from 'react';
-import { Teacher } from '../../../../generated/graphql';
+import { useGetTutorOfferingsQuery } from '../../../../generated/graphql';
+import { useState } from 'react';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
