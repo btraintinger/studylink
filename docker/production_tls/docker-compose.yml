@@ -84,7 +84,7 @@ services:
     volumes:
       - certbot_conf:/etc/letsencrypt
       - certbot_www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${EMAIL} -d ${FQDN} --agree-tos
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${MAIL_USER} -d ${FQDN} --agree-tos
     restart: always
     networks:
       - frontend
