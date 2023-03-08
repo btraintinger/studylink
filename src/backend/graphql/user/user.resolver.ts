@@ -112,7 +112,7 @@ export class UserResolver {
       },
     });
 
-    sendPasswordResetEmail(token, user.email);
+    await sendPasswordResetEmail(token, user.email);
 
     return true;
   }

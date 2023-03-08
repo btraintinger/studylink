@@ -38,7 +38,7 @@ export async function signin(credentials): Promise<User> {
         emailVerificationToken: token,
       },
     });
-    sendEmailVerificationEmail(token, user.email);
+    await sendEmailVerificationEmail(token, user.email);
     throw new Error('Verifiziere deine Email über den zugesandten Link');
   }
 
@@ -117,7 +117,7 @@ export async function signup(credentials): Promise<User> {
       emailVerificationToken: token,
     },
   });
-  sendEmailVerificationEmail(token, newUser.email);
+  await sendEmailVerificationEmail(token, newUser.email);
 
   throw new Error('EmailVerificationNeeded');
 }

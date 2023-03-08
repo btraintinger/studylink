@@ -1,8 +1,8 @@
 import { render } from '@react-email/render';
 import ResetPasswordEmail from '../../../emails/resetPassword';
-import { getMailTransporter } from './mailer';
+import { getMailTransporter, sendMail } from './mailer';
 
-export function sendPasswordResetEmail(token: string, email: string) {
+export async function sendPasswordResetEmail(token: string, email: string) {
   const emailHtml = render(<ResetPasswordEmail passwordResetToken={token} />);
 
   const data = {
@@ -12,11 +12,5 @@ export function sendPasswordResetEmail(token: string, email: string) {
     html: emailHtml,
   };
 
-  const transporter = getMailTransporter();
-  transporter.sendMail(data, (err) => {
-    if (err) {
-      throw new Error(err.message);
-    }
-  });
-  transporter.close();
+  await sendMail(data);
 }

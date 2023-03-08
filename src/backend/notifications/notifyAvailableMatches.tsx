@@ -1,5 +1,5 @@
 import { render } from '@react-email/render';
-import { getMailTransporter } from '../mail/mailer';
+import { getMailTransporter, sendMail } from '../mail/mailer';
 import { TutorOffering, TutorRequest } from '@prisma/client';
 import {
   getMatchesForTutorOffering,
@@ -72,13 +72,7 @@ export async function notifyAvailableMatches({
         ),
       };
 
-      const transporter = getMailTransporter();
-      transporter.sendMail(fromStudentMail, (err) => {
-        if (err) {
-          throw new Error(err.message);
-        }
-      });
-      transporter.close();
+      await sendMail(fromStudentMail);
     }
 
     if (toStudent.user.allowEmailNotifications) {
@@ -93,13 +87,7 @@ export async function notifyAvailableMatches({
         html: render(<NewMatchAvailableNotification heading={heading} />),
       };
 
-      const transporter = getMailTransporter();
-      transporter.sendMail(toStudentMail, (err) => {
-        if (err) {
-          throw new Error(err.message);
-        }
-      });
-      transporter.close();
+      await sendMail(toStudentMail);
     }
   });
 }

@@ -11,7 +11,7 @@ import prisma from '../utils/prismadb';
 import { render } from '@react-email/render';
 import YourTutorRequestGotAcceptedNotification from '../../../emails/acceptTutorRequest';
 import YourTutorOfferingGotAcceptedNotification from '../../../emails/acceptTutorOffering';
-import { getMailTransporter } from '../mail/mailer';
+import { getMailTransporter, sendMail } from '../mail/mailer';
 
 export interface TutorActionInfo {
   subject: string;
@@ -99,13 +99,7 @@ export async function notifyMatchAccept({
     ),
   };
 
-  const transporter = getMailTransporter();
-  transporter.sendMail(studentMail, (err) => {
-    if (err) {
-      throw new Error(err.message);
-    }
-  });
-  transporter.close();
+  await sendMail(studentMail);
 
   const tutorMail = {
     from: process.env.MAIL_USER,
@@ -118,10 +112,5 @@ export async function notifyMatchAccept({
     ),
   };
 
-  transporter.sendMail(tutorMail, (err) => {
-    if (err) {
-      throw new Error(err.message);
-    }
-  });
-  transporter.close();
+  await sendMail(tutorMail);
 }
