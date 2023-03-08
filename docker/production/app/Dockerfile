@@ -24,6 +24,9 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG domain
+ENV NEXT_PUBLIC_DOMAIN ${domain}
+
 RUN npm run build
 
 # 3. Production image, copy all the files and run next
