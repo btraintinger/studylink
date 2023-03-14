@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IsEmail, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, MaxLength, Min, MinLength } from 'class-validator';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
@@ -54,6 +54,7 @@ export class ForgotPasswordInput {
 
 @InputType()
 export class VerifyEmailInput {
+  @MinLength(1)
   @Field()
   token!: string;
 }

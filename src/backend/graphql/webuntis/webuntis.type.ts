@@ -1,3 +1,4 @@
+import { MinLength } from 'class-validator';
 import { ObjectType } from 'type-graphql';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -20,15 +21,19 @@ export class WebUntis {
 
 @InputType()
 export class WebUntisImportInput {
+  @MinLength(1)
   @Field()
   school!: string;
 
+  @MinLength(1)
   @Field()
   secret!: string;
 
+  @MinLength(1)
   @Field()
   server!: string;
 
+  @MinLength(1)
   @Field()
   username!: string;
 }

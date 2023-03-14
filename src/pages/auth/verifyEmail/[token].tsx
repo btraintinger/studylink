@@ -80,7 +80,7 @@ export default function PasswordReset() {
             variant="contained"
             fullWidth
             component={Link}
-            href="/auth/login"
+            href="/auth/signin"
             passHref
           >
             Zurück zum Login
