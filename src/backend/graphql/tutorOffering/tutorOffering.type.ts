@@ -55,6 +55,7 @@ export class TutorOfferingUpdateInput {
   @Field()
   teacherId!: number;
 
+  @MaxLength(1000)
   @Field()
   description!: string;
 

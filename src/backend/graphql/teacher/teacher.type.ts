@@ -20,11 +20,15 @@ export class Teacher {
   schoolId!: number;
 }
 
+import { MaxLength } from 'class-validator';
+
 @InputType()
 export class TeacherCreationInput {
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
   @Field()
   longName!: string;
 }
@@ -34,9 +38,11 @@ export class TeacherUpdateInput {
   @Field((type) => ID)
   id!: number;
 
+  @MaxLength(150)
   @Field()
   name!: string;
 
+  @MaxLength(150)
   @Field()
   longName!: string;
 }
