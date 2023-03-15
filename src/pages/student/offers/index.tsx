@@ -99,7 +99,7 @@ export default function Offers() {
       <Box sx={{ height: '80vh', width: '100%' }}>
         <Box sx={{ ml: 5 }}>
           <Typography variant="h3" sx={{ mb: 1 }}>
-            <VolunteerActivismIcon /> Offers{' '}
+            <VolunteerActivismIcon /> Angebote{' '}
             <Button
               aria-describedby={id}
               variant="contained"
@@ -138,7 +138,7 @@ export default function Offers() {
               router.push(`${OFFERS_STUDENT}/new`);
             }}
           >
-            Neues Angebot hinzufügen
+            + Neues Angebot hinzufügen
           </Button>
         </Box>
         <DataGrid
