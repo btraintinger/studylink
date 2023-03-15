@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
           Passwort Zurücksetzen
         </Typography>
         <Typography sx={{ mt: 1 }}>
-          Sie erhalten eine E-Mail mit einem Link zum Zurücksetzen Ihres
+          Du erhältst eine E-Mail mit einem Link zum Zurücksetzen deines
           Passworts, welche für 15 Minuten gültig ist.
         </Typography>
         <Box

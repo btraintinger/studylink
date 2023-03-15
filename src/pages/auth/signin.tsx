@@ -95,7 +95,7 @@ export default function LoginPage() {
           fontSize={'1rem'}
         >
           Wenn du dich als Schüler das erste Mal anmeldest, musst du zuerst dein
-          Passwort zuerst zurücksetzen.
+          Passwort zurücksetzen. Klicke dazu auf Passwort vergessen.
         </MuiLink>
         <Box
           component="form"
