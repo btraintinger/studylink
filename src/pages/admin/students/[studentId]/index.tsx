@@ -191,7 +191,7 @@ export default function Student() {
           />
           <TextField
             sx={{ mb: 2 }}
-            label="Name"
+            label="Kürzel"
             fullWidth
             type="text"
             error={!!errors['name']}

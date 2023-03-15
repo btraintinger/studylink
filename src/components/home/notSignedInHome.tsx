@@ -22,7 +22,7 @@ export default function NotSignedInHome() {
           sx={{ mt: 2, textAlign: 'center', color: '#000000' }}
         >
           Studylink ist eine Plattform, die es Schülern innerhalb der Schule
-          ermöglicht Nachhilfe anzubieten.
+          ermöglicht, Nachhilfe anzubieten.
         </Typography>
         <Typography variant="h6" sx={{ m: 1, color: '#000000' }}>
           Anmelden oder Registrieren um fortzufahren.

@@ -139,7 +139,7 @@ export default function Requests() {
             }}
           >
             <AddIcon />
-            Add new Request
+            Neu Anfrage hinzufügen
           </Button>
         </Box>
         <DataGrid
