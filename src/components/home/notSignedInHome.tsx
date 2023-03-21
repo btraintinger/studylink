@@ -25,7 +25,7 @@ export default function NotSignedInHome() {
           ermöglicht, Nachhilfe anzubieten.
         </Typography>
         <Typography variant="h6" sx={{ m: 1, color: '#000000' }}>
-          Anmelden oder Registrieren um fortzufahren.
+          Anmelden oder registrieren um fortzufahren.
         </Typography>
         <Button
           variant="contained"
@@ -36,6 +36,17 @@ export default function NotSignedInHome() {
         >
           Anmelden
         </Button>
+
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          component={Link}
+          href="/auth/resetPassword"
+          passHref
+        >
+          Erstanmeldung
+        </Button>
+
         <Button
           variant="contained"
           sx={{ m: 1 }}

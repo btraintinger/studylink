@@ -99,7 +99,7 @@ export default function Requests() {
       <Box sx={{ height: '80vh', width: '100%' }}>
         <Box sx={{ ml: 5 }}>
           <Typography variant="h3" sx={{ mb: 1 }}>
-            <SosIcon /> Requests{' '}
+            <SosIcon /> Anfragen{' '}
             <Button
               aria-describedby={id}
               variant="contained"
