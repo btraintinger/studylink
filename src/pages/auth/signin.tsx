@@ -91,11 +91,10 @@ export default function LoginPage() {
           component={Link}
           href="/auth/resetPassword"
           passHref
-          underline="none"
+          underline="always"
           fontSize={'1rem'}
         >
-          Wenn du dich als Schüler das erste Mal anmeldest, musst du zuerst dein
-          Passwort zurücksetzen. Klicke dazu auf Passwort vergessen.
+          Noch keinen Account? Jetzt registrieren!
         </MuiLink>
         <Box
           component="form"
