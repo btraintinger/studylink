@@ -36,15 +36,6 @@ export default function NotSignedInHome() {
         >
           Anmelden
         </Button>
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          component={Link}
-          href="/auth/signup"
-          passHref
-        >
-          Neue Schule registrieren
-        </Button>
 
         <Button
           variant="contained"
@@ -54,6 +45,16 @@ export default function NotSignedInHome() {
           passHref
         >
           Erstanmeldung
+        </Button>
+
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          component={Link}
+          href="/auth/signup"
+          passHref
+        >
+          Neue Schule registrieren
         </Button>
       </Box>
       <Footer />
