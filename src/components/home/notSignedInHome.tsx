@@ -45,6 +45,16 @@ export default function NotSignedInHome() {
         >
           Neue Schule registrieren
         </Button>
+
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          component={Link}
+          href="/auth/resetPassword"
+          passHref
+        >
+          Erstanmeldung
+        </Button>
       </Box>
       <Footer />
     </>
