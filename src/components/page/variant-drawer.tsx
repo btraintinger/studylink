@@ -205,51 +205,11 @@ export default function MiniDrawer() {
             alignItems: 'center',
             alignSelf: 'flex-end',
             flexDirection: 'column',
-            mb: 8,
+
             width: { drawerWidth },
           }}
         >
-          <MuiLink
-            component={Link}
-            href={'http://www.htl-salzburg.ac.at/startseite.html'}
-            passHref
-            underline="none"
-            sx={{ display: isDrawerOpen ? 'flex' : 'none' }}
-          >
-            <Image
-              height={123 / 2}
-              width={393 / 2}
-              src="/images/htl-logo.png"
-              alt="logo"
-            />
-          </MuiLink>
-          <Box sx={{ display: 'flex' }}>
-            <MuiLink
-              component={Link}
-              href={
-                'http://www.htl-salzburg.ac.at/elektronik-technische-informatik.html'
-              }
-              passHref
-              underline="none"
-              sx={{
-                display: isDrawerOpen ? 'flex' : 'none',
-                flexDirection: 'column',
-              }}
-            >
-              <Typography
-                sx={{
-                  display: isDrawerOpen ? 'inline' : 'none',
-                  whiteSpace: 'pre-line',
-                  width: { drawerWidth },
-                  paddingTop: 1,
-                  mb: 3,
-                }}
-              >
-                Elektronik u. techn. Informatik
-              </Typography>
-            </MuiLink>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <LinkedInIcon />
               <MuiLink
@@ -299,6 +259,48 @@ export default function MiniDrawer() {
                 Raffael Weilch
               </MuiLink>
             </Box>
+          </Box>
+          <MuiLink
+            component={Link}
+            href={'http://www.htl-salzburg.ac.at/startseite.html'}
+            passHref
+            underline="none"
+            sx={{
+              display: isDrawerOpen ? 'flex' : 'none',
+            }}
+          >
+            <Image
+              height={123 / 2.5}
+              width={393 / 2.5}
+              src="/images/htl-logo.png"
+              alt="logo"
+            />
+          </MuiLink>
+          <Box sx={{ display: 'flex' }}>
+            <MuiLink
+              component={Link}
+              href={
+                'http://www.htl-salzburg.ac.at/elektronik-technische-informatik.html'
+              }
+              passHref
+              underline="none"
+              sx={{
+                display: isDrawerOpen ? 'flex' : 'none',
+                flexDirection: 'column',
+              }}
+            >
+              <Typography
+                sx={{
+                  display: isDrawerOpen ? 'inline' : 'none',
+                  whiteSpace: 'pre-line',
+                  width: { drawerWidth },
+                  paddingTop: 1,
+                  mb: 3,
+                }}
+              >
+                Elektronik u. techn. Informatik
+              </Typography>
+            </MuiLink>
           </Box>
         </Box>
       </Box>
