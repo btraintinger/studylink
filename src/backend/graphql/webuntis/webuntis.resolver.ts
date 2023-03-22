@@ -71,11 +71,7 @@ export class WebUntisResolver {
     if (loginInfo.personType === WebUntisElementType.TEACHER) {
       await importTeachers(untis, ctx, currentSchool);
 
-      try {
-        await importStudents(untis, currentSchool, ctx, loginData);
-      } catch (error) {
-        throw new Error('StudentFromDifferentSchoolError');
-      }
+      await importStudents(untis, currentSchool, ctx, loginData);
     }
 
     await untis.logout();
@@ -128,9 +124,7 @@ async function importStudents(
           },
         },
       });
-    } catch (error) {
-      throw new Error('StudentFromDifferentSchoolError');
-    }
+    } catch (error) {}
 
     async function getStudentSchoolClass() {
       // dont question it webuntis api wait needed
