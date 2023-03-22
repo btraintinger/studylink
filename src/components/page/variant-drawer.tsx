@@ -219,6 +219,7 @@ export default function MiniDrawer() {
                 }
                 passHref
                 underline="none"
+                target={'_blank'}
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
@@ -236,6 +237,7 @@ export default function MiniDrawer() {
                 }
                 passHref
                 underline="none"
+                target={'_blank'}
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
@@ -251,6 +253,7 @@ export default function MiniDrawer() {
                 href={'https://www.linkedin.com/in/raffael-weilch-4b61a9245/'}
                 passHref
                 underline="none"
+                target={'_blank'}
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
