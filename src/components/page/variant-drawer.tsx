@@ -248,7 +248,13 @@ export default function MiniDrawer() {
                 Bernhard Traintinger
               </MuiLink>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+              }}
+            >
               <LinkedInIcon />
               <MuiLink
                 component={Link}
