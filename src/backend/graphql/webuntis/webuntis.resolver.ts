@@ -14,11 +14,10 @@ import {
 import bcrypt from 'bcrypt';
 import { authenticator as Authenticator } from 'otplib';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
-import { WebUntisSecretAuth } from 'webuntis';
+import { WebUntisSecretAuth, WebAPITimetable } from 'webuntis';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
-import { Student, WebAPITimetable } from 'webuntis';
 import {
   School,
   SchoolClass,
@@ -72,7 +71,11 @@ export class WebUntisResolver {
     if (loginInfo.personType === WebUntisElementType.TEACHER) {
       await importTeachers(untis, ctx, currentSchool);
 
-      await importStudents(untis, currentSchool, ctx);
+      try {
+        await importStudents(untis, currentSchool, ctx, loginData);
+      } catch (error) {
+        throw new Error('StudentFromDifferentSchoolError');
+      }
     }
 
     await untis.logout();
@@ -84,7 +87,8 @@ export class WebUntisResolver {
 async function importStudents(
   untis: WebUntisSecretAuth,
   currentSchool: School,
-  ctx: Context
+  ctx: Context,
+  loginData: WebUntisImportInput
 ) {
   const dbSchoolClasses = await ctx.prisma.schoolClass.findMany({
     where: {
@@ -95,6 +99,7 @@ async function importStudents(
   });
 
   const students = await untis.getStudents();
+
   students.forEach(async (student) => {
     const lastBirthYearDigits = student.name.slice(-2);
     const email = `${student.foreName.toLowerCase()}.${student.longName.toLowerCase()}${lastBirthYearDigits}@${
@@ -105,44 +110,87 @@ async function importStudents(
 
     const studentSchoolClass = await getStudentSchoolClass();
 
-    if (!studentSchoolClass) return;
+    if (studentSchoolClass === null || studentSchoolClass === undefined) return;
 
-    await ctx.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role: 'STUDENT',
-        name: student.name,
-        firstName: student.foreName,
-        lastName: student.longName,
-        student: {
-          create: {
-            schoolClassId: studentSchoolClass.id,
+    try {
+      await ctx.prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          role: 'STUDENT',
+          name: student.name,
+          firstName: student.foreName,
+          lastName: student.longName,
+          student: {
+            create: {
+              schoolClassId: studentSchoolClass.id,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      throw new Error('StudentFromDifferentSchoolError');
+    }
 
     async function getStudentSchoolClass() {
-      const studentTimetable = await untis.getTimetableForWeek(
-        new Date(),
-        student.id,
-        WebUntisElementType.STUDENT,
-        1
-      );
-
-      let studentClass: WebElementData | null = null;
-      for (const element of studentTimetable) {
-        if (element.classes.length === 0) {
-          studentClass = element.classes[0];
-          break;
-        }
+      // dont question it webuntis api wait needed
+      let untisTmp: WebUntisSecretAuth;
+      try {
+        untisTmp = new WebUntisSecretAuth(
+          loginData.school,
+          loginData.username,
+          loginData.secret,
+          `${loginData.server}.webuntis.com`,
+          'custom-identity',
+          Authenticator
+        );
+        await untisTmp.login();
+      } catch (error) {
+        // wait 20 seconds and try again
+        await new Promise((resolve) => setTimeout(resolve, 20000));
+        untisTmp = new WebUntisSecretAuth(
+          loginData.school,
+          loginData.username,
+          loginData.secret,
+          `${loginData.server}.webuntis.com`,
+          'custom-identity',
+          Authenticator
+        );
+        await untisTmp.login();
       }
+      let studentTimetable: WebAPITimetable[];
+      try {
+        studentTimetable = await untisTmp.getTimetableForWeek(
+          new Date(),
+          student.id,
+          WebUntisElementType.STUDENT,
+          1
+        );
+      } catch (error) {
+        // wait 20 seconds and try again
+        await new Promise((resolve) => setTimeout(resolve, 20000));
+        studentTimetable = await untisTmp.getTimetableForWeek(
+          new Date(),
+          student.id,
+          WebUntisElementType.STUDENT,
+          1
+        );
+      }
+      await untisTmp.logout();
 
       const studentSchoolClass = dbSchoolClasses.find(
-        (schoolClass) => schoolClass.name === studentClass?.element.name
+        (schoolClass) => schoolClass.name === getSchoolClassNameFromTimetable()
       );
       return studentSchoolClass;
+
+      function getSchoolClassNameFromTimetable() {
+        for (const element of studentTimetable) {
+          for (const schoolClass of element.classes) {
+            if (schoolClass.element.name) return schoolClass.element.name;
+          }
+        }
+        return null;
+      }
     }
   });
 }
@@ -257,6 +305,26 @@ async function getCurrentSchool(ctx: Context): Promise<School> {
 
 async function clearSchoolData(ctx: Context) {
   if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolError');
+
+  const students = await ctx.prisma.user.findMany({
+    where: {
+      student: {
+        schoolClass: {
+          department: {
+            schoolId: ctx.user.admin.schoolId,
+          },
+        },
+      },
+    },
+  });
+
+  await ctx.prisma.user.deleteMany({
+    where: {
+      id: {
+        in: students.map((student) => student.id),
+      },
+    },
+  });
 
   await ctx.prisma.department.deleteMany({
     where: {
