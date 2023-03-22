@@ -158,7 +158,6 @@ export default function MiniDrawer() {
         </IconButton>
       </DrawerHeader>
       <Divider />
-
       <List>
         {myLinks.map(({ text, route, icon }, id) => (
           <ListItem
@@ -197,71 +196,65 @@ export default function MiniDrawer() {
         ))}
       </List>
 
-      <Box
-        sx={{
-          display: isDrawerOpen ? 'flex' : 'none',
-          flexGrow: 1,
-          alignItems: 'end',
-          flexDirection: 'row-reverse',
-          mb: 3,
-          width: { drawerWidth },
-        }}
-      >
-        <IconButton
-          onClick={() => {
-            router.push(`/info`);
-          }}
-        >
-          <InfoIcon />
-        </IconButton>
-        <MuiLink
-          component={Link}
-          href={'http://www.htl-salzburg.ac.at/startseite.html'}
-          passHref
-          underline="none"
-          sx={{ display: isDrawerOpen ? 'flex' : 'none' }}
-        >
-          <Image
-            height={123 / 2}
-            width={393 / 2}
-            src="/images/htl-logo.png"
-            alt="logo"
-          />
-        </MuiLink>
-      </Box>
-      <Box sx={{ display: 'flex' }}>
-        <MuiLink
-          component={Link}
-          href={
-            'http://www.htl-salzburg.ac.at/elektronik-technische-informatik.html'
-          }
-          passHref
-          underline="none"
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Box
           sx={{
             display: isDrawerOpen ? 'flex' : 'none',
+            flexGrow: 1,
+            alignItems: 'center',
+            alignSelf: 'flex-end',
             flexDirection: 'column',
+            mb: 8,
+            width: { drawerWidth },
           }}
         >
-          <Typography
-            sx={{
-              display: isDrawerOpen ? 'inline' : 'none',
-              whiteSpace: 'pre-line',
-              width: { drawerWidth },
+          <IconButton
+            onClick={() => {
+              router.push(`/info`);
             }}
           >
-            Diplomprojekt an der Abt.
-          </Typography>
-          <Typography
-            sx={{
-              display: isDrawerOpen ? 'inline' : 'none',
-              whiteSpace: 'pre-line',
-              width: { drawerWidth },
-              textDecoration: 'underline',
-            }}
+            <InfoIcon />
+          </IconButton>
+          <MuiLink
+            component={Link}
+            href={'http://www.htl-salzburg.ac.at/startseite.html'}
+            passHref
+            underline="none"
+            sx={{ display: isDrawerOpen ? 'flex' : 'none' }}
           >
-            Elektronik u. techn. Informatik
-          </Typography>
-        </MuiLink>
+            <Image
+              height={123 / 2}
+              width={393 / 2}
+              src="/images/htl-logo.png"
+              alt="logo"
+            />
+          </MuiLink>
+          <Box sx={{ display: 'flex' }}>
+            <MuiLink
+              component={Link}
+              href={
+                'http://www.htl-salzburg.ac.at/elektronik-technische-informatik.html'
+              }
+              passHref
+              underline="none"
+              sx={{
+                display: isDrawerOpen ? 'flex' : 'none',
+                flexDirection: 'column',
+              }}
+            >
+              <Typography
+                sx={{
+                  display: isDrawerOpen ? 'inline' : 'none',
+                  whiteSpace: 'pre-line',
+                  width: { drawerWidth },
+                  textDecoration: 'underline',
+                }}
+              >
+                Elektronik u. techn. Informatik
+              </Typography>
+            </MuiLink>
+          </Box>
+        </Box>
       </Box>
     </Drawer>
   );
