@@ -128,48 +128,50 @@ async function importStudents(
 
     async function getStudentSchoolClass() {
       // dont question it webuntis api wait needed
-      let untisTmp: WebUntisSecretAuth;
-      try {
-        untisTmp = new WebUntisSecretAuth(
-          loginData.school,
-          loginData.username,
-          loginData.secret,
-          `${loginData.server}.webuntis.com`,
-          'custom-identity',
-          Authenticator
-        );
-        await untisTmp.login();
-      } catch (error) {
-        // wait 20 seconds and try again
-        await new Promise((resolve) => setTimeout(resolve, 20000));
-        untisTmp = new WebUntisSecretAuth(
-          loginData.school,
-          loginData.username,
-          loginData.secret,
-          `${loginData.server}.webuntis.com`,
-          'custom-identity',
-          Authenticator
-        );
-        await untisTmp.login();
+      const untisTmp = new WebUntisSecretAuth(
+        loginData.school,
+        loginData.username,
+        loginData.secret,
+        `${loginData.server}.webuntis.com`,
+        'custom-identity',
+        Authenticator
+      );
+
+      let success = false;
+      while (!success) {
+        await untisTmp
+          .login()
+          .then((response) => {
+            success = true;
+          })
+          .catch(async (error) => {
+            // wait 30 seconds and try again
+            await new Promise((resolve) => setTimeout(resolve, 30000));
+            success = false;
+          });
       }
+
       let studentTimetable: WebAPITimetable[];
-      try {
-        studentTimetable = await untisTmp.getTimetableForWeek(
-          new Date(),
-          student.id,
-          WebUntisElementType.STUDENT,
-          1
-        );
-      } catch (error) {
-        // wait 20 seconds and try again
-        await new Promise((resolve) => setTimeout(resolve, 20000));
-        studentTimetable = await untisTmp.getTimetableForWeek(
-          new Date(),
-          student.id,
-          WebUntisElementType.STUDENT,
-          1
-        );
+      success = false;
+      while (!success) {
+        await untisTmp
+          .getTimetableForWeek(
+            new Date(),
+            student.id,
+            WebUntisElementType.STUDENT,
+            1
+          )
+          .then((response) => {
+            studentTimetable = response;
+            success = true;
+          })
+          .catch(async (error) => {
+            // wait 30 seconds and try again
+            await new Promise((resolve) => setTimeout(resolve, 30000));
+            success = false;
+          });
       }
+
       await untisTmp.logout();
 
       const studentSchoolClass = dbSchoolClasses.find(
