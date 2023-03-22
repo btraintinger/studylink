@@ -172,20 +172,6 @@ async function importStudents(
           });
       }
 
-      success = false;
-      while (!success) {
-        await untisTmp
-          .logout()
-          .then((response) => {
-            success = true;
-          })
-          .catch(async (error) => {
-            // wait 30 seconds and try again
-            await new Promise((resolve) => setTimeout(resolve, 30000));
-            success = false;
-          });
-      }
-
       const studentSchoolClass = dbSchoolClasses.find(
         (schoolClass) => schoolClass.name === getSchoolClassNameFromTimetable()
       );
