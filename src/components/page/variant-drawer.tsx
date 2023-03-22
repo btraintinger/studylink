@@ -1,4 +1,5 @@
 import * as Muicon from '@mui/icons-material';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { Box, Link as MuiLink } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
@@ -208,13 +209,6 @@ export default function MiniDrawer() {
             width: { drawerWidth },
           }}
         >
-          <IconButton
-            onClick={() => {
-              router.push(`/info`);
-            }}
-          >
-            <InfoIcon />
-          </IconButton>
           <MuiLink
             component={Link}
             href={'http://www.htl-salzburg.ac.at/startseite.html'}
@@ -247,12 +241,64 @@ export default function MiniDrawer() {
                   display: isDrawerOpen ? 'inline' : 'none',
                   whiteSpace: 'pre-line',
                   width: { drawerWidth },
-                  textDecoration: 'underline',
+                  paddingTop: 1,
+                  mb: 3,
                 }}
               >
                 Elektronik u. techn. Informatik
               </Typography>
             </MuiLink>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <LinkedInIcon />
+              <MuiLink
+                component={Link}
+                href={
+                  'https://www.linkedin.com/in/leander-schatzmann-84283312a/'
+                }
+                passHref
+                underline="none"
+                sx={{
+                  display: isDrawerOpen ? 'flex' : 'none',
+                  flexDirection: 'column',
+                }}
+              >
+                Leander Schatzmann
+              </MuiLink>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <LinkedInIcon />
+              <MuiLink
+                component={Link}
+                href={
+                  'https://www.linkedin.com/in/bernhard-traintinger-108854235/'
+                }
+                passHref
+                underline="none"
+                sx={{
+                  display: isDrawerOpen ? 'flex' : 'none',
+                  flexDirection: 'column',
+                }}
+              >
+                Bernhard Traintinger
+              </MuiLink>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <LinkedInIcon />
+              <MuiLink
+                component={Link}
+                href={'https://www.linkedin.com/in/raffael-weilch-4b61a9245/'}
+                passHref
+                underline="none"
+                sx={{
+                  display: isDrawerOpen ? 'flex' : 'none',
+                  flexDirection: 'column',
+                }}
+              >
+                Raffael Weilch
+              </MuiLink>
+            </Box>
           </Box>
         </Box>
       </Box>

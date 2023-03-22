@@ -1,5 +1,6 @@
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   AppBar,
   Avatar,
@@ -90,6 +91,13 @@ export default function NavBar() {
             STUDYLINK
           </Typography>
         </MuiLink>
+        <IconButton
+          onClick={() => {
+            router.push(`/info`);
+          }}
+        >
+          <InfoIcon />
+        </IconButton>
         <Button
           sx={{ mr: 2 }}
           aria-label="open profile menu"
