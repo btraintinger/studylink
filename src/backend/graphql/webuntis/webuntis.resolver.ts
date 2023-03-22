@@ -6,6 +6,7 @@ import {
   Department,
   Teacher,
   Room,
+  WebElementData,
 } from 'webuntis';
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -13,11 +14,10 @@ import {
 import bcrypt from 'bcrypt';
 import { authenticator as Authenticator } from 'otplib';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
-import { WebUntisSecretAuth } from 'webuntis';
+import { WebUntisSecretAuth, WebAPITimetable } from 'webuntis';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
-import { Student, WebAPITimetable } from 'webuntis';
 import {
   School,
   SchoolClass,
@@ -52,31 +52,27 @@ export class WebUntisResolver {
 
     const latestSchoolYear = await untis.getLatestSchoolyear();
 
-    await importTimeGrid(untis, ctx, currentSchool);
+    await clearSchoolData(ctx);
 
-    const { departments, schoolDepartments } = await importDepartments(
-      untis,
-      ctx,
-      currentSchool
-    );
+    const departments = await importDepartments(untis, ctx, currentSchool);
 
-    const { schoolSchoolClasses } = await importSchoolClasses(
+    await importSchoolClasses(
       untis,
       latestSchoolYear,
       ctx,
-      currentSchool,
       departments,
-      schoolDepartments
+      currentSchool
     );
+
+    await importRooms(untis, ctx, currentSchool);
 
     await importSchoolSubjects(untis, ctx, currentSchool);
 
     if (loginInfo.personType === WebUntisElementType.TEACHER) {
       await importTeachers(untis, ctx, currentSchool);
-      await importStudents(untis, ctx, currentSchool, schoolSchoolClasses);
-    }
 
-    // TODO: Import lessons
+      await importStudents(untis, currentSchool, ctx, loginData);
+    }
 
     await untis.logout();
 
@@ -84,135 +80,111 @@ export class WebUntisResolver {
   }
 }
 
-async function importTimeGrid(
-  untis: WebUntisSecretAuth,
-  ctx: Context,
-  currentSchool: School
-) {
-  const timegrid = await untis.getTimegrid();
-  timegrid.forEach(async (timegridElement) => {
-    timegridElement.timeUnits.forEach(async (timeUnit) => {
-      await ctx.prisma.timeGridElement.create({
-        data: {
-          school: {
-            connect: {
-              id: currentSchool.id,
-            },
-          },
-          startTime: timeUnit.startTime,
-          endTime: timeUnit.endTime,
-          weekDay: timegridElement.day,
-        },
-      });
-    });
-  });
-}
-
-function getSchoolClassOfStudent(timetableElements: WebAPITimetable[]) {
-  for (const element of timetableElements) {
-    if (element.classes.length === 0) {
-      return element.classes[0];
-    }
-  }
-  return null;
-}
-
 async function importStudents(
   untis: WebUntisSecretAuth,
-  ctx: Context,
   currentSchool: School,
-  schoolSchoolClasses: SchoolClass[]
+  ctx: Context,
+  loginData: WebUntisImportInput
 ) {
-  const students = await untis.getStudents();
-  const schoolStudents = await ctx.prisma.student.findMany({
+  const dbSchoolClasses = await ctx.prisma.schoolClass.findMany({
     where: {
-      schoolClass: {
-        department: {
-          schoolId: currentSchool.id,
-        },
+      department: {
+        schoolId: currentSchool.id,
       },
     },
-    include: {
-      user: true,
-    },
   });
+
+  const students = await untis.getStudents();
+
   students.forEach(async (student) => {
-    const currentStudent = schoolStudents.find(
-      (schoolStudent) => schoolStudent.user.name === student.name
-    );
-    const lastBirthYearDigits = parseInt(student.name.slice(-2), 10);
+    const lastBirthYearDigits = student.name.slice(-2);
     const email = `${student.foreName.toLowerCase()}.${student.longName.toLowerCase()}${lastBirthYearDigits}@${
       currentSchool.domain
     }`;
     const password = generatePassword();
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // TODO
-    const studentTimetable = await untis.getTimetableForWeek(
-      new Date(),
-      student.id,
-      WebUntisElementType.STUDENT,
-      2
-    );
+    const studentSchoolClass = await getStudentSchoolClass();
 
-    const studentClass = getSchoolClassOfStudent(studentTimetable);
-    let currentSchoolClass: SchoolClass | undefined;
-    if (studentClass) {
-      currentSchoolClass = schoolSchoolClasses.find(
-        (schoolSchoolClass) =>
-          schoolSchoolClass.name === studentClass.element.name
-      );
-    }
+    if (studentSchoolClass === null || studentSchoolClass === undefined) return;
 
-    if (!currentStudent) {
-      const newUser = await ctx.prisma.user.create({
+    try {
+      await ctx.prisma.user.create({
         data: {
-          firstName: student.foreName,
-          lastName: student.longName,
-          name: student.name,
           email,
           password: hashedPassword,
           role: 'STUDENT',
-        },
-      });
-      await ctx.prisma.student.create({
-        data: {
-          user: {
-            connect: {
-              id: newUser.id,
-            },
-          },
-          schoolClass: {
-            connect: {
-              id: currentSchoolClass?.id,
-            },
-          },
-        },
-      });
-    } else {
-      await ctx.prisma.user.update({
-        where: {
-          id: currentStudent.user.id,
-        },
-        data: {
+          name: student.name,
           firstName: student.foreName,
           lastName: student.longName,
-          name: student.name,
-          email,
-        },
-      });
-      await ctx.prisma.student.update({
-        where: {
-          id: currentStudent.id,
-        },
-        data: {
-          schoolClass: {
-            connect: {
-              id: currentSchoolClass?.id,
+          student: {
+            create: {
+              schoolClassId: studentSchoolClass.id,
             },
           },
         },
       });
+    } catch (error) {}
+
+    async function getStudentSchoolClass() {
+      // dont question it webuntis api wait needed
+      const untisTmp = new WebUntisSecretAuth(
+        loginData.school,
+        loginData.username,
+        loginData.secret,
+        `${loginData.server}.webuntis.com`,
+        'custom-identity',
+        Authenticator
+      );
+
+      let success = false;
+      while (!success) {
+        await untisTmp
+          .login()
+          .then((response) => {
+            success = true;
+          })
+          .catch(async (error) => {
+            // wait 30 seconds and try again
+            await new Promise((resolve) => setTimeout(resolve, 30000));
+            success = false;
+          });
+      }
+
+      let studentTimetable: WebAPITimetable[];
+      success = false;
+      while (!success) {
+        await untisTmp
+          .getTimetableForWeek(
+            new Date(),
+            student.id,
+            WebUntisElementType.STUDENT,
+            1
+          )
+          .then((response) => {
+            studentTimetable = response;
+            success = true;
+          })
+          .catch(async (error) => {
+            // wait 30 seconds and try again
+            await new Promise((resolve) => setTimeout(resolve, 30000));
+            success = false;
+          });
+      }
+
+      const studentSchoolClass = dbSchoolClasses.find(
+        (schoolClass) => schoolClass.name === getSchoolClassNameFromTimetable()
+      );
+      return studentSchoolClass;
+
+      function getSchoolClassNameFromTimetable() {
+        for (const element of studentTimetable) {
+          for (const schoolClass of element.classes) {
+            if (schoolClass.element.name) return schoolClass.element.name;
+          }
+        }
+        return null;
+      }
     }
   });
 }
@@ -223,38 +195,12 @@ async function importTeachers(
   currentSchool: School
 ) {
   const teachers = await untis.getTeachers();
-  const schoolTeachers = await ctx.prisma.teacher.findMany({
-    where: {
+  await ctx.prisma.teacher.createMany({
+    data: teachers.map((teacher) => ({
+      name: teacher.name,
+      longName: teacher.longName,
       schoolId: currentSchool.id,
-    },
-  });
-  teachers.forEach(async (teacher) => {
-    const currentTeacher = schoolTeachers.find(
-      (schoolTeacher) => schoolTeacher.name === teacher.name
-    );
-    if (!currentTeacher) {
-      await ctx.prisma.teacher.create({
-        data: {
-          name: teacher.name,
-          longName: `${teacher.foreName} ${teacher.longName}`,
-          school: {
-            connect: {
-              id: currentSchool.id,
-            },
-          },
-        },
-      });
-    } else {
-      await ctx.prisma.teacher.update({
-        where: {
-          id: currentTeacher.id,
-        },
-        data: {
-          name: teacher.name,
-          longName: `${teacher.foreName} ${teacher.longName}`,
-        },
-      });
-    }
+    })),
   });
 }
 
@@ -263,47 +209,27 @@ async function importSchoolSubjects(
   ctx: Context,
   currentSchool: School
 ) {
-  const subjects = await untis.getSubjects();
-  const schoolSubjects = await ctx.prisma.schoolSubject.findMany({
-    where: {
-      classHasSubject: {
-        some: {
-          schoolClass: {
-            department: {
-              schoolId: currentSchool.id,
-            },
-          },
-        },
-      },
-    },
+  const schoolSubjects = await untis.getSubjects();
+  await ctx.prisma.schoolSubject.createMany({
+    data: schoolSubjects.map((schoolSubject) => ({
+      name: schoolSubject.name,
+      longName: schoolSubject.longName,
+      schoolId: currentSchool.id,
+    })),
   });
-  subjects.forEach(async (subject) => {
-    const currentSubject = schoolSubjects.find(
-      (schoolSubject) => schoolSubject.name === subject.name
-    );
-    if (!currentSubject) {
-      await ctx.prisma.schoolSubject.create({
-        data: {
-          name: subject.name,
-          longName: subject.longName,
-          school: {
-            connect: {
-              id: currentSchool.id,
-            },
-          },
-        },
-      });
-    } else {
-      await ctx.prisma.schoolSubject.update({
-        where: {
-          id: currentSubject.id,
-        },
-        data: {
-          name: subject.name,
-          longName: subject.longName,
-        },
-      });
-    }
+}
+
+async function importRooms(
+  untis: WebUntisSecretAuth,
+  ctx: Context,
+  currentSchool: School
+) {
+  const rooms = await untis.getRooms();
+  await ctx.prisma.room.createMany({
+    data: rooms.map((room) => ({
+      name: room.name,
+      schoolId: currentSchool.id,
+    })),
   });
 }
 
@@ -311,74 +237,35 @@ async function importSchoolClasses(
   untis: WebUntisSecretAuth,
   latestSchoolYear: SchoolYear,
   ctx: Context,
-  currentSchool: School,
   departments: Department[],
-  schoolDepartments: SchoolDepartment[]
+  currentSchool: School
 ) {
-  const schoolClasses = await untis.getClasses(true, latestSchoolYear.id);
-  const schoolSchoolClasses = await ctx.prisma.schoolClass.findMany({
+  const dbDepartments = await ctx.prisma.department.findMany({
     where: {
-      department: {
-        schoolId: currentSchool.id,
-      },
+      schoolId: currentSchool.id,
     },
   });
-  schoolClasses.forEach(async (schoolClass) => {
-    const webUntisDepartmentId = schoolClass.did || schoolClass.departmentId;
-    if (!webUntisDepartmentId) return;
 
-    const currentSchoolClass = schoolSchoolClasses.find(
-      (schoolSchoolClass) => schoolSchoolClass.name === schoolClass.name
-    );
-    const correctDepartment = departments.find(
-      (department) => department.id === webUntisDepartmentId
-    );
-    schoolDepartments = await ctx.prisma.department.findMany({
-      where: {
-        schoolId: currentSchool.id,
-      },
-    });
-    const correctDepartmentDB = schoolDepartments.find(
-      (schoolDepartment) => schoolDepartment.name === correctDepartment?.name
-    );
-    if (!correctDepartmentDB) return;
-
-    const timetable = await untis.getTimetableForWeek(
-      new Date(),
-      schoolClass.id,
-      WebUntisElementType.CLASS,
-      1
-    );
-
-    // TODO import to lesson with room and teacher and teacher
-
-    if (!currentSchoolClass) {
-      await ctx.prisma.schoolClass.create({
-        data: {
-          name: schoolClass.name,
-          longName: schoolClass.longName,
-          department: {
-            connect: {
-              id: correctDepartmentDB.id,
-            },
-          },
-        },
-      });
-    } else {
-      await ctx.prisma.schoolClass.update({
-        where: {
-          id: currentSchoolClass.id,
-        },
-        data: {
-          name: schoolClass.name,
-          longName: schoolClass.longName,
-          department: { connect: { id: correctDepartmentDB?.id } },
-        },
-      });
-    }
+  const schoolClasses = await untis.getClasses(true, latestSchoolYear.id);
+  await ctx.prisma.schoolClass.createMany({
+    data: schoolClasses
+      .filter((schoolClass) =>
+        getDepartmentIdFromWebUntisSchoolClass(
+          schoolClass,
+          departments,
+          dbDepartments
+        )
+      )
+      .map((schoolClass) => ({
+        name: schoolClass.name,
+        longName: schoolClass.longName,
+        departmentId: getDepartmentIdFromWebUntisSchoolClass(
+          schoolClass,
+          departments,
+          dbDepartments
+        ) as number,
+      })),
   });
-
-  return { schoolSchoolClasses, schoolDepartments };
 }
 
 async function importDepartments(
@@ -387,49 +274,91 @@ async function importDepartments(
   currentSchool: School
 ) {
   const departments = await untis.getDepartments();
-  const schoolDepartments = await ctx.prisma.department.findMany({
-    where: {
+  await ctx.prisma.department.createMany({
+    data: departments.map((department) => ({
+      name: department.name,
+      longName: department.longName,
       schoolId: currentSchool.id,
-    },
+    })),
   });
-  departments.forEach(async (department) => {
-    const currentDepartment = schoolDepartments.find(
-      (schoolDepartment) => schoolDepartment.name === department.name
-    );
-    if (!currentDepartment) {
-      await ctx.prisma.department.create({
-        data: {
-          name: department.name,
-          longName: department.longName,
-          school: {
-            connect: {
-              id: currentSchool.id,
-            },
-          },
-        },
-      });
-    } else {
-      await ctx.prisma.department.update({
-        where: {
-          id: currentDepartment.id,
-        },
-        data: {
-          name: department.name,
-          longName: department.longName,
-        },
-      });
-    }
-  });
-  return { departments, schoolDepartments };
+  return departments;
 }
 
 async function getCurrentSchool(ctx: Context): Promise<School> {
-  if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolFoundError');
-  const currentSchool = await ctx.prisma.school.findUnique({
+  if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolError');
+
+  const school = await ctx.prisma.school.findUnique({
     where: {
       id: ctx.user.admin.schoolId,
     },
   });
-  if (!currentSchool) throw new Error('NoSchoolFoundError');
-  return currentSchool;
+
+  if (!school) throw new Error('NoSchoolError');
+  return school;
+}
+
+async function clearSchoolData(ctx: Context) {
+  if (!ctx.user?.admin?.schoolId) throw new Error('NoSchoolError');
+
+  const students = await ctx.prisma.user.findMany({
+    where: {
+      student: {
+        schoolClass: {
+          department: {
+            schoolId: ctx.user.admin.schoolId,
+          },
+        },
+      },
+    },
+  });
+
+  await ctx.prisma.user.deleteMany({
+    where: {
+      id: {
+        in: students.map((student) => student.id),
+      },
+    },
+  });
+
+  await ctx.prisma.department.deleteMany({
+    where: {
+      schoolId: ctx.user.admin.schoolId,
+    },
+  });
+
+  await ctx.prisma.teacher.deleteMany({
+    where: {
+      schoolId: ctx.user.admin.schoolId,
+    },
+  });
+
+  await ctx.prisma.room.deleteMany({
+    where: {
+      schoolId: ctx.user.admin.schoolId,
+    },
+  });
+
+  await ctx.prisma.schoolSubject.deleteMany({
+    where: {
+      schoolId: ctx.user.admin.schoolId,
+    },
+  });
+}
+
+function getDepartmentIdFromWebUntisSchoolClass(
+  schoolClass: Klasse,
+  webUntisDepartments: Department[],
+  dbDepartments: Department[]
+): number | null {
+  const webUntisDepartmentId = schoolClass.did || schoolClass.departmentId;
+  if (!webUntisDepartmentId) return null;
+
+  const department = webUntisDepartments.find(
+    (department) => department.id === webUntisDepartmentId
+  );
+
+  const correctDepartmentDB = dbDepartments.find(
+    (schoolDepartment) => schoolDepartment.name === department?.name
+  );
+  return correctDepartmentDB?.id || null;
 }
