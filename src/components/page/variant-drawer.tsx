@@ -247,7 +247,6 @@ export default function MiniDrawer() {
                   display: isDrawerOpen ? 'inline' : 'none',
                   whiteSpace: 'pre-line',
                   width: { drawerWidth },
-                  textDecoration: 'underline',
                 }}
               >
                 Elektronik u. techn. Informatik
