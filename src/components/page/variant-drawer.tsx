@@ -223,6 +223,7 @@ export default function MiniDrawer() {
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 Leander Schatzmann
@@ -241,6 +242,7 @@ export default function MiniDrawer() {
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 Bernhard Traintinger
@@ -257,6 +259,7 @@ export default function MiniDrawer() {
                 sx={{
                   display: isDrawerOpen ? 'flex' : 'none',
                   flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
                 Raffael Weilch
@@ -270,6 +273,7 @@ export default function MiniDrawer() {
             underline="none"
             sx={{
               display: isDrawerOpen ? 'flex' : 'none',
+              alignItems: 'flex-start',
             }}
           >
             <Image
