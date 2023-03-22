@@ -120,7 +120,7 @@ export default function Offers() {
               sx={{ width: 1000 }}
             >
               <Typography sx={{ p: 2 }}>
-                Wenn du ein Fach sehr gut beherrscht, kannst du ein Offer
+                Wenn du ein Fach sehr gut beherrscht, kannst du ein Angebot
                 anbieten, mit dem du einen Nachhilfeschüler finden kannst.
                 Besuche unsere <Link href="/info"> Infoseite </Link> wenn du
                 mehr Informationen benötigst.

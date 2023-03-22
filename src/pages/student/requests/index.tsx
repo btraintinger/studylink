@@ -120,7 +120,7 @@ export default function Requests() {
               sx={{ width: 1000 }}
             >
               <Typography sx={{ p: 2 }}>
-                Wenn du einen Nachhilfebedarf hast, erstelle ein Request um
+                Wenn du einen Nachhilfebedarf hast, erstelle eine Anfrage um
                 deinen Nachhilfelehrer zu finden. Besuch unsere{' '}
                 <Link href="/info"> Infoseite </Link> wenn du mehr Informationen
                 benötigst.
