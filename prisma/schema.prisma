@@ -182,16 +182,6 @@ model Student {
   @@map("student")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([userId])
-}
-
 model User {
   id                      String    @id @unique @default(cuid())
   name                    String?
@@ -206,7 +196,6 @@ model User {
   role                    String
   student                 Student?
   admin                   Admin?
-  Session                 Session[]
 
   @@map("user")
 }
