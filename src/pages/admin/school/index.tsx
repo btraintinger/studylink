@@ -36,7 +36,11 @@ export default function School() {
           component={Link}
           variant="contained"
           type="submit"
-          sx={{ mt: 2 }}
+          sx={{
+            mb: 2,
+            alignSelf: 'center',
+            borderRadius: 100,
+          }}
           href="/admin/school/new"
           passHref
         >

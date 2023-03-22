@@ -49,7 +49,11 @@ export default function SchoolSubjects() {
       <Box sx={{ height: '80vh', width: '100%' }}>
         <Button
           variant="contained"
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            alignSelf: 'center',
+            borderRadius: 100,
+          }}
           fullWidth
           onClick={() => {
             router.push(`${SCHOOL_SUBJECTS_ADMIN}/new`);

@@ -80,7 +80,11 @@ export default function Students() {
       <Box sx={{ height: '80vh', width: '100%' }}>
         <Button
           variant="contained"
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            alignSelf: 'center',
+            borderRadius: 100,
+          }}
           fullWidth
           onClick={() => {
             router.push(`${STUDENTS_ADMIN}/new`);
