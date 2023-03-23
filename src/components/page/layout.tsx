@@ -20,8 +20,6 @@ export default function Layout({ children, role }: Props) {
 
   const { data: session, status } = useSession();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const userRole = session?.user?.role;
 
   if (status === 'loading') return <LoadingPage />;

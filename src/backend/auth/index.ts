@@ -44,7 +44,7 @@ export async function signin(credentials): Promise<User> {
 
   if (isValid) return user;
 
-  throw new Error('Falsche email order falsches Password');
+  throw new Error('Falsche email oder falsches Password');
 }
 
 export async function signup(credentials): Promise<User> {
