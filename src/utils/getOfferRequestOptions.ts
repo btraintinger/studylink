@@ -18,7 +18,7 @@ export const getTeacherOptions = (
   return (
     data?.getSchoolOfOwnStudent.teachers.map((teacher) => ({
       id: wrongNumberToNumber(teacher.id),
-      name: teacher.name,
+      name: `${teacher.name} - ${teacher.longName}`,
     })) ?? []
   );
 };

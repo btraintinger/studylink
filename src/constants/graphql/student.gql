@@ -148,6 +148,7 @@ query GetOfferingRequestFormData {
     teachers {
       id
       name
+      longName
       schoolSubjects {
         id
         name

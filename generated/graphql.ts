@@ -760,7 +760,7 @@ export type GetAdministeredStudentsQuery = { __typename?: 'Query', getAdminister
 export type GetOfferingRequestFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOfferingRequestFormDataQuery = { __typename?: 'Query', getSchoolOfOwnStudent: { __typename?: 'School', id: number, departments: Array<{ __typename?: 'Department', schoolClasses: Array<{ __typename?: 'SchoolClass', name: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> }> }>, teachers: Array<{ __typename?: 'Teacher', id: number, name: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', id: number, name: string, longName: string }> }>, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> } };
+export type GetOfferingRequestFormDataQuery = { __typename?: 'Query', getSchoolOfOwnStudent: { __typename?: 'School', id: number, departments: Array<{ __typename?: 'Department', schoolClasses: Array<{ __typename?: 'SchoolClass', name: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> }> }>, teachers: Array<{ __typename?: 'Teacher', id: number, name: string, longName: string, schoolSubjects: Array<{ __typename?: 'SchoolSubject', id: number, name: string, longName: string }> }>, schoolSubjects: Array<{ __typename?: 'SchoolSubject', name: string, longName: string, id: number }> } };
 
 export type GetTeacherByIdQueryVariables = Exact<{
   getTeacherByIdId: Scalars['Float'];
@@ -2397,6 +2397,7 @@ export const GetOfferingRequestFormDataDocument = gql`
     teachers {
       id
       name
+      longName
       schoolSubjects {
         id
         name
