@@ -84,9 +84,9 @@ export default function InfoPage() {
               Relevante Nachhilfe 👩‍🎓
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Auf Studylink findest du Nachhilfepartner, die die deine Schule
+              Auf Studylink findest du Nachhilfepartner, die deine Schule
               besuchen. Unser Projekt kann an Schulen intern gestartet werden,
-              sodass Nutzer*innen der Plattform nur Nachhilfe Partnerinnen
+              sodass Nutzer*innen der Plattform nur Nachhilfe Partner*innen
               vorgeschlagen bekommen, die zu ihren schulischen Anforderungen
               relevante Erfahrungen haben und ihnen wirklich helfen können.
             </Typography>
