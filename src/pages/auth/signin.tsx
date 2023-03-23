@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import AuthWrapper from '../../components/utils/authWrapper';
 import LoadingPage from '../../components/utils/loadingPage';
 
 const loginSchema = object({
@@ -66,113 +67,97 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="md">
+    <AuthWrapper>
+      <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Anmelden
+      </Typography>
+
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          padding: '40px',
-
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
+        component="form"
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmitHandler)}
+        sx={{ mt: 3 }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Anmelden
-        </Typography>
+        <TextField
+          sx={{ mb: 2 }}
+          label="Email"
+          fullWidth
+          required
+          type="email"
+          error={!!errors['email']}
+          helperText={errors['email'] ? errors['email'].message : ''}
+          {...register('email')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Password"
+          fullWidth
+          required
+          type="password"
+          error={!!errors['password']}
+          helperText={errors['password'] ? errors['password'].message : ''}
+          {...register('password')}
+        />
 
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmitHandler)}
-          sx={{ mt: 3 }}
+        <Button
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mt: 1, mb: 2 }}
         >
-          <TextField
-            sx={{ mb: 2 }}
-            label="Email"
-            fullWidth
-            required
-            type="email"
-            error={!!errors['email']}
-            helperText={errors['email'] ? errors['email'].message : ''}
-            {...register('email')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Password"
-            fullWidth
-            required
-            type="password"
-            error={!!errors['password']}
-            helperText={errors['password'] ? errors['password'].message : ''}
-            {...register('password')}
-          />
+          Bestätigen
+        </Button>
 
-          <Button
-            variant="contained"
-            fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
-          >
-            Bestätigen
-          </Button>
-
-          <Grid container justifyContent="space-between">
-            <Grid item>
-              <MuiLink
-                sx={{ fontSize: '14px', fontStyle: 'bold' }}
-                underline="none"
-                component={Link}
-                href="/auth/resetPassword"
-                passHref
-              >
-                {'Passwort vergessen?'}
-              </MuiLink>
-            </Grid>
-            <Grid item>
-              <MuiLink
-                component={Link}
-                href="/info"
-                passHref
-                underline="none"
-                sx={{ fontSize: '14px', fontStyle: 'bold' }}
-                fontSize={'1rem'}
-              >
-                {'Noch kein Account bereitgestellt?'}
-              </MuiLink>
-            </Grid>
+        <Grid container justifyContent="space-between">
+          <Grid item>
+            <MuiLink
+              sx={{ fontSize: '14px', fontStyle: 'bold' }}
+              underline="none"
+              component={Link}
+              href="/auth/resetPassword"
+              passHref
+            >
+              {'Passwort vergessen?'}
+            </MuiLink>
           </Grid>
-          <MuiLink
-            component={Link}
-            href="/auth/resetPassword"
-            passHref
-            underline="none"
-            sx={{ fontSize: '14px', fontStyle: 'bold' }}
-            fontSize={'1rem'}
-          >
-            {'Erstanmeldung? Passwort anfordern'}
-          </MuiLink>
+          <Grid item>
+            <MuiLink
+              component={Link}
+              href="/info"
+              passHref
+              underline="none"
+              sx={{ fontSize: '14px', fontStyle: 'bold' }}
+              fontSize={'1rem'}
+            >
+              {'Noch kein Account bereitgestellt?'}
+            </MuiLink>
+          </Grid>
+        </Grid>
+        <MuiLink
+          component={Link}
+          href="/auth/resetPassword"
+          passHref
+          underline="none"
+          sx={{ fontSize: '14px', fontStyle: 'bold' }}
+          fontSize={'1rem'}
+        >
+          {'Erstanmeldung? Passwort anfordern'}
+        </MuiLink>
 
-          <Alert
-            severity="error"
-            sx={{
-              display: error ? null : 'none',
-              marginTop: '15px',
-            }}
-          >
-            {error}
-          </Alert>
-        </Box>
+        <Alert
+          severity="error"
+          sx={{
+            display: error ? null : 'none',
+            marginTop: '15px',
+          }}
+        >
+          {error}
+        </Alert>
       </Box>
-    </Container>
+    </AuthWrapper>
   );
 }

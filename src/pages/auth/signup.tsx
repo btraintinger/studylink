@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string, TypeOf } from 'zod';
+import AuthWrapper from '../../components/utils/authWrapper';
 import LoadingPage from '../../components/utils/loadingPage';
 
 const signUpSchema = object({
@@ -71,115 +72,99 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs">
+    <AuthWrapper>
+      <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Registrieren
+      </Typography>
+      <Typography component="p" fontSize="0.8rem">
+        Nach der Registrierung wird eine E-Mail an dich gesendet, welche 15
+        Minuten lang gültig ist, um deine E-Mail Adresse zu verifizieren.
+      </Typography>
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          padding: '40px',
-
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
+        component="form"
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmitHandler)}
+        sx={{ mt: 3 }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Registrieren
-        </Typography>
-        <Typography component="p" fontSize="0.8rem">
-          Nach der Registrierung wird eine E-Mail an dich gesendet, welche 15
-          Minuten lang gültig ist, um deine E-Mail Adresse zu verifizieren.
-        </Typography>
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmitHandler)}
-          sx={{ mt: 3 }}
+        <TextField
+          sx={{ mb: 2 }}
+          label="Email"
+          fullWidth
+          required
+          type="email"
+          error={!!errors['email']}
+          helperText={errors['email'] ? errors['email'].message : ''}
+          {...register('email')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Passwort"
+          fullWidth
+          required
+          type="password"
+          error={!!errors['password']}
+          helperText={errors['password'] ? errors['password'].message : ''}
+          {...register('password')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Passwort bestätigen"
+          fullWidth
+          required
+          type="password"
+          error={!!errors['passwordConfirm']}
+          helperText={
+            errors['passwordConfirm'] ? errors['passwordConfirm'].message : ''
+          }
+          {...register('passwordConfirm')}
+        />
+        <TextField
+          sx={{ mb: 2 }}
+          label="Name"
+          fullWidth
+          required
+          type="text"
+          error={!!errors['name']}
+          helperText={errors['name'] ? errors['name'].message : ''}
+          {...register('name')}
+        />
+
+        <Button
+          variant="contained"
+          fullWidth
+          type="submit"
+          sx={{ mt: 1, mb: 2 }}
         >
-          <TextField
-            sx={{ mb: 2 }}
-            label="Email"
-            fullWidth
-            required
-            type="email"
-            error={!!errors['email']}
-            helperText={errors['email'] ? errors['email'].message : ''}
-            {...register('email')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Passwort"
-            fullWidth
-            required
-            type="password"
-            error={!!errors['password']}
-            helperText={errors['password'] ? errors['password'].message : ''}
-            {...register('password')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Passwort bestätigen"
-            fullWidth
-            required
-            type="password"
-            error={!!errors['passwordConfirm']}
-            helperText={
-              errors['passwordConfirm'] ? errors['passwordConfirm'].message : ''
-            }
-            {...register('passwordConfirm')}
-          />
-          <TextField
-            sx={{ mb: 2 }}
-            label="Name"
-            fullWidth
-            required
-            type="text"
-            error={!!errors['name']}
-            helperText={errors['name'] ? errors['name'].message : ''}
-            {...register('name')}
-          />
+          Bestätigen
+        </Button>
 
-          <Button
-            variant="contained"
-            fullWidth
-            type="submit"
-            sx={{ mt: 1, mb: 2 }}
-          >
-            Bestätigen
-          </Button>
-
-          <Grid container>
-            <Grid item>
-              <MuiLink
-                underline="none"
-                sx={{ fontSize: '14px', fontStyle: 'bold' }}
-                component={Link}
-                href="/auth/signin"
-                passHref
-              >
-                {'Hast du schon einen Account? Logge dich ein'}
-              </MuiLink>
-            </Grid>
+        <Grid container>
+          <Grid item>
+            <MuiLink
+              underline="none"
+              sx={{ fontSize: '14px', fontStyle: 'bold' }}
+              component={Link}
+              href="/auth/signin"
+              passHref
+            >
+              {'Hast du schon einen Account? Logge dich ein'}
+            </MuiLink>
           </Grid>
-          <Alert
-            severity="error"
-            sx={{
-              display: error ? null : 'none',
-              marginTop: '15px',
-            }}
-          >
-            {error}
-          </Alert>
-        </Box>
+        </Grid>
+        <Alert
+          severity="error"
+          sx={{
+            display: error ? null : 'none',
+            marginTop: '15px',
+          }}
+        >
+          {error}
+        </Alert>
       </Box>
-    </Container>
+    </AuthWrapper>
   );
 }
