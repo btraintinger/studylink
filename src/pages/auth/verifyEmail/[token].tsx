@@ -55,12 +55,11 @@ export default function PasswordReset() {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
+        <Typography component="h1" variant="h5">
+          Email Verifizierung
+        </Typography>
         <Box sx={{ mt: 3 }}>
-          <Typography component="h1" variant="h5">
-            Email Verifizierung
-          </Typography>
           <Button
-            sx={{ mt: 3 }}
             variant="contained"
             fullWidth
             onClick={() => {

@@ -11,13 +11,21 @@ export function MarketingLogo() {
     >
       <Typography
         sx={{
-          color: '#000000',
           fontSize: 48,
           textAlign: 'center',
           display: 'block',
         }}
       >
         STUDYLINK
+      </Typography>
+      <Typography
+        sx={{
+          fontSize: 18,
+          textAlign: 'center',
+          display: 'block',
+        }}
+      >
+        Die schulinterne Nachhilfeplattform
       </Typography>
       <Image
         src={'/favicon.ico'}

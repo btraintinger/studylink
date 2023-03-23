@@ -16,7 +16,7 @@ export const Footer = ({ children }: PropsWithChildren<unknown>) => {
       {children}
       <Typography variant="body2" color="text.secondary" align="center">
         {'© '}
-        <Link color="inherit" href="https://studylink.com/">
+        <Link color="inherit" href="https://studylink-htl.vercel.app/">
           Studylink
         </Link>{' '}
         {new Date().getFullYear()}

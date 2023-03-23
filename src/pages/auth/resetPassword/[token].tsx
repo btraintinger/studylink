@@ -96,6 +96,10 @@ export default function PasswordReset() {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
+        <Typography component="h1" variant="h5">
+          Passwort zurücksetzen
+        </Typography>
+
         <Box
           component="form"
           noValidate
@@ -103,9 +107,7 @@ export default function PasswordReset() {
           onSubmit={handleSubmit(onSubmitHandler)}
           sx={{ mt: 3 }}
         >
-          <Typography component="h1" variant="h5">
-            Passwort zurücksetzen
-          </Typography>
+          <Typography component="h1" variant="h5"></Typography>
           <TextField
             sx={{ mb: 2 }}
             label="Passwort"

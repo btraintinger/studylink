@@ -1,5 +1,5 @@
 import { Box, Typography, Button } from '@mui/material';
-
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Link from 'next/link';
 import { Footer } from '../page/footer';
 import { MarketingLogo } from '../utils/marketingLogo';
@@ -17,45 +17,49 @@ export default function NotSignedInHome() {
         }}
       >
         <MarketingLogo />
-        <Typography
-          variant="h5"
-          sx={{ mt: 2, textAlign: 'center', color: '#000000' }}
+        <Typography variant="h6" sx={{ m: 1 }}></Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            maxWidth: '50%',
+          }}
         >
-          Studylink ist eine Plattform, die es Schülern innerhalb der Schule
-          ermöglicht, Nachhilfe anzubieten.
-        </Typography>
-        <Typography variant="h6" sx={{ m: 1, color: '#000000' }}>
-          Anmelden oder registrieren um fortzufahren.
-        </Typography>
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          component={Link}
-          href="/auth/signin"
-          passHref
-        >
-          Anmelden
-        </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ m: 1 }}
+            component={Link}
+            href="/auth/signin"
+            passHref
+          >
+            Anmelden <ArrowForwardIosIcon />
+          </Button>
 
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          component={Link}
-          href="/auth/resetPassword"
-          passHref
-        >
-          Erstanmeldung
-        </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ m: 1 }}
+            component={Link}
+            href="/auth/resetPassword"
+            passHref
+          >
+            Erstanmeldung <ArrowForwardIosIcon />
+          </Button>
 
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          component={Link}
-          href="/auth/signup"
-          passHref
-        >
-          Neue Schule registrieren
-        </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ m: 1 }}
+            component={Link}
+            href="/info"
+            passHref
+          >
+            Informationen <ArrowForwardIosIcon />
+          </Button>
+        </Box>
       </Box>
       <Footer />
     </>

@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Container,
+  Grid,
   Link as MuiLink,
   TextField,
   Typography,
@@ -87,15 +88,7 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Anmelden
         </Typography>
-        <MuiLink
-          component={Link}
-          href="/auth/resetPassword"
-          passHref
-          underline="always"
-          fontSize={'1rem'}
-        >
-          Noch keinen Account? Jetzt registrieren!
-        </MuiLink>
+
         <Box
           component="form"
           noValidate
@@ -133,14 +126,40 @@ export default function LoginPage() {
             Bestätigen
           </Button>
 
+          <Grid container justifyContent="space-between">
+            <Grid item>
+              <MuiLink
+                sx={{ fontSize: '14px', fontStyle: 'bold' }}
+                underline="none"
+                component={Link}
+                href="/auth/resetPassword"
+                passHref
+              >
+                {'Passwort vergessen?'}
+              </MuiLink>
+            </Grid>
+            <Grid item>
+              <MuiLink
+                component={Link}
+                href="/info"
+                passHref
+                underline="none"
+                sx={{ fontSize: '14px', fontStyle: 'bold' }}
+                fontSize={'1rem'}
+              >
+                {'Noch kein Account bereitgestellt?'}
+              </MuiLink>
+            </Grid>
+          </Grid>
           <MuiLink
-            sx={{ fontSize: '14px', fontStyle: 'bold' }}
-            underline="none"
             component={Link}
             href="/auth/resetPassword"
             passHref
+            underline="none"
+            sx={{ fontSize: '14px', fontStyle: 'bold' }}
+            fontSize={'1rem'}
           >
-            {'Passwort vergessen?'}
+            {'Erstanmeldung? Passwort anfordern'}
           </MuiLink>
 
           <Alert
