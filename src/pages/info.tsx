@@ -137,6 +137,46 @@ export default function InfoPage() {
             </Button>
           </Box>
         </Grid>
+        <Typography variant="h4" component="h3" gutterBottom sx={{ mt: 3 }}>
+          Wie verwendet man Studylink 🔎
+        </Typography>
+        <Grid container spacing={8} sx={{ mt: 4 }}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h4" component="h3" gutterBottom>
+              Wenn du Nachhilfe geben möchtest:
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Melde dich mit deiner Schul-Email an, verifiziere dich per Mail
+              und erstelle dein Passwort. Um Nachhilfe zu geben, musst du dich
+              zuerst als Nachhilfelehrer*in registrieren indem du ein Angebot
+              erstellst. Dazu musst du das Fach und die Klassenstufe angeben,
+              für die du Nachhilfe leisten kannst, gib außerdem eine kurze
+              Beschreibung deiner Fähigkeiten und deine Lehrperson in dem Fach
+              an. Dieses Angebot wird gespeichert und du wirst benachrichtigt,
+              wenn ein*e Schüler*in deine Hilfe benötigt.
+            </Typography>
+            <Image
+              height={888 / 3}
+              width={1900 / 3}
+              src="/images/angebot-tutorial.png"
+              alt="shows how an offer is created"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h4" component="h3" gutterBottom>
+              Wenn du Nachhilfe nehmen möchtest:
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Melde dich mit deiner Schul-Email an, verifiziere dich per Mail
+              und erstelle dein Passwort. Um Nachhilfe zu bekommen musst du
+              zuerst eine Anftage erstellen, indem du das Fach, in dem du
+              Nachhilfe brauchst, und deine Klassenstufe angibst, außerdem eine
+              Beschreibung deiner Bedürfnisse und deine Lehrperson. Du wirst
+              benachrichtigt, wenn ein*e Nachhilfelehrer*in für dich gefunden
+              wurde.
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
     </>
   );
