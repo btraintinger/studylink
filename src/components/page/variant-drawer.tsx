@@ -4,7 +4,6 @@ import { Box, Link as MuiLink } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -13,7 +12,6 @@ import ListItemText from '@mui/material/ListItemText';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ADMIN_LINKS, STUDENT_LINKS } from '../../constants/menu-items-list';
@@ -74,7 +72,6 @@ export default function MiniDrawer() {
   const { selectedItem, isDrawerOpen, setDrawerOpen, setSelectedItem } =
     useDrawerContext();
   const { data: session } = useSession();
-  const router = useRouter();
 
   const userRole = session?.user?.role;
 

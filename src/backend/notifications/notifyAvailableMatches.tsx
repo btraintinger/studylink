@@ -1,5 +1,5 @@
 import { render } from '@react-email/render';
-import { getMailTransporter, sendMail } from '../mail/mailer';
+import { sendMail } from '../mail/mailer';
 import { TutorOffering, TutorRequest } from '@prisma/client';
 import {
   getMatchesForTutorOffering,

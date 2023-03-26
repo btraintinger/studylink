@@ -15,15 +15,11 @@ import {
 import bcrypt from 'bcrypt';
 import { authenticator as Authenticator } from 'otplib';
 import { Arg, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
-import { WebUntisSecretAuth, WebAPITimetable } from 'webuntis';
+import { WebUntisSecretAuth } from 'webuntis';
 import { generatePassword } from '../../utils/passwordGenerator';
 import type { Context } from '../context';
 import { WebUntis, WebUntisImportInput } from './webuntis.type';
-import {
-  School,
-  SchoolClass,
-  Department as SchoolDepartment,
-} from '@prisma/client';
+import { School } from '@prisma/client';
 
 function replaceGermanCharacters(string: string) {
   return string.replace(/[äöüÄÖÜß]/g, function (match) {

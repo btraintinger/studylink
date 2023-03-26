@@ -7,10 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-}
-
 model School {
   id              Int               @id @default(autoincrement())
   name            String

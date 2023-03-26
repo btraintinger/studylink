@@ -1,7 +1,5 @@
-import { reject } from 'lodash';
 import nodemailer from 'nodemailer';
 import { Options } from 'nodemailer/lib/mailer';
-import { resolve } from 'path';
 
 const port = Number(process.env.MAIL_PORT);
 

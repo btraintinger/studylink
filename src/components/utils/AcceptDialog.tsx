@@ -19,7 +19,6 @@ import {
   GetMatchConnectionInfoQuery,
   useAcceptMatchMutation,
   useGetMatchConnectionInfoLazyQuery,
-  useGetMatchConnectionInfoQuery,
 } from '../../../generated/graphql';
 import wrongNumberToNumber from '../../utils/wrongNumberToString';
 import { useEffect, useState } from 'react';

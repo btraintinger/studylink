@@ -10,8 +10,6 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MarketingLogo } from '../components/utils/marketingLogo';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { useThemeModeContext } from '../context/mode-context';
 

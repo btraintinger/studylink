@@ -11,7 +11,7 @@ import prisma from '../utils/prismadb';
 import { render } from '@react-email/render';
 import YourTutorRequestGotAcceptedNotification from '../../../emails/acceptTutorRequest';
 import YourTutorOfferingGotAcceptedNotification from '../../../emails/acceptTutorOffering';
-import { getMailTransporter, sendMail } from '../mail/mailer';
+import { sendMail } from '../mail/mailer';
 
 export interface TutorActionInfo {
   subject: string;
