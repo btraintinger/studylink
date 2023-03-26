@@ -175,7 +175,7 @@ export default function Offer() {
         <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box sx={{ display: queryId === null ? 'flex' : 'none' }}>
-              <Typography variant="h5">Erzeuge dein neues Offering</Typography>
+              <Typography variant="h5">Erzeuge dein neues Angebot</Typography>
             </Box>
             <Box sx={{ display: queryId !== null ? 'flex' : 'none' }}>
               <Typography variant="h5">
