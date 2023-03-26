@@ -40,6 +40,28 @@ query GetMatchesOfCurrentUser {
   }
 }
 
+query getMatchConnectionInfo(
+  $matchConnectionInfoInput: MatchConnectionInfoInput!
+) {
+  getMatchConnectionInfo(matchConnectionInfoInput: $matchConnectionInfoInput) {
+    student {
+      id
+      user {
+        email
+        firstName
+        lastName
+        name
+        id
+      }
+    }
+    schoolClass {
+      longName
+      name
+      id
+    }
+  }
+}
+
 mutation AcceptMatch($acceptMatchInput: AcceptMatchInput!) {
   acceptMatch(acceptMatchInput: $acceptMatchInput)
 }

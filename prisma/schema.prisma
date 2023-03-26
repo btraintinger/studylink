@@ -1,15 +1,18 @@
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 model School {
-  id              Int               @id @unique @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   name            String
   domain          String
   departments     Department[]
@@ -23,7 +26,7 @@ model School {
 }
 
 model TimeGridElement {
-  id              Int      @id @unique() @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   weekDay         Int      @map("week_day")
   startTime       Int      @map("start_time")
   endTime         Int      @map("end_time")
@@ -57,7 +60,7 @@ model Lesson {
 }
 
 model Room {
-  id              Int      @id @unique() @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
   schoolId        Int      @map("school_id")
   school          School   @relation(fields: [schoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -68,7 +71,7 @@ model Room {
 }
 
 model Department {
-  id            Int           @id @unique() @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
   longName      String        @map("long_name")
   schoolClasses SchoolClass[]
@@ -80,7 +83,7 @@ model Department {
 }
 
 model SchoolClass {
-  id              Int        @id @unique() @default(autoincrement())
+  id              Int        @id @default(autoincrement())
   name            String
   longName        String     @map("long_name")
   departmentId    Int        @map("department_id")
@@ -93,7 +96,7 @@ model SchoolClass {
 }
 
 model SchoolSubject {
-  id              Int             @id @unique() @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   name            String
   longName        String          @map("long_name")
   schoolId        Int             @map("school_id")
@@ -107,7 +110,7 @@ model SchoolSubject {
 }
 
 model Teacher {
-  id             Int             @id @unique() @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   name           String
   longName       String          @map("long_name")
   schoolId       Int             @map("school_id")
@@ -121,7 +124,7 @@ model Teacher {
 }
 
 model TutorRequest {
-  id              Int           @id @unique() @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   studentId       Int           @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolSubjectId Int           @map("school_subject_id")
@@ -139,7 +142,7 @@ model TutorRequest {
 }
 
 model TutorOffering {
-  id              Int           @id @unique() @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   studentId       Int           @map("student_id")
   student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolSubjectId Int           @map("school_subject_id")
@@ -157,7 +160,7 @@ model TutorOffering {
 }
 
 model Admin {
-  id       Int     @id @unique() @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   userId   String  @unique() @map("user_id")
   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   schoolId Int?    @unique() @map("school_id")
@@ -169,7 +172,7 @@ model Admin {
 }
 
 model Student {
-  id             Int             @id @unique() @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   schoolClassId  Int?            @map("school_class_id")
   schoolClass    SchoolClass?    @relation(fields: [schoolClassId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId         String          @unique() @map("user_id")
@@ -183,7 +186,7 @@ model Student {
 }
 
 model User {
-  id                      String    @id @unique @default(cuid())
+  id                      String    @id @default(cuid())
   name                    String?
   firstName               String?   @map("first_name")
   lastName                String?   @map("last_name")

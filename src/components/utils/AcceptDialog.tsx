@@ -6,6 +6,7 @@ import {
   ListItemButton,
   Typography,
   Box,
+  Divider,
 } from '@mui/material';
 import ClassIcon from '@mui/icons-material/Class';
 import PersonIcon from '@mui/icons-material/Person';
@@ -13,31 +14,101 @@ import AddIcon from '@mui/icons-material/Add';
 import GroupsIcon from '@mui/icons-material/Groups';
 import NotesIcon from '@mui/icons-material/Notes';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useAcceptMatchMutation } from '../../../generated/graphql';
+import MailIcon from '@mui/icons-material/Mail';
+import {
+  GetMatchConnectionInfoQuery,
+  useAcceptMatchMutation,
+  useGetMatchConnectionInfoLazyQuery,
+  useGetMatchConnectionInfoQuery,
+} from '../../../generated/graphql';
 import wrongNumberToNumber from '../../utils/wrongNumberToString';
-export interface AcceptDialogInfo {
+import { useEffect, useState } from 'react';
+
+export interface Match {
+  __typename?: 'Match';
+  id: number;
   rating: number;
   type: string;
-  grade: number;
-  schoolSubjectName: string;
-  teacherName: string;
-  description: string;
-  tutorOfferingId: number;
-  tutorRequestId: number;
+  tutorOffering: {
+    __typename?: 'TutorOffering';
+    id: number;
+    description: string;
+    grade: number;
+    studentId: number;
+    schoolSubject: {
+      __typename?: 'SchoolSubject';
+      id: number;
+      name: string;
+      longName: string;
+    };
+    teacher: {
+      __typename?: 'Teacher';
+      id: number;
+      longName: string;
+      name: string;
+      schoolId: number;
+    };
+  };
+  tutorRequest: {
+    __typename?: 'TutorRequest';
+    description: string;
+    grade: number;
+    id: number;
+    studentId: number;
+    schoolSubject: {
+      __typename?: 'SchoolSubject';
+      id: number;
+      longName: string;
+      name: string;
+    };
+    teacher: {
+      __typename?: 'Teacher';
+      id: number;
+      longName: string;
+      name: string;
+      schoolId: number;
+    };
+  };
 }
 
 export interface AcceptDialogProps {
   open: boolean;
-  info: AcceptDialogInfo | null;
+  match: Match | null;
   setOpen: (open: boolean) => void;
 }
 
 export function AcceptDialog(props: AcceptDialogProps) {
-  const { setOpen, info, open } = props;
+  const { setOpen, match, open } = props;
+
+  const [matchedStudentInfo, setMatchedStudentInfo] =
+    useState<GetMatchConnectionInfoQuery | null>(null);
 
   const [acceptMatchFunction] = useAcceptMatchMutation();
 
-  if (info === null) {
+  const [getMatchConnectionInfoFunction] = useGetMatchConnectionInfoLazyQuery({
+    onCompleted: (data) => {
+      setMatchedStudentInfo(data);
+    },
+  });
+
+  useEffect(() => {
+    if (open) {
+      const matchedStudentId =
+        match?.type === 'REQUEST'
+          ? match?.tutorRequest.studentId
+          : match?.tutorOffering.studentId;
+
+      getMatchConnectionInfoFunction({
+        variables: {
+          matchConnectionInfoInput: {
+            studentId: wrongNumberToNumber(matchedStudentId),
+          },
+        },
+      });
+    }
+  }, [open]);
+
+  if (match === null) {
     return null;
   }
 
@@ -48,37 +119,139 @@ export function AcceptDialog(props: AcceptDialogProps) {
     acceptMatchFunction({
       variables: {
         acceptMatchInput: {
-          tutorOfferingId: wrongNumberToNumber(info.tutorOfferingId),
-          tutorRequestId: wrongNumberToNumber(info.tutorRequestId),
+          tutorOfferingId: wrongNumberToNumber(match.tutorOffering.id),
+          tutorRequestId: wrongNumberToNumber(match.tutorRequest.id),
         },
       },
     });
     setOpen(false);
   };
 
-  if (info !== null && info !== undefined) {
+  const otherMatchPart =
+    match.type === 'REQUEST' ? match.tutorRequest : match.tutorOffering;
+  const yourMatchPart =
+    match.type === 'REQUEST' ? match.tutorOffering : match.tutorRequest;
+
+  if (match !== null && match !== undefined) {
     return (
-      <Dialog onClose={handleClose} open={open}>
+      <Dialog
+        onClose={handleClose}
+        open={open}
+        PaperProps={{
+          style: { borderRadius: 2 },
+        }}
+      >
         <DialogTitle sx={{ bgcolor: '#4caf50' }}>
-          {info.type === 'REQUEST' ? 'Anfrage' : 'Angebot'}
+          {match.type === 'REQUEST' ? 'Anfrage' : 'Angebot'}
         </DialogTitle>
         <Box sx={{ margin: 4 }}>
           <List>
             <ListItem>
-              <ClassIcon sx={{ mr: 2 }} />
-              <Typography> Fach: {info.schoolSubjectName}</Typography>
+              <Typography sx={{ fontWeight: 'bold' }}>Match</Typography>
             </ListItem>
             <ListItem>
               <PersonIcon sx={{ mr: 2 }} />
-              <Typography> Lehrer: {info.teacherName}</Typography>
+              <Typography>
+                Dein Match:{' '}
+                {
+                  matchedStudentInfo?.getMatchConnectionInfo.student.user
+                    .firstName
+                }{' '}
+                {
+                  matchedStudentInfo?.getMatchConnectionInfo.student.user
+                    .lastName
+                }
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <MailIcon sx={{ mr: 2 }} />
+              <Typography>
+                E-Mail:{' '}
+                {matchedStudentInfo?.getMatchConnectionInfo.student.user.email}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <ClassIcon sx={{ mr: 2 }} />
+              <Typography>
+                Schulklasse:{' '}
+                {matchedStudentInfo?.getMatchConnectionInfo.schoolClass.name}
+                {' - '}
+                {
+                  matchedStudentInfo?.getMatchConnectionInfo.schoolClass
+                    .longName
+                }
+              </Typography>
+            </ListItem>
+
+            <Divider />
+
+            <ListItem>
+              <Typography sx={{ fontWeight: 'bold' }}>
+                {match.type === 'REQUEST' ? 'Anfrage' : 'Angebot'}
+              </Typography>
+            </ListItem>
+
+            <ListItem>
+              <ClassIcon sx={{ mr: 2 }} />
+              <Typography>
+                Fach: {otherMatchPart.schoolSubject.name}
+                {' - '}
+                {otherMatchPart.schoolSubject.longName}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <PersonIcon sx={{ mr: 2 }} />
+              <Typography>
+                Lehrer: {otherMatchPart.teacher.name}
+                {' - '}
+                {otherMatchPart.teacher.longName}
+              </Typography>
             </ListItem>
             <ListItem>
               <GroupsIcon sx={{ mr: 2 }} />
-              <Typography> Schulstufe: {info.grade}</Typography>
+              <Typography>Schulstufe: {otherMatchPart.grade}</Typography>
             </ListItem>
             <ListItem>
               <NotesIcon sx={{ mr: 2 }} />
-              <Typography> Beschreibung: {info.description}</Typography>
+              <Typography>
+                {' '}
+                Beschreibung: {otherMatchPart.description}
+              </Typography>
+            </ListItem>
+
+            <Divider />
+
+            <ListItem>
+              <Typography sx={{ fontWeight: 'bold' }}>
+                {match.type === 'REQUEST' ? 'Dein Angebot' : 'Deine Anfrage'}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <ClassIcon sx={{ mr: 2 }} />
+              <Typography>
+                Fach: {yourMatchPart.schoolSubject.name}
+                {' - '}
+                {yourMatchPart.schoolSubject.longName}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <PersonIcon sx={{ mr: 2 }} />
+              <Typography>
+                Lehrer: {yourMatchPart.teacher.name}
+                {' - '}
+                {yourMatchPart.teacher.longName}
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <GroupsIcon sx={{ mr: 2 }} />
+              <Typography>Schulstufe: {yourMatchPart.grade}</Typography>
+            </ListItem>
+            <ListItem>
+              <NotesIcon sx={{ mr: 2 }} />
+              <Typography>
+                {' '}
+                Beschreibung: {yourMatchPart.description}
+              </Typography>
             </ListItem>
             <ListItemButton
               sx={{ bgcolor: '#4caf50', mt: 5 }}

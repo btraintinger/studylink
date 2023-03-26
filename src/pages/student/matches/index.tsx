@@ -5,24 +5,21 @@ import { useGetMatchesOfCurrentUserQuery } from '../../../../generated/graphql';
 import { useState } from 'react';
 import LoadingPage from '../../../components/utils/loadingPage';
 import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
-import {
-  AcceptDialog,
-  AcceptDialogInfo,
-} from '../../../components/utils/AcceptDialog';
+import { AcceptDialog, Match } from '../../../components/utils/AcceptDialog';
 import InfoIcon from '@mui/icons-material/Info';
 
-export type MatchListItem = {
+export interface MatchListItem {
   id: number;
   rating: number;
   type: string;
   grade: number;
   schoolSubjectName: string;
   teacherName: string;
-};
+}
 
 export default function Matches() {
   const [array, setArray] = useState<MatchListItem[]>([]);
-  const [selectedRow, setSelected] = useState<AcceptDialogInfo | null>(null);
+  const [selectedRow, setSelected] = useState<Match | null>(null);
   const [open, setOpen] = useState(false);
 
   const [InfoAnchorEl, setInfoAnchorEl] = useState<HTMLButtonElement | null>(
@@ -48,18 +45,18 @@ export default function Matches() {
                 id: match.id,
                 rating: match.rating,
                 type: 'Anfrage',
-                grade: match.tutorOffering.grade,
-                schoolSubjectName: `${match.tutorOffering.schoolSubject.name} - ${match.tutorOffering.schoolSubject.longName}`,
-                teacherName: `${match.tutorOffering.teacher.name} - ${match.tutorOffering.teacher.longName}`,
+                grade: match.tutorRequest.grade,
+                schoolSubjectName: `${match.tutorRequest.schoolSubject.name} - ${match.tutorRequest.schoolSubject.longName}`,
+                teacherName: `${match.tutorRequest.teacher.name} - ${match.tutorRequest.teacher.longName}`,
               };
             } else {
               return {
                 id: match.id,
                 rating: match.rating,
                 type: 'Angebot',
-                grade: match.tutorRequest.grade,
-                schoolSubjectName: `${match.tutorRequest.schoolSubject.name} - ${match.tutorRequest.schoolSubject.longName}`,
-                teacherName: `${match.tutorRequest.teacher.name} - ${match.tutorRequest.teacher.longName}`,
+                grade: match.tutorOffering.grade,
+                schoolSubjectName: `${match.tutorOffering.schoolSubject.name} - ${match.tutorOffering.schoolSubject.longName}`,
+                teacherName: `${match.tutorOffering.teacher.name} - ${match.tutorOffering.teacher.longName}`,
               };
             }
           }
@@ -103,18 +100,7 @@ export default function Matches() {
     if (match === null) return;
     if (match === undefined) return;
 
-    const tutoringAction =
-      match.type === 'REQUEST' ? match.tutorOffering : match.tutorRequest;
-    setSelected({
-      type: match.type,
-      rating: match.rating,
-      grade: tutoringAction.grade,
-      schoolSubjectName: `${tutoringAction.schoolSubject.name} - ${tutoringAction.schoolSubject.longName}`,
-      teacherName: `${tutoringAction.teacher.name} - ${tutoringAction.teacher.longName}`,
-      description: tutoringAction.description,
-      tutorOfferingId: match.tutorOffering.id,
-      tutorRequestId: match.tutorRequest.id,
-    });
+    setSelected(match);
     setOpen(true);
   };
 
@@ -177,7 +163,7 @@ export default function Matches() {
             },
           }}
         ></DataGrid>
-        <AcceptDialog open={open} info={selectedRow} setOpen={setOpen} />
+        <AcceptDialog open={open} match={selectedRow} setOpen={setOpen} />
       </Box>
     </Layout>
   );

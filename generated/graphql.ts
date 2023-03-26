@@ -61,6 +61,16 @@ export type Match = {
   type: Scalars['String'];
 };
 
+export type MatchConnectionInfo = {
+  __typename?: 'MatchConnectionInfo';
+  schoolClass: SchoolClass;
+  student: Student;
+};
+
+export type MatchConnectionInfoInput = {
+  studentId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   acceptMatch: Scalars['Boolean'];
@@ -252,6 +262,7 @@ export type Query = {
   getAdministeredSchool: School;
   getCurrentUser: User;
   getDepartmentById: Department;
+  getMatchConnectionInfo: MatchConnectionInfo;
   getMatchesOfCurrentUser: Array<Match>;
   getSchoolById: School;
   getSchoolClassById: SchoolClass;
@@ -270,6 +281,11 @@ export type Query = {
 
 export type QueryGetDepartmentByIdArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QueryGetMatchConnectionInfoArgs = {
+  matchConnectionInfoInput: MatchConnectionInfoInput;
 };
 
 
@@ -536,6 +552,13 @@ export type GetMatchesOfCurrentUserQueryVariables = Exact<{ [key: string]: never
 
 
 export type GetMatchesOfCurrentUserQuery = { __typename?: 'Query', getMatchesOfCurrentUser: Array<{ __typename?: 'Match', id: number, rating: number, type: string, tutorOffering: { __typename?: 'TutorOffering', id: number, description: string, grade: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, name: string, longName: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } }, tutorRequest: { __typename?: 'TutorRequest', description: string, grade: number, id: number, studentId: number, schoolSubject: { __typename?: 'SchoolSubject', id: number, longName: string, name: string }, teacher: { __typename?: 'Teacher', id: number, longName: string, name: string, schoolId: number } } }> };
+
+export type GetMatchConnectionInfoQueryVariables = Exact<{
+  matchConnectionInfoInput: MatchConnectionInfoInput;
+}>;
+
+
+export type GetMatchConnectionInfoQuery = { __typename?: 'Query', getMatchConnectionInfo: { __typename?: 'MatchConnectionInfo', student: { __typename?: 'Student', id: number, user: { __typename?: 'User', email: string, firstName: string, lastName: string, name: string, id: number } }, schoolClass: { __typename?: 'SchoolClass', longName: string, name: string, id: number } } };
 
 export type AcceptMatchMutationVariables = Exact<{
   acceptMatchInput: AcceptMatchInput;
@@ -1061,6 +1084,55 @@ export function useGetMatchesOfCurrentUserLazyQuery(baseOptions?: Apollo.LazyQue
 export type GetMatchesOfCurrentUserQueryHookResult = ReturnType<typeof useGetMatchesOfCurrentUserQuery>;
 export type GetMatchesOfCurrentUserLazyQueryHookResult = ReturnType<typeof useGetMatchesOfCurrentUserLazyQuery>;
 export type GetMatchesOfCurrentUserQueryResult = Apollo.QueryResult<GetMatchesOfCurrentUserQuery, GetMatchesOfCurrentUserQueryVariables>;
+export const GetMatchConnectionInfoDocument = gql`
+    query getMatchConnectionInfo($matchConnectionInfoInput: MatchConnectionInfoInput!) {
+  getMatchConnectionInfo(matchConnectionInfoInput: $matchConnectionInfoInput) {
+    student {
+      id
+      user {
+        email
+        firstName
+        lastName
+        name
+        id
+      }
+    }
+    schoolClass {
+      longName
+      name
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMatchConnectionInfoQuery__
+ *
+ * To run a query within a React component, call `useGetMatchConnectionInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMatchConnectionInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMatchConnectionInfoQuery({
+ *   variables: {
+ *      matchConnectionInfoInput: // value for 'matchConnectionInfoInput'
+ *   },
+ * });
+ */
+export function useGetMatchConnectionInfoQuery(baseOptions: Apollo.QueryHookOptions<GetMatchConnectionInfoQuery, GetMatchConnectionInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMatchConnectionInfoQuery, GetMatchConnectionInfoQueryVariables>(GetMatchConnectionInfoDocument, options);
+      }
+export function useGetMatchConnectionInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMatchConnectionInfoQuery, GetMatchConnectionInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMatchConnectionInfoQuery, GetMatchConnectionInfoQueryVariables>(GetMatchConnectionInfoDocument, options);
+        }
+export type GetMatchConnectionInfoQueryHookResult = ReturnType<typeof useGetMatchConnectionInfoQuery>;
+export type GetMatchConnectionInfoLazyQueryHookResult = ReturnType<typeof useGetMatchConnectionInfoLazyQuery>;
+export type GetMatchConnectionInfoQueryResult = Apollo.QueryResult<GetMatchConnectionInfoQuery, GetMatchConnectionInfoQueryVariables>;
 export const AcceptMatchDocument = gql`
     mutation AcceptMatch($acceptMatchInput: AcceptMatchInput!) {
   acceptMatch(acceptMatchInput: $acceptMatchInput)
