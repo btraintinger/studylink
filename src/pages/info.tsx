@@ -147,8 +147,8 @@ export default function InfoPage() {
               Melde dich mit deiner Schul-Email an, verifiziere dich per Mail
               und erstelle dein Passwort. Um Nachhilfe zu geben, musst du dich
               zuerst als Nachhilfelehrer*in registrieren indem du ein Angebot
-              erstellst. Dazu musst du das Fach und die Klassenstufe angeben,
-              für die du Nachhilfe leisten kannst, gib außerdem eine kurze
+              erstellst. Dazu musst du das Fach und die Schulstufe angeben, für
+              die du Nachhilfe leisten kannst, gib außerdem eine kurze
               Beschreibung deiner Fähigkeiten und deine Lehrperson in dem Fach
               an. Dieses Angebot wird gespeichert und du wirst benachrichtigt,
               wenn ein*e Schüler*in deine Hilfe benötigt.
@@ -167,7 +167,7 @@ export default function InfoPage() {
             <Typography variant="body1" gutterBottom>
               Melde dich mit deiner Schul-Email an, verifiziere dich per Mail
               und erstelle dein Passwort. Um Nachhilfe zu bekommen musst du
-              zuerst eine Anftage erstellen, indem du das Fach, in dem du
+              zuerst eine Anfrage erstellen, indem du das Fach, in dem du
               Nachhilfe brauchst, und deine Klassenstufe angibst, außerdem eine
               Beschreibung deiner Bedürfnisse und deine Lehrperson. Du wirst
               benachrichtigt, wenn ein*e Nachhilfelehrer*in für dich gefunden

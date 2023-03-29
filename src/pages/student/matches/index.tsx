@@ -140,7 +140,7 @@ export default function Matches() {
             Hier werden Vorschläge für Nachhilfekontakte angezeigt, also deine
             Nachhilfetutoren, die dir helfen oder deine Nachhilfeschüler, denen
             du helfen kannst. Besuche unsere{' '}
-            <Link href="/info"> Infoseite </Link> wenn du mehr Informationen
+            <Link href="/info"> Infoseite, </Link> wenn du mehr Informationen
             benötigst.
           </Typography>
         </Popover>
