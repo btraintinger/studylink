@@ -93,6 +93,10 @@ export class MatchResolver {
       tutorRequestId: acceptMatchInput.tutorRequestId,
     });
 
+    await ctx.prisma.tutorRequest.delete({
+      where: { id: acceptMatchInput.tutorRequestId },
+    });
+
     return true;
   }
 }

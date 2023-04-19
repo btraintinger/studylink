@@ -38,7 +38,7 @@ export default function YourTutorOfferingGotAcceptedNotification({
         {tutorActionInfo.matchedStudentEmail}
       </Text>
       <Text style={text}>
-        Besuche am besten die Klasse {tutorActionInfo.schoolClass}, um ihn
+        Besuche am besten die Klasse {tutorActionInfo.schoolClass}, um auf dich
         darauf aufmerksam zu machen.
       </Text>
     </EmailWrapper>
